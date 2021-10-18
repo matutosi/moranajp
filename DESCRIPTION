@@ -1,0 +1,19 @@
+Package: moranajp
+Title: Morphological analysis for Japanese
+Version: 0.9.0
+Authors@R: person("Toshikazu", "Matsumura", role = c("aut", "cre"), email = "matutosi@gmail.com")
+Description: Morphological analysis for Japanese by using MeCab. 
+Vignettes: https://github.com/matutosi/moranajp/blob/main/vignettes/moranajp.md
+License: MIT + file LICENSE
+Imports: 
+    knitr,
+    dplyr,
+    rmarkdown,
+    readr,
+    stringr,
+    magrittr
+VignetteBuilder: knitr
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+Depends: 
+    R (>= 3.5.0)
