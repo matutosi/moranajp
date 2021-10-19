@@ -11,6 +11,7 @@ Imports:
     magrittr,
     purrr,
     readr,
+    rlang,
     rmarkdown,
     stringr,
     tibble,
