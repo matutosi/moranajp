@@ -31,13 +31,13 @@ mecab_all <- function(
     fileEncoding="CP932"
   ){
   tbl <- tbl %>% dplyr::mutate(text_id=1:nrow(.))
-  others <- dplyr::select(tbl, !all_of(text_col))
+  others <- dplyr::select(tbl, !dplyr::all_of(text_col))
   tbl %>%
-    dplyr::select(all_of(text_col)) %>%
+    dplyr::select(dplyr::all_of(text_col)) %>%
     mecab(bin_dir, fileEncoding) %>%
     add_text_id() %>%
     dplyr::left_join(others) %>%
-    slice(-nrow(.))
+    dplyr::slice(-nrow(.))
 }
 
   #' テキストに対する形態素解析を一括で実行
@@ -70,19 +70,21 @@ mecab <- function(
   o_wd <- getwd()
   on.exit(setwd(o_wd))
   setwd(bin_dir)
-  out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み", "発音")
+  #   data(out_cols)
+  #   out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み", "発音")
   # write file for morphological analysis # (maybe) can not set file encoding in write_tsv()
-  write.table(tbl, "input.txt", quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
+  utils::write.table(tbl, "input.txt", quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
   # run command
   cmd <- stringr::str_c("mecab input.txt -o output.txt")
   shell(cmd)
   # read result file
   tbl <- 
-    readLines("d:/pf/mecab/bin/output.txt",  encoding="CP932") %>%
-    tibble::tibble(tmp=.) %>%
+    readLines("output.txt",  encoding="CP932") %>%
+    tibble::tibble() %>%
+    magrittr::set_colnames("tmp") %>%
     tidyr::separate(tmp, sep="\t|,", into=letters[1:10], fill="right", extra="drop") %>%
     magrittr::set_colnames(out_cols)
-    unlink(c("input.txt", "output.txt"))  # delete temporary file
+  #     unlink(c("input.txt", "output.txt"))  # delete temporary file
   tbl
 }
 
@@ -104,8 +106,8 @@ add_text_id <- function(
   cnames <- colnames(tbl)
   tbl %>%
   #     dplyr::mutate(tmp = dplyr::case_when((.["表層形"]=="EOS" & is.na(.["品詞"])) ~ 1, TRUE~ 0)) %>%
-    dplyr::mutate(tmp = dplyr::case_when(
-      (dplyr::select(., 1)=="EOS" & is.na(dplyr::select(., 2))) ~ 1, TRUE ~ 0)
+    dplyr::mutate(tmp = 
+      dplyr::case_when((dplyr::select(., 1)=="EOS" & is.na(dplyr::select(., 2))) ~ 1, TRUE ~ 0)
     ) %>%
     dplyr::mutate(tmp = purrr::accumulate(tmp, magrittr::add)) %>%
     dplyr::mutate(tmp = tmp + 1) %>%
