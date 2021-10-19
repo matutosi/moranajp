@@ -6,12 +6,15 @@ Description: Morphological analysis for Japanese by using MeCab.
 Vignettes: https://github.com/matutosi/moranajp/blob/main/vignettes/moranajp.md
 License: MIT + file LICENSE
 Imports: 
-    knitr,
     dplyr,
-    rmarkdown,
+    knitr,
+    magrittr,
+    purrr,
     readr,
+    rmarkdown,
     stringr,
-    magrittr
+    tibble,
+    tidyr
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
