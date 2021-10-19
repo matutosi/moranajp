@@ -70,9 +70,7 @@ mecab <- function(
   o_wd <- getwd()
   on.exit(setwd(o_wd))
   setwd(bin_dir)
-  data(out_cols)
-  #   out_cols
-  #   out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み", "発音")
+  out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み", "発音")
   # write file for morphological analysis # (maybe) can not set file encoding in write_tsv()
   write.table(tbl, "input.txt", quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
   # run command
