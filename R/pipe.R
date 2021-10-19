@@ -3,5 +3,5 @@
 magrittr::`%>%`
 
 dots <- function(...) {
-  eval_bare(substitute(alist(...)))
+  rlang::eval_bare(substitute(alist(...)))
 }
