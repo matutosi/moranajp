@@ -1,0 +1,33 @@
+---
+title: "moranajp"
+output: 
+  rmarkdown::html_vignette:
+    keep_md: true
+vignette: >
+  %\VignetteIndexEntry{moranajp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(tidyverse)
+library(magrittr)
+library(moranajp)
+```
+
+
+```{r }
+data(neko)
+neko %>%
+  mutate(cols=rep(1:2, each=2)) %>%
+  mecab_all(neko, text_col="text", bin_dir="D:/pf/MeCab/bin", fileEncoding="CP932") %>%
+  print(n=nrow(.))
+```

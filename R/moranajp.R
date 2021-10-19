@@ -11,7 +11,7 @@
   #' 
   #' @return Tibble. 
   #' 
-  #' @seealso mecab
+  #' @seealso mecab()
   #' 
   #' @examples
   #' # not run
@@ -51,7 +51,7 @@ mecab_all <- function(
   #' 
   #' @return Tibble.       Output of MeCab. 
   #' 
-  #' @seealso mecab_all
+  #' @seealso mecab_all()
   #' 
   #' @examples
   #' # not run
