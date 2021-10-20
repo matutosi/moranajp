@@ -7,20 +7,29 @@ moranajpは，日本語形態素解析をするためのものです．
 
 ## Installation
 
-You can install the released version of wameicheckr from \[GitHub\]
-(<https://github.com/>). moranajp will not be released in cran, because
-the main user is only Japanese speakers. You need install MeCab
-(<https://taku910.github.io/mecab/>).
+You can install the released version of wameicheckr from \[GitHub\] (
+<https://github.com/> ). moranajp will not be released in cran, because
+the main user is only Japanese speakers. You need install MeCab (
+<https://taku910.github.io/mecab/> ).
 
-最新バージョンは，\[GitHub\] (<https://github.com/>)
+最新バージョンは，\[GitHub\] ( <https://github.com/> )
 でダウンロードできます．
 日本語話者のみを対象としていますので，cranでの公開は予定していません．
-MeCab(<a href="https://taku910.github.io/mecab/)を別途インストールする必要があります" class="uri">https://taku910.github.io/mecab/)を別途インストールする必要があります</a>．
+MeCab ( <https://taku910.github.io/mecab/> )
+を別途インストールする必要があります．
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("matutosi/moranajp")
 ```
+
+You can download binary version (zip file).
+
+<https://github.com/matutosi/moranajp/tree/main/zip>
+
+Windows版のzipファイルは，以下からダウンロード可能です．
+
+<https://github.com/matutosi/moranajp/tree/main/zip>
 
 ## Example
 
