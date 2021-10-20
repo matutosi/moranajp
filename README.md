@@ -37,18 +37,19 @@ Windows版のzipファイルは，以下からダウンロード可能です．
 library(tidyverse)
 library(moranajp)
 
+data(neko)
+# neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
+neko
+
   # Directory of mecab
   # No need when setting path to mecab
   # MeCabの実行ファイルのディレクトリ
   # pathがとおっている場合は，設定不要
 bin_dir <- "c:/MeCab/bin"  # set your environment
 
-  # Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8"
+  # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
   # MeCab.exeの文字コード
 fileEncoding <- "CP932"  # set your environment
-
-data(neko)
-neko
 
 res <- 
   neko %>%
