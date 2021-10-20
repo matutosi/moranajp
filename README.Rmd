@@ -46,8 +46,9 @@ https://github.com/matutosi/moranajp/tree/main/zip
 ## Example
 
 ``` r
-library(tidyverse)
 library(moranajp)
+library(tidyverse)
+library(magrittr)
 
 data(neko)
 # neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
