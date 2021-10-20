@@ -37,8 +37,10 @@ Windows版のzipファイルは，以下からダウンロード可能です．
 library(tidyverse)
 library(moranajp)
 
-  # Directory of mecab.exe  
-  # MeCab.exeのあるディレクトリ
+  # Directory of mecab
+  # No need when setting path to mecab
+  # MeCabの実行ファイルのディレクトリ
+  # pathがとおっている場合は，設定不要
 bin_dir <- "c:/MeCab/bin"  # set your environment
 
   # Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8"

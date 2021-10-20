@@ -25,9 +25,9 @@
   #' @export
 mecab_all <- function(
     tbl, 
-    text_col="text", 
-    bin_dir, 
-    fileEncoding="CP932"
+    text_col = "text", 
+    bin_dir = ".", 
+    fileEncoding = "CP932"
   ){
   tbl <- tbl %>% dplyr::mutate(text_id=1:nrow(tbl))
   others <- dplyr::select(tbl, !dplyr::all_of(text_col))
@@ -76,13 +76,11 @@ mecab <- function(
   shell(cmd)
   # read result file
   tbl <- 
-    readLines("output.txt", encoding="CP932") %>%
+    readLines("output.txt", encoding=fileEncoding) %>%
     tibble::tibble() %>%
-  #     magrittr::set_colnames("tmp") %>%
     tidyr::separate(1, sep="\t|,", into=letters[1:10], fill="right", extra="drop") %>%
-  #     tidyr::separate(tmp, sep="\t|,", into=letters[1:10], fill="right", extra="drop") %>%
     magrittr::set_colnames(out_cols)
-  #     unlink(c("input.txt", "output.txt"))  # delete temporary file
+    unlink(c("input.txt", "output.txt"))  # delete temporary file
   tbl
 }
 
@@ -108,11 +106,4 @@ add_text_id <- function(
     dplyr::mutate(tmp = purrr::accumulate(tmp, magrittr::add)) %>%
     dplyr::mutate(tmp = tmp + 1) %>%
     magrittr::set_colnames(c(cnames, text_id))
-  #   tbl %>%
-  #     dplyr::mutate(tmp = 
-  #       dplyr::case_when((dplyr::select(., 1)=="EOS" & is.na(dplyr::select(., 2))) ~ 1, TRUE ~ 0)
-  #     ) %>%
-  #     dplyr::mutate(tmp = purrr::accumulate(tmp, magrittr::add)) %>%
-  #     dplyr::mutate(tmp = tmp + 1) %>%
-  #     magrittr::set_colnames(c(cnames, text_id))
 }
