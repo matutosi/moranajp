@@ -1,8 +1,7 @@
-  #' データフレームの特定の列に対する形態素解析
+  #' Morphological analysis for a speciefic column in dataframe
   #' 
-  #' データフレームの特定の列に対して，形態素解析を実行します．
-  #' 形態素解析にはMeCabを使用します．
-  #' 形態素解析の対象外の列も出力されます．
+  #' Using MeCab in morphological analysis
+  #' Keep other colnames in dataframe
   #' 
   #' @param tbl          Tibble or data.frame. 
   #' @param text_col     Text. Colnames for morphological analysis. 
@@ -40,10 +39,9 @@ mecab_all <- function(
     dplyr::slice(-nrow(.))
 }
 
-  #' テキストに対する形態素解析を一括で実行
+  #' Morphological analysis for text
   #' 
-  #' テキストに対する形態素解析を一括で実行します．
-  #' 形態素解析にはMeCabを使用します．
+  #' Using MeCab in morphological analysis
   #' 
   #' @param tbl          Tibble or data.frame. 
   #' @param bin_dir      Text，Directory of mecab.exe. 
@@ -71,7 +69,6 @@ mecab <- function(
   on.exit(setwd(o_wd))
   setwd(bin_dir)
   #   data(out_cols)
-  #   out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み", "発音")
   # write file for morphological analysis # (maybe) can not set file encoding in write_tsv()
   utils::write.table(tbl, "input.txt", quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
   # run command
@@ -89,10 +86,9 @@ mecab <- function(
   tbl
 }
 
-  #' 形態素解析の結果にid列を追加
+  #' Add id column into result of morphological analysis
   #' 
-  #' 形態素解析の結果のデータフレームにid列を追加します．
-  #' mecab_all()の内部関数として使用．
+  #' internal function for mecab_all()
   #' 
   #' @param tbl          Tibble or data.frame. 
   #  @param text_id      Text. Colnames for id of text. 
