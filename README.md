@@ -46,6 +46,7 @@ bin_dir <- "c:/MeCab/bin"  # set your environment
 fileEncoding <- "CP932"  # set your environment
 
 data(neko)
+# neko <- iconv(neko, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
 neko
 
 res <- 
