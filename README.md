@@ -72,36 +72,36 @@ Example for Mac
 Mac用の例
 
 ``` r
-  # library(moranajp)
-  # library(tidyverse)
-  # library(magrittr)
-  # 
-  # data(neko)
-  # neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
-  # neko
-  # 
-  #   # Directory of mecab
-  #   # No need when setting path to mecab
-  #   # MeCabの実行ファイルのディレクトリ
-  #   # pathがとおっている場合は，設定不要
-  # bin_dir <- "/opt/local/mecab/bin/"  # set your environment
-  # 
-  #   # Temporary directory
-  #   # No need when using the same directory to bin_dir
-  #   # 一時ファイルのディレクトリ
-  #   # bin_dirと同じディレクトリを使用する時は，設定不要
-  # tmp_dir <- "/tmp/"
-  # 
-  #   # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
-  #   # MeCabの文字コード
-  # fileEncoding <- "utf-8"  # set your environment
-  # 
-  #   # column names of output
-  # res <- 
-  #   neko %>%
-  #   mutate(cols=rep(1:2, each=2)) %>%
-  #   mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
-  #   print(n=nrow(.))
+library(moranajp)
+library(tidyverse)
+library(magrittr)
+
+data(neko)
+neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
+neko
+
+  # Directory of mecab
+  # No need when setting path to mecab
+  # MeCabの実行ファイルのディレクトリ
+  # pathがとおっている場合は，設定不要
+bin_dir <- "/opt/local/mecab/bin/"  # set your environment
+
+  # Temporary directory
+  # No need when using the same directory to bin_dir
+  # 一時ファイルのディレクトリ
+  # bin_dirと同じディレクトリを使用する時は，設定不要
+tmp_dir <- "/tmp/"
+
+  # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
+  # MeCabの文字コード
+fileEncoding <- "utf-8"  # set your environment
+
+  # column names of output
+res <- 
+  neko %>%
+  mutate(cols=rep(1:2, each=2)) %>%
+  mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
+  print(n=nrow(.))
 ```
 
 ## Citation
