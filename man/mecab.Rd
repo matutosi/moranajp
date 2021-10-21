@@ -4,12 +4,14 @@
 \alias{mecab}
 \title{Morphological analysis for text}
 \usage{
-mecab(tbl, bin_dir, fileEncoding)
+mecab(tbl, bin_dir, tmp_dir, fileEncoding)
 }
 \arguments{
 \item{tbl}{Tibble or data.frame.}
 
-\item{bin_dir}{Text，Directory of mecab.exe.}
+\item{bin_dir}{Text，Directory of mecab.}
+
+\item{tmp_dir}{Text，Temporary directory for text.}
 
 \item{fileEncoding}{Text, Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8".}
 }

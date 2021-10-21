@@ -68,22 +68,20 @@ mecab <- function(
     tmp_dir,      # temporary directory for text
     fileEncoding  #
   ){
-  # set file names 
+  # set file names
   if(is.null(tmp_dir)){tmp_dir <- bin_dir}
   mecab <- stringr::str_c(bin_dir, "mecab ")     # needs space after "mecab" for separater
   input <- stringr::str_c(tmp_dir, "input.txt")
   output <- stringr::str_c(tmp_dir, "output.txt")
-  # write file for morphological analysis 
+  # write file for morphological analysis
     # (maybe) can not set file encoding in write_tsv()
   utils::write.table(tbl, input, quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
   # run command
   cmd <- stringr::str_c(mecab, input,  " -o ", output)
   system(cmd)
   # read result file
-  # out_cols <- c("input", "part, "sub1", "sub2", "sub3", "util_type", "infl_type", "original", "reading", "pronunciation")
-  # out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み", "発音")
-  out_cols <- c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1", 
-    "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3", "\u6d3b\u7528\u578b", 
+  out_cols <- c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1",
+    "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3", "\u6d3b\u7528\u578b",
     "\u6d3b\u7528\u5f62", "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
   tbl <-
     readLines(output, encoding=fileEncoding) %>%

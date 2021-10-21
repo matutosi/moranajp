@@ -4,14 +4,22 @@
 \alias{mecab_all}
 \title{Morphological analysis for a speciefic column in dataframe}
 \usage{
-mecab_all(tbl, text_col = "text", bin_dir, fileEncoding = "CP932")
+mecab_all(
+  tbl,
+  text_col = "text",
+  bin_dir = ".",
+  tmp_dir = NULL,
+  fileEncoding = "CP932"
+)
 }
 \arguments{
 \item{tbl}{Tibble or data.frame.}
 
 \item{text_col}{Text. Colnames for morphological analysis.}
 
-\item{bin_dir}{Text，Directory of mecab.exe.}
+\item{bin_dir}{Text，Directory of mecab.}
+
+\item{tmp_dir}{Text，Temporary directory for text.}
 
 \item{fileEncoding}{Text, Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8".}
 }
@@ -25,7 +33,7 @@ Keep other colnames in dataframe
 \examples{
 # not run
 # data(neko)
-# bin_dir <- "c:/mecab/bin"  # input your environment
+# bin_dir <- "c:/mecab/bin/" # input your environment
 # fileEncoding <- "CP932"    # input your environment
 # neko \%>\%
 #   tibble::tibble(text=., cols=rep(1:2, each=2))
