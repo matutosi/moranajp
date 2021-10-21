@@ -5,7 +5,8 @@
   #'
   #' @param tbl          Tibble or data.frame.
   #' @param text_col     Text. Colnames for morphological analysis.
-  #' @param bin_dir      Text，Directory of mecab.exe.
+  #' @param bin_dir      Text，Directory of mecab.
+  #' @param tmp_dir      Text，Temporary directory for text.
   #' @param fileEncoding Text, Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8".
   #'
   #' @return Tibble.
@@ -15,7 +16,7 @@
   #' @examples
   #' # not run
   #' # data(neko)
-  #' # bin_dir <- "c:/mecab/bin"  # input your environment
+  #' # bin_dir <- "c:/mecab/bin/" # input your environment
   #' # fileEncoding <- "CP932"    # input your environment
   #' # neko %>%
   #' #   tibble::tibble(text=., cols=rep(1:2, each=2))
@@ -27,13 +28,14 @@ mecab_all <- function(
     tbl,
     text_col = "text",
     bin_dir = ".",
+    tmp_dir = NULL,
     fileEncoding = "CP932"
   ){
   tbl <- tbl %>% dplyr::mutate(text_id=1:nrow(tbl))
   others <- dplyr::select(tbl, !dplyr::all_of(text_col))
   tbl %>%
     dplyr::select(dplyr::all_of(text_col)) %>%
-    mecab(bin_dir, fileEncoding) %>%
+    mecab(bin_dir, tmp_dir, fileEncoding) %>%
     add_text_id() %>%
     dplyr::left_join(others) %>%
     dplyr::slice(-nrow(.))
@@ -44,7 +46,8 @@ mecab_all <- function(
   #' Using MeCab in morphological analysis
   #'
   #' @param tbl          Tibble or data.frame.
-  #' @param bin_dir      Text，Directory of mecab.exe.
+  #' @param bin_dir      Text，Directory of mecab.
+  #' @param tmp_dir      Text，Temporary directory for text.
   #' @param fileEncoding Text, Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8".
   #'
   #' @return Tibble.       Output of MeCab.
@@ -61,26 +64,29 @@ mecab_all <- function(
   #' @export
 mecab <- function(
     tbl,          # tbl of input text
-    bin_dir,      # bin file of mecab
+    bin_dir,      # bin directory of mecab
+    tmp_dir,      # temporary directory for text
     fileEncoding  #
   ){
   # records current working directory
   o_wd <- getwd()
   on.exit(setwd(o_wd))
   setwd(bin_dir)
-  #   data(out_cols)
-  # write file for morphological analysis # (maybe) can not set file encoding in write_tsv()
-  utils::write.table(tbl, "input.txt", quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
+  input <- stringr::str_c(tmp_dir, "input.txt")
+  output <- stringr::str_c(tmp_dir, "output.txt")
+  # write file for morphological analysis 
+    # (maybe) can not set file encoding in write_tsv()
+  utils::write.table(tbl, input, quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
   # run command
-  cmd <- stringr::str_c("mecab input.txt -o output.txt")
+  cmd <- stringr::str_c("mecab ", input,  " -o ", output)
   system(cmd)
   # read result file
   tbl <-
-    readLines("output.txt", encoding=fileEncoding) %>%
+    readLines(output, encoding=fileEncoding) %>%
     tibble::tibble() %>%
     tidyr::separate(1, sep="\t|,", into=letters[1:10], fill="right", extra="drop") %>%
     magrittr::set_colnames(out_cols)
-    unlink(c("input.txt", "output.txt"))  # delete temporary file
+  unlink(c(input, output))   # delete temporary file
   tbl
 }
 
