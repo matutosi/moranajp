@@ -7,10 +7,9 @@ moranajpは，日本語形態素解析をするためのものです．
 
 ## Installation
 
-NOW, only for Windows.
+NOW, work on Windows and Mac. Unconfirmed on Linux.
 
-現在，Windowsのみで利用可能です．Mac, Linux
-では使用できません(エラーになります)．
+現在，WindowsとMacで動作確認済み．Linuxは未確認．
 
 You can install the released version of wameicheckr from \[GitHub\] (
 <https://github.com/> ). moranajp will not be released in cran, because
@@ -72,36 +71,36 @@ Example for Mac
 Mac用の例
 
 ``` r
-  # library(moranajp)
-  # library(tidyverse)
-  # library(magrittr)
-  # 
-  # data(neko)
-  # neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
-  # neko
-  # 
-  #   # Directory of mecab
-  #   # No need when setting path to mecab
-  #   # MeCabの実行ファイルのディレクトリ
-  #   # pathがとおっている場合は，設定不要
-  # bin_dir <- "/opt/local/mecab/bin/"  # set your environment
-  # 
-  #   # Temporary directory
-  #   # No need when using the same directory to bin_dir
-  #   # 一時ファイルのディレクトリ
-  #   # bin_dirと同じディレクトリを使用する時は，設定不要
-  # tmp_dir <- "/tmp/"
-  # 
-  #   # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
-  #   # MeCabの文字コード
-  # fileEncoding <- "utf-8"  # set your environment
-  # 
-  #   # column names of output
-  # res <- 
-  #   neko %>%
-  #   mutate(cols=rep(1:2, each=2)) %>%
-  #   mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
-  #   print(n=nrow(.))
+library(moranajp)
+library(tidyverse)
+library(magrittr)
+
+data(neko)
+neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
+neko
+
+  # Directory of mecab
+  # No need when setting path to mecab
+  # MeCabの実行ファイルのディレクトリ
+  # pathがとおっている場合は，設定不要
+bin_dir <- "/opt/local/mecab/bin/"  # set your environment
+
+  # Temporary directory
+  # No need when using the same directory to bin_dir
+  # 一時ファイルのディレクトリ
+  # bin_dirと同じディレクトリを使用する時は，設定不要
+tmp_dir <- "/tmp/"
+
+  # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
+  # MeCabの文字コード
+fileEncoding <- "utf-8"  # set your environment
+
+  # column names of output
+res <- 
+  neko %>%
+  mutate(cols=rep(1:2, each=2)) %>%
+  mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
+  print(n=nrow(.))
 ```
 
 ## Citation
@@ -111,3 +110,29 @@ Toshikazu Matsumura (2021) Morphological analysis for Japanese with R.
 
 松村 俊和 (2021) Rによる日本語形態素解析.
 <https://github.com/matutosi/moranajp/>.
+
+## 参考(LinuxへのMeCabインストール)
+
+ファイルのダウンロード(mecab-0.996.tar.gz,
+mecab-ipadic-2.7.0-20070801.tar.gz)
+
+<http://taku910.github.io/mecab/#download>
+
+インストール
+
+      tar xvf mecab-0.996.tar.gz
+      cd mecab-0.996
+      ./configure --enable-utf8-only --prefix=/opt/local/mecab
+      make
+      sudo make install
+      % 辞書のインストール
+      tar xvf mecab-ipadic-2.7.0-20070801.tar.gz
+      cd mecab-ipadic-2.7.0-20070801
+      ./configure  --with-mecab-config=/opt/local/mecab/bin/mecab-config --with-charset=utf8 --prefix=/opt/local/mecab
+      make
+      sudo make install
+      % パスの追加
+      echo 'export PATH=/opt/local/mecab/bin:$PATH' >> ~/.bash_profile
+      source ~/.bash_profile
+      % mecabの実行
+      mecab
