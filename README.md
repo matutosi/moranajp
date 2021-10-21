@@ -7,6 +7,11 @@ moranajpは，日本語形態素解析をするためのものです．
 
 ## Installation
 
+NOW, only for Windows.
+
+現在，Windowsのみで利用可能です．Mac, Linux
+では使用できません(エラーになります)．
+
 You can install the released version of wameicheckr from \[GitHub\] (
 <https://github.com/> ). moranajp will not be released in cran, because
 the main user is only Japanese speakers. You need install MeCab (
@@ -34,8 +39,9 @@ Windows版のzipファイルは，以下からダウンロード可能です．
 ## Example
 
 ``` r
-library(tidyverse)
 library(moranajp)
+library(tidyverse)
+library(magrittr)
 
 data(neko)
 # neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
