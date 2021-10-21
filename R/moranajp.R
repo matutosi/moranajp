@@ -80,6 +80,11 @@ mecab <- function(
   cmd <- stringr::str_c(mecab, input,  " -o ", output)
   system(cmd)
   # read result file
+  # out_cols <- c("input", "part, "sub1", "sub2", "sub3", "util_type", "infl_type", "original", "reading", "pronunciation")
+  # out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み", "発音")
+  out_cols <- c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1", 
+    "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3", "\u6d3b\u7528\u578b", 
+    "\u6d3b\u7528\u5f62", "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
   tbl <-
     readLines(output, encoding=fileEncoding) %>%
     tibble::tibble() %>%
