@@ -68,17 +68,16 @@ mecab <- function(
     tmp_dir,      # temporary directory for text
     fileEncoding  #
   ){
-  # records current working directory
-  o_wd <- getwd()
-  on.exit(setwd(o_wd))
-  setwd(bin_dir)
+  # set file names 
+  if(is.null(tmp_dir)){tmp_dir <- bin_dir}
+  mecab <- stringr::str_c(bin_dir, "mecab ")     # needs space after "mecab" for separater
   input <- stringr::str_c(tmp_dir, "input.txt")
   output <- stringr::str_c(tmp_dir, "output.txt")
   # write file for morphological analysis 
     # (maybe) can not set file encoding in write_tsv()
   utils::write.table(tbl, input, quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
   # run command
-  cmd <- stringr::str_c("mecab ", input,  " -o ", output)
+  cmd <- stringr::str_c(mecab, input,  " -o ", output)
   system(cmd)
   # read result file
   tbl <-
