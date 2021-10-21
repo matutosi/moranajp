@@ -96,6 +96,10 @@ tmp_dir <- "/tmp/"
   # MeCabの文字コード
 fileEncoding <- "utf-8"  # set your environment
 
+  # column names of output
+  # 出力列名
+out_cols <- c("表層形", "品詞", "品詞細分類1", "品詞細分類2", "品詞細分類3", "活用型", "活用形", "原形", "読み")
+
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
