@@ -7,10 +7,6 @@ moranajpは，日本語形態素解析をするためのものです．
 
 ## Installation
 
-NOW, work on Windows and Mac. Unconfirmed on Linux.
-
-現在，WindowsとMacで動作確認済み．Linuxは未確認．
-
 You can install the released version of wameicheckr from \[GitHub\] (
 <https://github.com/> ). moranajp will not be released in cran, because
 the main user is only Japanese speakers. You need install MeCab (
@@ -111,7 +107,7 @@ Toshikazu Matsumura (2021) Morphological analysis for Japanese with R.
 松村 俊和 (2021) Rによる日本語形態素解析.
 <https://github.com/matutosi/moranajp/>.
 
-## 参考(LinuxへのMeCabインストール)
+## 参考(Linux / Mac へのMeCabインストール)
 
 ファイルのダウンロード(mecab-0.996.tar.gz,
 mecab-ipadic-2.7.0-20070801.tar.gz)
@@ -125,14 +121,16 @@ mecab-ipadic-2.7.0-20070801.tar.gz)
       ./configure --enable-utf8-only --prefix=/opt/local/mecab
       make
       sudo make install
-      % 辞書のインストール
+      # 辞書のインストール
       tar xvf mecab-ipadic-2.7.0-20070801.tar.gz
       cd mecab-ipadic-2.7.0-20070801
       ./configure  --with-mecab-config=/opt/local/mecab/bin/mecab-config --with-charset=utf8 --prefix=/opt/local/mecab
       make
       sudo make install
-      % パスの追加
+      # パスの追加
       echo 'export PATH=/opt/local/mecab/bin:$PATH' >> ~/.bash_profile
       source ~/.bash_profile
-      % mecabの実行
+      # mecabの実行
       mecab
+
+参考：<https://qiita.com/nkjm/items/913584c00af199794257>
