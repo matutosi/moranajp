@@ -3,6 +3,8 @@
   #' Using MeCab in morphological analysis
   #' Keep other colnames in dataframe
   #'
+  # '@name mecab_all
+  #'
   #' @param tbl          Tibble or data.frame.
   #' @param text_col     Text. Colnames for morphological analysis.
   #' @param bin_dir      Text，Directory of mecab.
@@ -44,6 +46,8 @@ mecab_all <- function(
   #' Morphological analysis for text
   #'
   #' Using MeCab in morphological analysis
+  #'
+  #' @name mecab
   #'
   #' @param tbl          Tibble or data.frame.
   #' @param bin_dir      Text，Directory of mecab.
@@ -95,6 +99,8 @@ mecab <- function(
   #' Add id column into result of morphological analysis
   #'
   #' internal function for mecab_all()
+  #'
+  #' @name add_text_id
   #'
   #' @param tbl          Tibble or data.frame.
   #  @param text_id      Text. Colnames for id of text.
