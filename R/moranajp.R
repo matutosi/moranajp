@@ -88,7 +88,7 @@ mecab <- function(
     "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3", "\u6d3b\u7528\u578b",
     "\u6d3b\u7528\u5f62", "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
   tbl <-
-    readLines(output, encoding=fileEncoding) %>%
+    readLines(con=file(output, encoding=fileEncoding)) %>%
     tibble::tibble() %>%
     tidyr::separate(1, sep="\t|,", into=letters[1:10], fill="right", extra="drop") %>%
     magrittr::set_colnames(out_cols)
