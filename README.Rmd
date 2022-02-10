@@ -17,6 +17,13 @@ The goal of moranajp is a tool of morphological analysis for Japanese.
 
 moranajpは，日本語形態素解析をするためのものです．
 
+## Note
+
+Line breaks in the text will be removed to avoid lag text id. 
+If you want to remain line breaks, please change them into other charactor. 
+
+文字列内の改行コード(\r\n, \n)は，削除されます(EOSでtext_idを見分けており，改行コードでずれるのを防ぐため)．
+改行コードに意味がある場合は，事前に改行コードを別の文字列に変更するなどの対応をしてください．
 
 ## Installation
 
@@ -40,7 +47,6 @@ https://github.com/matutosi/moranajp/tree/main/zip
 Windows版のzipファイルは，以下からダウンロード可能です．
 
 https://github.com/matutosi/moranajp/tree/main/zip
-
 
 
 ## Example

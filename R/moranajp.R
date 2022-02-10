@@ -33,13 +33,20 @@ mecab_all <- function(
     tmp_dir = NULL,
     fileEncoding = "CP932"
   ){
+
   tbl <- tbl %>% dplyr::mutate(text_id=1:nrow(tbl))
   others <- dplyr::select(tbl, !dplyr::all_of(text_col))
+  if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\r\\n")) message("removed line breaks !")
+  if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\n"))    message("removed line breaks !")
+  tbl <-  # remove line breaks
+    tbl %>%
+    dplyr::mutate(!!text_col := stringr::str_replace_all(.data[[text_col]], "\\r\\n", "")) %>%
+    dplyr::mutate(!!text_col := stringr::str_replace_all(.data[[text_col]], "\\n", ""))
   tbl %>%
     dplyr::select(dplyr::all_of(text_col)) %>%
     mecab(bin_dir, tmp_dir, fileEncoding) %>%
     add_text_id() %>%
-    dplyr::left_join(others) %>%
+    dplyr::left_join(others, by="text_id") %>%
     dplyr::slice(-nrow(.))
 }
 
@@ -74,7 +81,7 @@ mecab <- function(
   ){
   # set file names
   if(is.null(tmp_dir)){tmp_dir <- bin_dir}
-  mecab <- stringr::str_c(bin_dir, "mecab ")     # needs space after "mecab" for separater
+  mecab <- stringr::str_c(bin_dir, "mecab", " ")     # NEEDS SPACE after "mecab" for separater
   input <- stringr::str_c(tmp_dir, "input.txt")
   output <- stringr::str_c(tmp_dir, "output.txt")
   # write file for morphological analysis
@@ -84,6 +91,7 @@ mecab <- function(
   cmd <- stringr::str_c(mecab, input,  " -o ", output)
   system(cmd)
   # read result file
+  # ref. # stringi::stri_escape_unicode()
   out_cols <- c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1",
     "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3", "\u6d3b\u7528\u578b",
     "\u6d3b\u7528\u5f62", "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
@@ -113,6 +121,7 @@ add_text_id <- function(
     text_id="text_id"
   ){
   cnames <- colnames(tbl)
+  if (any("text_id" %in% cnames)) stop("colnames must NOT have 'text_id'")
   tbl %>%
     dplyr::mutate(tmp =
       dplyr::case_when((dplyr::select(tbl, 1)=="EOS" & is.na(dplyr::select(tbl, 2))) ~ 1, TRUE ~ 0)

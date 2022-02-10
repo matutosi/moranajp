@@ -5,6 +5,15 @@ The goal of moranajp is a tool of morphological analysis for Japanese.
 
 moranajpは，日本語形態素解析をするためのものです．
 
+## Note
+
+Line breaks in the text will be removed to avoid lag text id. If you
+want to remain line breaks, please change them into other charactor.
+
+文字列内の改行コード(,
+)は，削除されます(EOSでtext\_idを見分けており，改行コードでずれるのを防ぐため)．
+改行コードに意味がある場合は，事前に改行コードを別の文字列に変更するなどの対応をしてください．
+
 ## Installation
 
 You can install the released version of wameicheckr from \[GitHub\] (

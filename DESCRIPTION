@@ -1,6 +1,6 @@
 Package: moranajp
 Title: Morphological analysis for Japanese
-Version: 0.9.0
+Version: 0.9.1
 Authors@R: person("Toshikazu", "Matsumura", role = c("aut", "cre"), email = "matutosi@gmail.com")
 Description: Morphological analysis for Japanese by using MeCab. 
 Vignettes: https://github.com/matutosi/moranajp/blob/main/vignettes/moranajp.md
