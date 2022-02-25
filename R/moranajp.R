@@ -9,7 +9,8 @@
   #' @param text_col     Text. Colnames for morphological analysis.
   #' @param bin_dir      Text，Directory of mecab.
   #' @param tmp_dir      Text，Temporary directory for text.
-  #' @param fileEncoding Text, Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8".
+  #' @param fileEncoding Text, Fileencoding in mecab. 
+  #'                     "EUC", "CP932" (shift_jis) or "UTF-8".
   #'
   #' @return Tibble.
   #'
@@ -22,7 +23,10 @@
   #' # fileEncoding <- "CP932"    # input your environment
   #' # neko %>%
   #' #   tibble::tibble(text=., cols=rep(1:2, each=2))
-  #' # mecab_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
+  #' # mecab_all(neko, 
+  #' #           text_col="text", 
+  #' #           bin_dir=bin_dir, 
+  #' #           fileEncoding=fileEncoding) %>%
   #' #   print(n=nrow(.))
   #'
   #' @export
@@ -59,7 +63,8 @@ mecab_all <- function(
   #' @param tbl          Tibble or data.frame.
   #' @param bin_dir      Text，Directory of mecab.
   #' @param tmp_dir      Text，Temporary directory for text.
-  #' @param fileEncoding Text, Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8".
+  #' @param fileEncoding Text, Fileencoding in mecab. 
+  #'                     "EUC", "CP932" (shift_jis) or "UTF-8".
   #'
   #' @return Tibble.       Output of MeCab.
   #'
@@ -70,7 +75,9 @@ mecab_all <- function(
   #' # data(neko)
   #' # bin_dir <- "c:/mecab/bin"  # input your environment
   #' # fileEncoding <- "CP932"    # input your environment
-  #' # mecab(neko, bin_dir=bin_dir, fileEncoding=fileEncoding)
+  #' # mecab(neko, 
+  #' #       bin_dir=bin_dir, 
+  #' #       fileEncoding=fileEncoding)
   #'
   #' @export
 mecab <- function(
