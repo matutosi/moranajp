@@ -61,7 +61,7 @@ library(tidyverse)
 library(magrittr)
 
 data(neko)
-neko
+neko  # 『吾輩は猫である』(夏目漱石)の冒頭部分
 
   # Directory of mecab
   # No need when setting path to mecab
