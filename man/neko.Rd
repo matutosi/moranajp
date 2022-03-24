@@ -3,17 +3,17 @@
 \docType{data}
 \name{neko}
 \alias{neko}
-\title{『吾輩は猫である』の冒頭部分}
+\title{The first part of "I Am a Cat" by Soseki NATSUME}
 \format{
 Tibble
 \describe{
-\item{text}{本文}
+\item{text}{Body text.}
 }
 }
 \usage{
 neko
 }
 \description{
-『吾輩は猫である』の冒頭部分
+The first part of "I Am a Cat" by Soseki NATSUME
 }
 \keyword{datasets}

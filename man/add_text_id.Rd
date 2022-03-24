@@ -8,10 +8,12 @@ add_text_id(tbl, text_id = "text_id")
 }
 \arguments{
 \item{tbl}{Tibble or data.frame.}
+
+\item{text_id}{Text. Colnames for id of text.}
 }
 \value{
 Tibble.
 }
 \description{
-internal function for mecab_all()
+Internal function for mecab_all()
 }

@@ -2,6 +2,7 @@
 % Please edit documentation in R/moranajp.R
 \name{mecab_all}
 \alias{mecab_all}
+\alias{mecab}
 \title{Morphological analysis for a speciefic column in dataframe}
 \usage{
 mecab_all(
@@ -11,6 +12,8 @@ mecab_all(
   tmp_dir = NULL,
   fileEncoding = "CP932"
 )
+
+mecab(tbl, bin_dir, tmp_dir, fileEncoding)
 }
 \arguments{
 \item{tbl}{Tibble or data.frame.}
@@ -21,10 +24,11 @@ mecab_all(
 
 \item{tmp_dir}{Text，Temporary directory for text.}
 
-\item{fileEncoding}{Text, Fileencoding in mecab. "EUC", "CP932" (shift_jis) or "UTF-8".}
+\item{fileEncoding}{Text, Fileencoding in mecab.
+"EUC", "CP932" (shift_jis) or "UTF-8".}
 }
 \value{
-Tibble.
+Tibble. Output of MeCab.
 }
 \description{
 Using MeCab in morphological analysis
@@ -37,9 +41,11 @@ Keep other colnames in dataframe
 # fileEncoding <- "CP932"    # input your environment
 # neko \%>\%
 #   tibble::tibble(text=., cols=rep(1:2, each=2))
-# mecab_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) \%>\%
+# mecab_all(neko, 
+#           text_col="text", 
+#           bin_dir=bin_dir, 
+#           fileEncoding=fileEncoding) \%>\%
 #   print(n=nrow(.))
-
 }
 \seealso{
 mecab()
