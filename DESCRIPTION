@@ -4,7 +4,7 @@ Version: 0.9.3
 Authors@R: person("Toshikazu", "Matsumura", role = c("aut", "cre"), email = "matutosi@gmail.com")
 Description: Morphological analysis for Japanese by using MeCab. 
 Vignettes: https://github.com/matutosi/moranajp/blob/main/vignettes/moranajp.md
-License: CC BY 4.0
+License: MIT + file LICENSE
 Imports: 
     dplyr,
     knitr,
@@ -19,6 +19,7 @@ Imports:
     tidyr
 Suggests:
     rvest,
+    testthat (>= 3.0.0),
     tidyverse
 VignetteBuilder: knitr
 RoxygenNote: 7.1.2
@@ -27,3 +28,4 @@ Depends:
     R (>= 3.5.0)
 Encoding: UTF-8
 LazyData: true
+Config/testthat/edition: 3
