@@ -37,7 +37,7 @@ Keep other colnames in dataframe
 \examples{
 # not run
 # library(tidyverse)
-# bin_dir <- "c:/mecab/bin/" # input your environment
+# bin_dir <- "d:/pf/mecab/bin/" # input your environment
 # fileEncoding <- "CP932"    # input your environment
 # data(neko)
 # neko <- 
@@ -48,7 +48,7 @@ Keep other colnames in dataframe
 #           text_col="text", 
 #           bin_dir=bin_dir, 
 #           fileEncoding=fileEncoding) \%>\%
-#   print(n=nrow(.))
+#   print(n=100)
 }
 \seealso{
 mecab()

@@ -14,7 +14,7 @@
 #' @examples
 #' # not run
 #' # library(tidyverse)
-#' # bin_dir <- "c:/mecab/bin/" # input your environment
+#' # bin_dir <- "d:/pf/mecab/bin/" # input your environment
 #' # fileEncoding <- "CP932"    # input your environment
 #' # data(neko)
 #' # neko <- 
@@ -25,7 +25,7 @@
 #' #           text_col="text", 
 #' #           bin_dir=bin_dir, 
 #' #           fileEncoding=fileEncoding) %>%
-#' #   print(n=300)
+#' #   print(n=100)
 #' @export
 mecab_all <- function(
     tbl,
@@ -47,7 +47,8 @@ mecab_all <- function(
     dplyr::select(dplyr::all_of(text_col)) %>%
     mecab(bin_dir, tmp_dir, fileEncoding) %>%
     add_text_id() %>%
-    dplyr::left_join(others, by="text_id")
+    dplyr::left_join(others, by="text_id") %>%
+    dplyr::relocate(.data[["text_id"]])
   return(dplyr::slice(tbl, -nrow(tbl)))
 }
 
@@ -59,16 +60,16 @@ mecab <- function(
     tmp_dir,      # temporary directory for text
     fileEncoding  #
   ){
-  # set file names
+    # set file names and command
   if(is.null(tmp_dir)){tmp_dir <- bin_dir}
   mecab <- stringr::str_c(bin_dir, "mecab", " ")     # NEEDS SPACE after "mecab" for separater
   input <- stringr::str_c(tmp_dir, "input.txt")
   output <- stringr::str_c(tmp_dir, "output.txt")
+  cmd <- stringr::str_c(mecab, input,  " -o ", output)
     # write file for morphological analysis
     #   (maybe) can not set file encoding in write_tsv()
   utils::write.table(tbl, input, quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
     # run command in a terminal
-  cmd <- stringr::str_c(mecab, input,  " -o ", output)
   system(cmd)
     # read result file
     # # ref: stringi::stri_escape_unicode(), stringi::stri_unescape_unicode()
@@ -93,9 +94,8 @@ mecab <- function(
 #' @param tbl     A tibble or data.frame.
 #' @param text_id A text. Colnames for id of text.
 #' @return        A tibble.
-#' @export
 add_text_id <- function(tbl, text_id="text_id"){
-  # tbl <- tibble::tibble(text = c("a", sample(c("a", "b", "EOS"), 19, replace=TRUE)), some=NA)
+  # tbl <- a
   cnames <- colnames(tbl)
   if (any("text_id" %in% cnames)) stop("colnames must NOT have a colname 'text_id'")
   tbl <- 
@@ -108,4 +108,3 @@ add_text_id <- function(tbl, text_id="text_id"){
     magrittr::set_colnames(c(cnames, text_id))
   return(tbl)
 }
-

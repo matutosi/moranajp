@@ -17,9 +17,23 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+library(tidyverse)
 library(moranajp)
 ```
 
-```{r import_data, setup}
+```{r }
+bin_dir <- "d:/pf//mecab/bin/" # input your environment
+fileEncoding <- "CP932"    # input your environment
 
+data(neko)
+neko <- 
+  neko %>%
+  dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
+  dplyr::mutate(cols=1:nrow(.))
+
+mecab_all(neko, 
+          text_col="text", 
+          bin_dir=bin_dir, 
+          fileEncoding=fileEncoding) %>%
+  print(n=100)
 ```
