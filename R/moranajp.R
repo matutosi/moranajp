@@ -1,35 +1,29 @@
-  #' Morphological analysis for a speciefic column in dataframe
-  #'
-  #' Using MeCab in morphological analysis
-  #' Keep other colnames in dataframe
-  #'
-  # '@name mecab_all
-  #'
-  #' @param tbl          Tibble or data.frame.
-  #' @param text_col     Text. Colnames for morphological analysis.
-  #' @param bin_dir      Text，Directory of mecab.
-  #' @param tmp_dir      Text，Temporary directory for text.
-  #' @param fileEncoding Text, Fileencoding in mecab. 
-  #'                     "EUC", "CP932" (shift_jis) or "UTF-8".
-  #'
-  #' @return Tibble.
-  #'
-  #' @seealso mecab()
-  #'
-  #' @examples
-  #' # not run
-  #' # data(neko)
-  #' # bin_dir <- "c:/mecab/bin/" # input your environment
-  #' # fileEncoding <- "CP932"    # input your environment
-  #' # neko %>%
-  #' #   tibble::tibble(text=., cols=rep(1:2, each=2))
-  #' # mecab_all(neko, 
-  #' #           text_col="text", 
-  #' #           bin_dir=bin_dir, 
-  #' #           fileEncoding=fileEncoding) %>%
-  #' #   print(n=nrow(.))
-  #'
-  #' @export
+#' Morphological analysis for a speciefic column in dataframe
+#'
+#' Using MeCab in morphological analysis
+#' Keep other colnames in dataframe
+#'
+#' @param tbl          Tibble or data.frame.
+#' @param text_col     Text. Colnames for morphological analysis.
+#' @param bin_dir      Text，Directory of mecab.
+#' @param tmp_dir      Text，Temporary directory for text.
+#' @param fileEncoding Text, Fileencoding in mecab. 
+#'                     "EUC", "CP932" (shift_jis) or "UTF-8".
+#' @return Tibble. Output of MeCab.
+#' @seealso mecab()
+#' @examples
+#' # not run
+#' # data(neko)
+#' # bin_dir <- "c:/mecab/bin/" # input your environment
+#' # fileEncoding <- "CP932"    # input your environment
+#' # neko %>%
+#' #   tibble::tibble(text=., cols=rep(1:2, each=2))
+#' # mecab_all(neko, 
+#' #           text_col="text", 
+#' #           bin_dir=bin_dir, 
+#' #           fileEncoding=fileEncoding) %>%
+#' #   print(n=nrow(.))
+#' @export
 mecab_all <- function(
     tbl,
     text_col = "text",
@@ -40,46 +34,23 @@ mecab_all <- function(
 
   tbl <- tbl %>% dplyr::mutate(text_id=1:nrow(tbl))
   others <- dplyr::select(tbl, !dplyr::all_of(text_col))
-  if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\r\\n")) message("removed line breaks !")
-  if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\n"))    message("removed line breaks !")
+  if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\r\\n")) message("Removed line breaks !")
+  if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\n"))    message("Removed line breaks !")
   tbl <-  # remove line breaks
     tbl %>%
     dplyr::mutate(!!text_col := stringr::str_replace_all(.data[[text_col]], "\\r\\n", "")) %>%
     dplyr::mutate(!!text_col := stringr::str_replace_all(.data[[text_col]], "\\n", ""))
-  tbl %>%
+  tbl <- 
+    tbl %>%
     dplyr::select(dplyr::all_of(text_col)) %>%
     mecab(bin_dir, tmp_dir, fileEncoding) %>%
     add_text_id() %>%
-    dplyr::left_join(others, by="text_id") %>%
-    dplyr::slice(-nrow(.))
+    dplyr::left_join(others, by="text_id")
+  dplyr::slice(-nrow(tbl))
 }
 
-  #' Morphological analysis for text
-  #'
-  #' Using MeCab in morphological analysis
-  #'
-  #' @name mecab
-  #'
-  #' @param tbl          Tibble or data.frame.
-  #' @param bin_dir      Text，Directory of mecab.
-  #' @param tmp_dir      Text，Temporary directory for text.
-  #' @param fileEncoding Text, Fileencoding in mecab. 
-  #'                     "EUC", "CP932" (shift_jis) or "UTF-8".
-  #'
-  #' @return Tibble.       Output of MeCab.
-  #'
-  #' @seealso mecab_all()
-  #'
-  #' @examples
-  #' # not run
-  #' # data(neko)
-  #' # bin_dir <- "c:/mecab/bin"  # input your environment
-  #' # fileEncoding <- "CP932"    # input your environment
-  #' # mecab(neko, 
-  #' #       bin_dir=bin_dir, 
-  #' #       fileEncoding=fileEncoding)
-  #'
-  #' @export
+#' @rdname mecab_all
+#' @export
 mecab <- function(
     tbl,          # tbl of input text
     bin_dir,      # bin directory of mecab
@@ -98,7 +69,7 @@ mecab <- function(
   cmd <- stringr::str_c(mecab, input,  " -o ", output)
   system(cmd)
   # read result file
-  # ref. # stringi::stri_escape_unicode()
+  # (ref.) # stringi::stri_escape_unicode()
   out_cols <- c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1",
     "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3", "\u6d3b\u7528\u578b",
     "\u6d3b\u7528\u5f62", "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
@@ -111,29 +82,24 @@ mecab <- function(
   tbl
 }
 
-  #' Add id column into result of morphological analysis
-  #'
-  #' internal function for mecab_all()
-  #'
-  #' @name add_text_id
-  #'
-  #' @param tbl          Tibble or data.frame.
-  #  @param text_id      Text. Colnames for id of text.
-  #'
-  #' @return Tibble.
-  #'
-  #' @export
-add_text_id <- function(
-    tbl,
-    text_id="text_id"
-  ){
+#' Add id column into result of morphological analysis
+#'
+#' Internal function for mecab_all()
+#'
+#' @param tbl          Tibble or data.frame.
+#' @param text_id      Text. Colnames for id of text.
+#' @return Tibble.
+#' @export
+add_text_id <- function(tbl, text_id="text_id"){
   cnames <- colnames(tbl)
   if (any("text_id" %in% cnames)) stop("colnames must NOT have 'text_id'")
   tbl %>%
     dplyr::mutate(tmp =
       dplyr::case_when((dplyr::select(tbl, 1)=="EOS" & is.na(dplyr::select(tbl, 2))) ~ 1, TRUE ~ 0)
     ) %>%
-    dplyr::mutate(tmp = purrr::accumulate(tmp, magrittr::add)) %>%
-    dplyr::mutate(tmp = tmp + 1) %>%
+  #     dplyr::mutate(tmp = purrr::accumulate(tmp, magrittr::add)) %>%
+  #     dplyr::mutate(tmp = tmp + 1) %>%
+    dplyr::mutate(!!"tmp" := purrr::accumulate(!!"tmp", magrittr::add)) %>%
+    dplyr::mutate(!!"tmp" := !!"tmp" + 1) %>%
     magrittr::set_colnames(c(cnames, text_id))
 }
