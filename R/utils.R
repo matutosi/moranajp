@@ -5,4 +5,4 @@ magrittr::`%>%`
 rlang::`:=`
 
 #' @importFrom rlang .data
-rlang::`.data`
+rlang::.data
