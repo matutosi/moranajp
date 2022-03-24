@@ -20,14 +20,14 @@ moranajpは，日本語形態素解析をするためのものです．
 ## Note
 
 Line breaks in the text will be removed to avoid lag text id. 
-If you want to remain line breaks, please change them into other charactor. 
+If you want to remain line breaks, please change them into other character. 
 
 文字列内の改行コード(\r\n, \n)は，削除されます(EOSでtext_idを見分けており，改行コードでずれるのを防ぐため)．
 改行コードに意味がある場合は，事前に改行コードを別の文字列に変更するなどの対応をしてください．
 
 ## Installation
 
-You can install the released version of wameicheckr from [GitHub] ( https://github.com/ ). 
+You can install the released version of moranajp from [GitHub] ( https://github.com/ ). 
 moranajp will not be released in cran, because the main user is only Japanese speakers. 
 You need install MeCab ( https://taku910.github.io/mecab/ ). 
 

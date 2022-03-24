@@ -3,11 +3,11 @@
 ## moranajp (development version)
 
 
-## wameicheckr 0.9.1
+## moranajp 0.9.1
 
 * 改行コードの削除を追加．text_id がずれるのを防ぐため．
 
-## wameicheckr 0.9.0
+## moranajp 0.9.0
 
 * `mecal()`, `mecab_all()` ：MeCabを利用した日本語形態素解析．data.frame対応およびdata.frame内の他の列を保存
 

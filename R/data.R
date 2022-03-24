@@ -1,6 +1,6 @@
-#' The first part of 'I Am a Cat' by Soseki NATSUME
+#' The first part of 'I Am a Cat' by Soseki Natsume
 #'
-#' @format Tibble
+#' @format A tibble
 #' \describe{
 #'   \item{text}{Body text.}
 #' }

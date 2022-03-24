@@ -1,4 +1,4 @@
-#' Morphological analysis for a speciefic column in dataframe
+#' Morphological analysis for a specific column in dataframe
 #'
 #' Using MeCab in morphological analysis
 #' Keep other colnames in dataframe
@@ -6,10 +6,10 @@
 #' @param tbl          A tibble or data.frame.
 #' @param text_col     A text. Colnames for morphological analysis.
 #' @param bin_dir      A text. Directory of mecab.
-#' @param fileEncoding A text. Fileencoding in mecab. 
+#' @param fileEncoding A text. fileEncoding in mecab. 
 #'                     'EUC', 'CP932' (shift_jis) or 'UTF-8'.
 #' @param input,output A text. File path of input and output.
-#' @return Tibble. Output of MeCab.
+#' @return A tibble. Output of MeCab.
 #' @seealso mecab()
 #' @examples
 #' # not run
@@ -71,7 +71,7 @@ mecab <- function(tbl, bin_dir, fileEncoding) {
 
 #' @rdname mecab_all
 make_mecab_cmd <- function(bin_dir, input, output) {
-    mecab <- stringr::str_c(bin_dir, "mecab", " ")  # NEEDS SPACE after 'mecab' for separater
+    mecab <- stringr::str_c(bin_dir, "mecab", " ")  # NEEDS SPACE after 'mecab' as separater
     cmd <- stringr::str_c(mecab, input, " -o ", output)
     return(cmd)
 }
@@ -88,7 +88,7 @@ out_cols_mecab <- function(){
 #' Add id column into result of morphological analysis
 #'
 #' Internal function for mecab_all(). 
-#' 'EOF' means breaks of the end of a result in morphological analysis. 
+#' 'EOS' means breaks of the end of a result in morphological analysis. 
 #' add_text_id() add 1 to text_id column when there is 'EOS' & NA. 
 #' 
 #' @param tbl     A tibble or data.frame.
