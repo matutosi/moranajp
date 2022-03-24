@@ -20,12 +20,12 @@ mecab(tbl, bin_dir, tmp_dir, fileEncoding)
 
 \item{text_col}{A text. Colnames for morphological analysis.}
 
-\item{bin_dir}{A text，Directory of mecab.}
+\item{bin_dir}{A text. Directory of mecab.}
 
-\item{tmp_dir}{A text，Temporary directory for text.}
+\item{tmp_dir}{A text. Temporary directory for text.}
 
-\item{fileEncoding}{A text, Fileencoding in mecab.
-"EUC", "CP932" (shift_jis) or "UTF-8".}
+\item{fileEncoding}{A text. Fileencoding in mecab.
+'EUC', 'CP932' (shift_jis) or 'UTF-8'.}
 }
 \value{
 Tibble. Output of MeCab.
@@ -37,15 +37,15 @@ Keep other colnames in dataframe
 \examples{
 # not run
 # library(tidyverse)
-# bin_dir <- "d:/pf/mecab/bin/" # input your environment
-# fileEncoding <- "CP932"    # input your environment
+# bin_dir <- 'd:/pf/mecab/bin/' # input your environment
+# fileEncoding <- 'CP932'    # input your environment
 # data(neko)
 # neko <- 
 #   neko \%>\%
 #   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
 #   dplyr::mutate(cols=1:nrow(.))
 # mecab_all(neko, 
-#           text_col="text", 
+#           text_col='text', 
 #           bin_dir=bin_dir, 
 #           fileEncoding=fileEncoding) \%>\%
 #   print(n=100)

@@ -3,7 +3,7 @@
 \docType{data}
 \name{neko}
 \alias{neko}
-\title{The first part of "I Am a Cat" by Soseki NATSUME}
+\title{The first part of 'I Am a Cat' by Soseki NATSUME}
 \format{
 Tibble
 \describe{
@@ -14,6 +14,6 @@ Tibble
 neko
 }
 \description{
-The first part of "I Am a Cat" by Soseki NATSUME
+The first part of 'I Am a Cat' by Soseki NATSUME
 }
 \keyword{datasets}
