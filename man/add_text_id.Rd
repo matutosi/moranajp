@@ -4,12 +4,10 @@
 \alias{add_text_id}
 \title{Add id column into result of morphological analysis}
 \usage{
-add_text_id(tbl, text_id = "text_id")
+add_text_id(tbl)
 }
 \arguments{
 \item{tbl}{A tibble or data.frame.}
-
-\item{text_id}{A text. Colnames for id of text.}
 }
 \value{
 \preformatted{   A tibble.

@@ -100,12 +100,6 @@ neko
   # pathがとおっている場合は，設定不要
 bin_dir <- "/opt/local/mecab/bin/"  # set your environment
 
-  # Temporary directory
-  # No need when using the same directory to bin_dir
-  # 一時ファイルのディレクトリ
-  # bin_dirと同じディレクトリを使用する時は，設定不要
-tmp_dir <- "/tmp/"
-
   # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
   # MeCabの文字コード
 fileEncoding <- "utf-8"  # set your environment
@@ -114,7 +108,7 @@ fileEncoding <- "utf-8"  # set your environment
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
-  mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
+  mecab_all(text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
   print(n=nrow(.))
 ```
 

@@ -3,17 +3,17 @@
 \name{mecab_all}
 \alias{mecab_all}
 \alias{mecab}
+\alias{make_mecab_cmd}
+\alias{out_cols_mecab}
 \title{Morphological analysis for a speciefic column in dataframe}
 \usage{
-mecab_all(
-  tbl,
-  text_col = "text",
-  bin_dir = ".",
-  tmp_dir = NULL,
-  fileEncoding = "CP932"
-)
+mecab_all(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932")
 
-mecab(tbl, bin_dir, tmp_dir, fileEncoding)
+mecab(tbl, bin_dir, fileEncoding)
+
+make_mecab_cmd(bin_dir, input, output)
+
+out_cols_mecab()
 }
 \arguments{
 \item{tbl}{A tibble or data.frame.}
@@ -22,10 +22,10 @@ mecab(tbl, bin_dir, tmp_dir, fileEncoding)
 
 \item{bin_dir}{A text. Directory of mecab.}
 
-\item{tmp_dir}{A text. Temporary directory for text.}
-
 \item{fileEncoding}{A text. Fileencoding in mecab.
 'EUC', 'CP932' (shift_jis) or 'UTF-8'.}
+
+\item{input, output}{A text. File path of input and output.}
 }
 \value{
 Tibble. Output of MeCab.
@@ -37,8 +37,8 @@ Keep other colnames in dataframe
 \examples{
 # not run
 # library(tidyverse)
-# bin_dir <- 'd:/pf/mecab/bin/' # input your environment
-# fileEncoding <- 'CP932'    # input your environment
+# bin_dir <- 'd:/pf/mecab/bin/'  # input your environment
+# fileEncoding <- 'CP932'        # input your environment
 # data(neko)
 # neko <- 
 #   neko \%>\%
