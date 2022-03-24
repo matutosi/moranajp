@@ -35,8 +35,9 @@ Using MeCab in morphological analysis
 Keep other colnames in dataframe
 }
 \examples{
+# not run
+# library(tidyverse)
 # bin_dir <- "c:/mecab/bin/" # input your environment
-# bin_dir <- "d:/fp/mecab/bin/" # input your environment
 # fileEncoding <- "CP932"    # input your environment
 # data(neko)
 # neko <- 

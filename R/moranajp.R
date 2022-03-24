@@ -25,7 +25,7 @@
 #' #           text_col="text", 
 #' #           bin_dir=bin_dir, 
 #' #           fileEncoding=fileEncoding) %>%
-#' #   print(n=nrow(.))
+#' #   print(n=300)
 #' @export
 mecab_all <- function(
     tbl,
