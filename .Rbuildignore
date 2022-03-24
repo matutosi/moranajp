@@ -1,3 +1,6 @@
 ^moranajp\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^README.*\.R*md$
+^README.*\.html$
+^zip$
