@@ -3,5 +3,6 @@
 ^LICENSE\.md$
 ^README.*\.R*md$
 ^README.*\.html$
+^.Rhistory$
 ^zip$
 ^data-raw$
