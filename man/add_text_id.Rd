@@ -4,16 +4,17 @@
 \alias{add_text_id}
 \title{Add id column into result of morphological analysis}
 \usage{
-add_text_id(tbl, text_id = "text_id")
+add_text_id(tbl, id = "text_id")
 }
 \arguments{
-\item{tbl}{Tibble or data.frame.}
+\item{tbl}{A tibble or data.frame.}
 
-\item{text_id}{Text. Colnames for id of text.}
+\item{id}{A text. Colnames for id of text.}
 }
 \value{
-Tibble.
+A tibble.
 }
 \description{
-Internal function for mecab_all()
+Internal function for mecab_all().
+"EOF" means breaks of the end of a result in morphological analysis.
 }
