@@ -16,15 +16,15 @@ mecab_all(
 mecab(tbl, bin_dir, tmp_dir, fileEncoding)
 }
 \arguments{
-\item{tbl}{Tibble or data.frame.}
+\item{tbl}{A tibble or data.frame.}
 
-\item{text_col}{Text. Colnames for morphological analysis.}
+\item{text_col}{A text. Colnames for morphological analysis.}
 
-\item{bin_dir}{Text，Directory of mecab.}
+\item{bin_dir}{A text，Directory of mecab.}
 
-\item{tmp_dir}{Text，Temporary directory for text.}
+\item{tmp_dir}{A text，Temporary directory for text.}
 
-\item{fileEncoding}{Text, Fileencoding in mecab.
+\item{fileEncoding}{A text, Fileencoding in mecab.
 "EUC", "CP932" (shift_jis) or "UTF-8".}
 }
 \value{
@@ -35,12 +35,14 @@ Using MeCab in morphological analysis
 Keep other colnames in dataframe
 }
 \examples{
-# not run
-# data(neko)
 # bin_dir <- "c:/mecab/bin/" # input your environment
+# bin_dir <- "d:/fp/mecab/bin/" # input your environment
 # fileEncoding <- "CP932"    # input your environment
-# neko \%>\%
-#   tibble::tibble(text=., cols=rep(1:2, each=2))
+# data(neko)
+# neko <- 
+#   neko \%>\%
+#   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
+#   dplyr::mutate(cols=1:nrow(.))
 # mecab_all(neko, 
 #           text_col="text", 
 #           bin_dir=bin_dir, 

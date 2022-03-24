@@ -3,21 +3,24 @@
 #' Using MeCab in morphological analysis
 #' Keep other colnames in dataframe
 #'
-#' @param tbl          Tibble or data.frame.
-#' @param text_col     Text. Colnames for morphological analysis.
-#' @param bin_dir      Text，Directory of mecab.
-#' @param tmp_dir      Text，Temporary directory for text.
-#' @param fileEncoding Text, Fileencoding in mecab. 
+#' @param tbl          A tibble or data.frame.
+#' @param text_col     A text. Colnames for morphological analysis.
+#' @param bin_dir      A text，Directory of mecab.
+#' @param tmp_dir      A text，Temporary directory for text.
+#' @param fileEncoding A text, Fileencoding in mecab. 
 #'                     "EUC", "CP932" (shift_jis) or "UTF-8".
 #' @return Tibble. Output of MeCab.
 #' @seealso mecab()
 #' @examples
 #' # not run
-#' # data(neko)
+#' # library(tidyverse)
 #' # bin_dir <- "c:/mecab/bin/" # input your environment
 #' # fileEncoding <- "CP932"    # input your environment
-#' # neko %>%
-#' #   tibble::tibble(text=., cols=rep(1:2, each=2))
+#' # data(neko)
+#' # neko <- 
+#' #   neko %>%
+#' #   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
+#' #   dplyr::mutate(cols=1:nrow(.))
 #' # mecab_all(neko, 
 #' #           text_col="text", 
 #' #           bin_dir=bin_dir, 
@@ -31,8 +34,7 @@ mecab_all <- function(
     tmp_dir = NULL,
     fileEncoding = "CP932"
   ){
-
-  tbl <- tbl %>% dplyr::mutate(text_id=1:nrow(tbl))
+  tbl <- dplyr::mutate(tbl, text_id=1:nrow(tbl))
   others <- dplyr::select(tbl, !dplyr::all_of(text_col))
   if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\r\\n")) message("Removed line breaks !")
   if(stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse=FALSE), "\\n"))    message("Removed line breaks !")
@@ -46,7 +48,7 @@ mecab_all <- function(
     mecab(bin_dir, tmp_dir, fileEncoding) %>%
     add_text_id() %>%
     dplyr::left_join(others, by="text_id")
-  dplyr::slice(-nrow(tbl))
+  return(dplyr::slice(tbl, -nrow(tbl)))
 }
 
 #' @rdname mecab_all
@@ -62,14 +64,14 @@ mecab <- function(
   mecab <- stringr::str_c(bin_dir, "mecab", " ")     # NEEDS SPACE after "mecab" for separater
   input <- stringr::str_c(tmp_dir, "input.txt")
   output <- stringr::str_c(tmp_dir, "output.txt")
-  # write file for morphological analysis
-    # (maybe) can not set file encoding in write_tsv()
+    # write file for morphological analysis
+    #   (maybe) can not set file encoding in write_tsv()
   utils::write.table(tbl, input, quote=FALSE, col.names=FALSE, row.names=FALSE, fileEncoding=fileEncoding)
-  # run command
+    # run command in a terminal
   cmd <- stringr::str_c(mecab, input,  " -o ", output)
   system(cmd)
-  # read result file
-  # (ref.) # stringi::stri_escape_unicode()
+    # read result file
+    # # ref: stringi::stri_escape_unicode(), stringi::stri_unescape_unicode()
   out_cols <- c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1",
     "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3", "\u6d3b\u7528\u578b",
     "\u6d3b\u7528\u5f62", "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
@@ -79,27 +81,31 @@ mecab <- function(
     tidyr::separate(1, sep="\t|,", into=letters[1:10], fill="right", extra="drop") %>%
     magrittr::set_colnames(out_cols)
   unlink(c(input, output))   # delete temporary file
-  tbl
+  return(tbl)
 }
 
 #' Add id column into result of morphological analysis
 #'
-#' Internal function for mecab_all()
-#'
-#' @param tbl          Tibble or data.frame.
-#' @param text_id      Text. Colnames for id of text.
-#' @return Tibble.
+#' Internal function for mecab_all(). 
+#' "EOF" means breaks of the end of a result in morphological analysis. 
+#' add_text_id() add 1 to text_id column when there is "EOS" & NA. 
+#' 
+#' @param tbl     A tibble or data.frame.
+#' @param text_id A text. Colnames for id of text.
+#' @return        A tibble.
 #' @export
 add_text_id <- function(tbl, text_id="text_id"){
+  # tbl <- tibble::tibble(text = c("a", sample(c("a", "b", "EOS"), 19, replace=TRUE)), some=NA)
   cnames <- colnames(tbl)
-  if (any("text_id" %in% cnames)) stop("colnames must NOT have 'text_id'")
-  tbl %>%
-    dplyr::mutate(tmp =
+  if (any("text_id" %in% cnames)) stop("colnames must NOT have a colname 'text_id'")
+  tbl <- 
+    tbl %>%
+    dplyr::mutate(!!"tmp" := 
       dplyr::case_when((dplyr::select(tbl, 1)=="EOS" & is.na(dplyr::select(tbl, 2))) ~ 1, TRUE ~ 0)
     ) %>%
-  #     dplyr::mutate(tmp = purrr::accumulate(tmp, magrittr::add)) %>%
-  #     dplyr::mutate(tmp = tmp + 1) %>%
-    dplyr::mutate(!!"tmp" := purrr::accumulate(!!"tmp", magrittr::add)) %>%
-    dplyr::mutate(!!"tmp" := !!"tmp" + 1) %>%
+    dplyr::mutate(!!"tmp" := purrr::accumulate(.data[["tmp"]], magrittr::add)) %>%
+    dplyr::mutate(!!"tmp" := .data[["tmp"]] + 1) %>%
     magrittr::set_colnames(c(cnames, text_id))
+  return(tbl)
 }
+
