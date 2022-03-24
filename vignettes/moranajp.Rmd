@@ -18,19 +18,8 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(moranajp)
-library(rvest)
-library(tidyverse)
 ```
 
 ```{r import_data, setup}
-neko <- 
-  rvest::read_html("https://www.konekono-heya.com/books/wagahai1.html") %>%
-  rvest::html_element("body") %>% 
-  rvest::html_text2() %>%
-  stringr::str_split("\\r|\\n") %>%
-  .[[1]] %>%
-  .[13:length(.)] %>%
-  tibble::tibble(text=.) %>%
-  dplyr::filter(text!="")
-neko
+
 ```

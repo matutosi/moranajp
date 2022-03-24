@@ -4,3 +4,4 @@
 ^README.*\.R*md$
 ^README.*\.html$
 ^zip$
+^data-raw$
