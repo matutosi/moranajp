@@ -32,10 +32,12 @@ moranajp_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "C
     if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
         message("Removed line breaks !")
       # remove line breaks
-    tbl <- tbl %>%
+    tbl <- 
+        tbl %>%
         dplyr::mutate(`:=`(!!text_col, stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
         dplyr::mutate(`:=`(!!text_col, stringr::str_replace_all(.data[[text_col]], "\\n", "")))
-    tbl <- tbl %>%
+    tbl <- 
+        tbl %>%
         dplyr::select(dplyr::all_of(text_col)) %>%
         moranajp(bin_dir, fileEncoding) %>%
         add_text_id() %>%
@@ -58,7 +60,8 @@ moranajp <- function(tbl, bin_dir, fileEncoding) {
     system(cmd)
       # read a result file
     out_cols <- out_cols_mecab()
-    tbl <- readLines(con = file(output, encoding = fileEncoding)) %>%
+    tbl <- 
+        readLines(con = file(output, encoding = fileEncoding)) %>%
         tibble::tibble() %>%
         tidyr::separate(1, sep = "\t|,", into = letters[1:length(out_cols)], fill = "right", extra = "drop") %>%
         magrittr::set_colnames(out_cols)
@@ -96,7 +99,8 @@ add_text_id <- function(tbl) {
     cnames <- colnames(tbl)
     if (any(text_id %in% cnames))
         stop("colnames must NOT have a colname 'text_id'")
-    tbl <- tbl %>%
+    tbl <- 
+        tbl %>%
         dplyr::mutate(`:=`(!!text_id, 
             dplyr::case_when(
                 (dplyr::select(tbl, 1) == "EOS" & is.na(dplyr::select(tbl, 2))) ~ 1, 
@@ -105,6 +109,7 @@ add_text_id <- function(tbl) {
         )) %>%
         dplyr::mutate(`:=`(!!text_id, purrr::accumulate(.data[[text_id]], magrittr::add))) %>%
         dplyr::mutate(`:=`(!!text_id, .data[[text_id]] + 1)) %>%
+        dplyr::filter(! (dplyr::select(tbl, 1) == "EOS" & is.na(dplyr::select(tbl, 2))))
     return(tbl)
 }
 
