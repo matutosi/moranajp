@@ -1,16 +1,23 @@
-# 更新履歴
+# moranajp release news
 
-## moranajp (development version)
+# moranajp 0.9.3
 
+* 
 
-## moranajp 0.9.1
+# moranajp 0.9.2
 
-* 改行コードの削除を追加．text_id がずれるのを防ぐため．
+* bug fix
 
-## moranajp 0.9.0
+# moranajp 0.9.1
 
-* `mecal()`, `mecab_all()` ：MeCabを利用した日本語形態素解析．data.frame対応およびdata.frame内の他の列を保存
+* code of line breaks will be removed to avoid declination. 
 
-* `add_text_id()` ：下請け関数．
+#  moranajp 0.9.0
 
-* `neko`：『吾輩は猫である』(夏目 漱石)の冒頭部分．
+* First release
+
+* `mecab()`, `mecab_all()` : main functions for morphological analysis using 'MeCab'. Can use data.frame. 
+
+* `add_text_id()`: internal function. 
+
+* `neko`: The first part of 'I Am a Cat' by Soseki Natsume

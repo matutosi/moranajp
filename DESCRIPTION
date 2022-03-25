@@ -1,31 +1,33 @@
 Package: moranajp
-Title: Morphological analysis for Japanese
+Title: Morphological Analysis for Japanese
 Version: 0.9.3
-Authors@R: person("Toshikazu", "Matsumura", role = c("aut", "cre"), email = "matutosi@gmail.com")
-Description: Morphological analysis for Japanese by using MeCab. 
-Vignettes: https://github.com/matutosi/moranajp/blob/main/vignettes/moranajp.md
+Authors@R: 
+    person("Toshikazu", "Matsumura", , "matutosi@gmail.com", role = c("aut", "cre"))
+Description: Supports morphological analysis for Japanese by using 'MeCab'. 
+    Can input data.frame and obtain all results of 'MeCab' and row number of 
+    original data.frame as a text id. 
 License: MIT + file LICENSE
-Imports: 
-    dplyr,
-    knitr,
-    magrittr,
-    purrr,
-    readr,
-    rlang,
-    rmarkdown,
-    stringi,
-    stringr,
-    tibble,
-    tidyr
-Suggests:
-    rvest,
-    testthat (>= 3.0.0),
-    tidyverse
-VignetteBuilder: knitr
-RoxygenNote: 7.1.2
-Roxygen: list(markdown = TRUE)
 Depends: 
     R (>= 3.5.0)
+Imports: 
+    dplyr,
+    magrittr,
+    purrr,
+    rlang,
+    stringr,
+    tibble,
+    tidyr,
+    utils
+Suggests:
+    knitr,
+    rmarkdown,
+    stringi,
+    testthat (>= 3.0.0),
+    tidyverse
+VignetteBuilder: 
+    knitr
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
-Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2

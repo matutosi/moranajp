@@ -24,13 +24,22 @@ library(moranajp)
 ```{r }
 bin_dir <- "d:/pf/mecab/bin/" # input your environment 
 fileEncoding <- "CP932"       # input your environment
+library(tidyverse)
 
 data(neko)
 neko <- 
   neko %>%
   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
   dplyr::mutate(cols=1:nrow(.))
+head(neko)
 
-moranajp_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
-  print(n=100)
+n_match <- 
+  list.files(bin_dir) %>%
+  stringr::str_count("mecab.exe") %>%
+  sum()
+
+if(n_match > 0){
+  moranajp_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
+    print(n=100)
+}
 ```
