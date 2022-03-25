@@ -7,17 +7,16 @@ test_that("add_text_id works", {
 })
 
 test_that("text_id of moranajp matches text number", {
-    bin_dir <- "d:/pf/mecab/bin/"
+    bin_dir <- c("d:/pf/mecab/bin/", "/opt/local/mecab/bin/")
+    bin_dir <- bin_dir[file.exists(stringr::str_sub(bin_dir, end=-2))]
     fileEncoding <- "CP932"
-    n_match <- 
-        list.files(bin_dir) %>%
-        stringr::str_count("mecab.exe") %>%
-        sum()
-        skip_if(n_match == 0)
-    res <- 
-        neko %>%
-        dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
-        dplyr::mutate(cols=1:nrow(.)) %>%
-        moranajp_all(text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding)
-  expect_equal(res$cols, res$text_id)
+    if(length(bin_dir) == 1){
+      res <- n
+          neko %>%
+          dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
+          dplyr::mutate(cols=1:nrow(.)) %>%
+          moranajp_all(text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding)
+    }
+    skip_if(length(bin_dir) != 1)
+    expect_equal(res$cols, res$text_id)
 })
