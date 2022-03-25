@@ -26,6 +26,7 @@ bin_dir <- "d:/pf/mecab/bin/" # input your environment
 fileEncoding <- "CP932"       # input your environment
 library(tidyverse)
 
+
 data(neko)
 neko <- 
   neko %>%
@@ -35,7 +36,7 @@ head(neko)
 
 n_match <- 
   list.files(bin_dir) %>%
-  stringr::str_count("mecab.exe") %>%
+  stringr::str_count("mecab") %>%
   sum()
 
 if(n_match > 0){
