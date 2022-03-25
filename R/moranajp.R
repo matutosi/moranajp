@@ -11,17 +11,18 @@
 #' @param input,output A text. File path of input and output.
 #' @return A tibble.   Output of MeCab and added column "text_id".
 #' @examples
-#' # not run
-#' # library(tidyverse)
-#' # bin_dir <- "d:/pf/mecab/bin/"  # input your environment
-#' # fileEncoding <- "CP932"        # input your environment
-#' # data(neko)
-#' # neko <- 
-#' #   neko %>%
-#' #   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
-#' #   dplyr::mutate(cols=1:nrow(.))
-#' # moranajp_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
-#' #   print(n=100)
+#' \dontrun{
+#' library(tidyverse)
+#' bin_dir <- "d:/pf/mecab/bin/"  # input your environment
+#' fileEncoding <- "CP932"        # input your environment
+#' data(neko)
+#' neko <- 
+#'     neko %>%
+#'     dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
+#'     dplyr::mutate(cols=1:nrow(.))
+#' moranajp_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
+#'     print(n=100)
+#' }
 #' @export
 moranajp_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932") {
     tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
