@@ -62,7 +62,7 @@ moranajp <- function(tbl, bin_dir, fileEncoding) {
         tibble::tibble() %>%
         tidyr::separate(1, sep = "\t|,", into = letters[1:length(out_cols)], fill = "right", extra = "drop") %>%
         magrittr::set_colnames(out_cols)
-    unlink(c(input, output))  # delete temporary file
+    file.remove(c(input, output))  # delete temporary file
     return(tbl)
 }
 
