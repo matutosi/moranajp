@@ -3,28 +3,30 @@
 #' Using 'MeCab' for morphological analysis.
 #' Keep other colnames in dataframe.
 #'
-#' @param tbl          A tibble or data.frame.
-#' @param text_col     A text. Colnames for morphological analysis.
-#' @param bin_dir      A text. Directory of 'MeCab'.
-#' @param fileEncoding A text. fileEncoding in 'MeCab'. 
-#'                     "EUC", "CP932" (shift_jis) or "UTF-8".
-#' @param input,output A text. File path of input and output.
+#' @param tbl              A tibble or data.frame.
+#' @param text_col         A text. Colnames for morphological analysis.
+#' @param bin_dir,tmp_dir  A text. Directory of 'MeCab' and temporal use.
+#' @param fileEncoding     A text. fileEncoding in 'MeCab'. 
+#'                         "EUC", "CP932" (shift_jis) or "UTF-8".
+#' @param input,output     A text. File path of input and output.
 #' @return A tibble.   Output of 'MeCab' and added column "text_id".
 #' @examples
 #' \dontrun{
 #' library(tidyverse)
 #' bin_dir <- "d:/pf/mecab/bin/"  # input your environment
+#' tmp_dir <- "d:/"               # input your environment
 #' fileEncoding <- "CP932"        # input your environment
 #' data(neko)
 #' neko <- 
 #'     neko %>%
 #'     dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
 #'     dplyr::mutate(cols=1:nrow(.))
-#' moranajp_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
+#' moranajp_all(neko, text_col = "text", 
+#'        bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) %>%
 #'     print(n=100)
 #' }
 #' @export
-moranajp_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932") {
+moranajp_all <- function(tbl, text_col = "text", bin_dir = "", tmp_dir = bin_dir, fileEncoding = "CP932") {
     tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
@@ -39,7 +41,7 @@ moranajp_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "C
     tbl <- 
         tbl %>%
         dplyr::select(dplyr::all_of(text_col)) %>%
-        moranajp(bin_dir, fileEncoding) %>%
+        moranajp(bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) %>%
         add_text_id() %>%
         dplyr::left_join(others, by = "text_id") %>%
         dplyr::relocate(.data[["text_id"]], colnames(others))
@@ -48,10 +50,10 @@ moranajp_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "C
 
 #' @rdname moranajp_all
 #' @export
-moranajp <- function(tbl, bin_dir, fileEncoding) {
+moranajp <- function(tbl, bin_dir, tmp_dir, fileEncoding) {
       # set file names and command
-    input  <- stringr::str_c(bin_dir, "input.txt")
-    output <- stringr::str_c(bin_dir, "output.txt")
+    input  <- stringr::str_c(tmp_dir, "input.txt")
+    output <- stringr::str_c(tmp_dir, "output.txt")
       # write file for morphological analysis
       #     (maybe) can not set file encoding in write_tsv()
     utils::write.table(tbl, input, quote = FALSE, col.names = FALSE, row.names = FALSE, fileEncoding = fileEncoding)
@@ -115,15 +117,15 @@ add_text_id <- function(tbl) {
 
 #' @rdname moranajp_all
 #' @export
-mecab_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932") {
+mecab_all <- function(tbl, text_col = "text", bin_dir = "", tmp_dir = bin_dir, fileEncoding = "CP932") {
   message("'mecab_all()' will be removed in version 1.0.0.")
   .Deprecated("moranajp_all")
   moranajp_all(tbl=tbl, text_col = text_col, bin_dir = bin_dir, fileEncoding = fileEncoding)
 }
 #' @rdname moranajp_all
 #' @export
-mecab <- function(tbl, bin_dir, fileEncoding) {
+mecab <- function(tbl, bin_dir, tmp_dir, fileEncoding) {
   message("'mecab()' will be removed in version 1.0.0.")
   .Deprecated("moranajp")
-  moranajp(tbl = tbl, bin_dir = bin_dir, fileEncoding = fileEncoding)
+  moranajp(tbl = tbl, bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding)
 }
