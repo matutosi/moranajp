@@ -15,6 +15,6 @@ add_text_id(tbl)
 }
 \description{
 Internal function for mecab_all().
-'EOF' means breaks of the end of a result in morphological analysis.
-add_text_id() add 1 to text_id column when there is 'EOS' & NA.
+'EOS' means breaks of the end of a result in morphological analysis.
+add_text_id() add 1 to \code{text_id} column when there is 'EOS' & NA.
 }

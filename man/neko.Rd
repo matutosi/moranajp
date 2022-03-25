@@ -3,9 +3,9 @@
 \docType{data}
 \name{neko}
 \alias{neko}
-\title{The first part of 'I Am a Cat' by Soseki NATSUME}
+\title{The first part of 'I Am a Cat' by Soseki Natsume}
 \format{
-Tibble
+A tibble
 \describe{
 \item{text}{Body text.}
 }
@@ -14,6 +14,6 @@ Tibble
 neko
 }
 \description{
-The first part of 'I Am a Cat' by Soseki NATSUME
+The first part of 'I Am a Cat' by Soseki Natsume
 }
 \keyword{datasets}

@@ -2,6 +2,8 @@
 
 export(mecab)
 export(mecab_all)
+export(moranajp)
+export(moranajp_all)
 importFrom(magrittr,"%>%")
 importFrom(rlang,":=")
 importFrom(rlang,.data)

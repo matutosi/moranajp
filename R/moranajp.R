@@ -1,34 +1,31 @@
 #' Morphological analysis for a specific column in dataframe
 #'
-#' Using MeCab in morphological analysis
-#' Keep other colnames in dataframe
+#' Using MeCab for morphological analysis.
+#' Keep other colnames in dataframe.
 #'
 #' @param tbl          A tibble or data.frame.
 #' @param text_col     A text. Colnames for morphological analysis.
 #' @param bin_dir      A text. Directory of mecab.
 #' @param fileEncoding A text. fileEncoding in mecab. 
-#'                     'EUC', 'CP932' (shift_jis) or 'UTF-8'.
+#'                     "EUC", "CP932" (shift_jis) or "UTF-8".
 #' @param input,output A text. File path of input and output.
-#' @return A tibble. Output of MeCab.
+#' @return A tibble.   Output of MeCab and added column "text_id".
 #' @seealso mecab()
 #' @examples
 #' # not run
 #' # library(tidyverse)
-#' # bin_dir <- 'd:/pf/mecab/bin/'  # input your environment
-#' # fileEncoding <- 'CP932'        # input your environment
+#' # bin_dir <- "d:/pf/mecab/bin/"  # input your environment
+#' # fileEncoding <- "CP932"        # input your environment
 #' # data(neko)
 #' # neko <- 
 #' #   neko %>%
 #' #   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
 #' #   dplyr::mutate(cols=1:nrow(.))
-#' # mecab_all(neko, 
-#' #           text_col='text', 
-#' #           bin_dir=bin_dir, 
-#' #           fileEncoding=fileEncoding) %>%
+#' # mecab_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
 #' #   print(n=100)
 #' @export
-mecab_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932") {
-    tbl <- dplyr::mutate(tbl, text_id = 1:nrow(tbl))
+moranajp_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932") {
+    tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
         message("Removed line breaks !")
@@ -40,16 +37,16 @@ mecab_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP93
         dplyr::mutate(`:=`(!!text_col, stringr::str_replace_all(.data[[text_col]], "\\n", "")))
     tbl <- tbl %>%
         dplyr::select(dplyr::all_of(text_col)) %>%
-        mecab(bin_dir, fileEncoding) %>%
+        moranajp(bin_dir, fileEncoding) %>%
         add_text_id() %>%
         dplyr::left_join(others, by = "text_id") %>%
         dplyr::relocate(.data[["text_id"]], colnames(others))
     return(dplyr::slice(tbl, -nrow(tbl)))
 }
 
-#' @rdname mecab_all
+#' @rdname moranajp_all
 #' @export
-mecab <- function(tbl, bin_dir, fileEncoding) {
+moranajp <- function(tbl, bin_dir, fileEncoding) {
       # set file names and command
     input  <- stringr::str_c(bin_dir, "input.txt")
     output <- stringr::str_c(bin_dir, "output.txt")
@@ -57,7 +54,7 @@ mecab <- function(tbl, bin_dir, fileEncoding) {
       #     (maybe) can not set file encoding in write_tsv()
     utils::write.table(tbl, input, quote = FALSE, col.names = FALSE, row.names = FALSE, fileEncoding = fileEncoding)
       # run command in a terminal
-    cmd <- make_mecab_cmd(bin_dir, input, output)
+    cmd <- make_cmd_mecab(bin_dir, input, output)
     system(cmd)
       # read a result file
     out_cols <- out_cols_mecab()
@@ -69,14 +66,15 @@ mecab <- function(tbl, bin_dir, fileEncoding) {
     return(tbl)
 }
 
-#' @rdname mecab_all
-make_mecab_cmd <- function(bin_dir, input, output) {
-    mecab <- stringr::str_c(bin_dir, "mecab", " ")  # NEEDS SPACE after 'mecab' as separater
-    cmd <- stringr::str_c(mecab, input, " -o ", output)
+#' @rdname moranajp_all
+make_cmd_mecab <- function(bin_dir, input, output) {
+    mecab <- stringr::str_c(bin_dir, "mecab") 
+        # NEEDS SPACE after 'mecab' as separater
+    cmd <- stringr::str_c(mecab,  " ", input, " -o ", output)
     return(cmd)
 }
 
-#' @rdname mecab_all
+#' @rdname moranajp_all
 out_cols_mecab <- function(){
     # ref: stringi::stri_escape_unicode(), stringi::stri_unescape_unicode()
     c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1",
@@ -89,7 +87,7 @@ out_cols_mecab <- function(){
 #'
 #' Internal function for mecab_all(). 
 #' 'EOS' means breaks of the end of a result in morphological analysis. 
-#' add_text_id() add 1 to text_id column when there is 'EOS' & NA. 
+#' add_text_id() add 1 to `text_id` column when there is 'EOS' & NA. 
 #' 
 #' @param tbl     A tibble or data.frame.
 #' @return        A tibble.
@@ -107,6 +105,20 @@ add_text_id <- function(tbl) {
         )) %>%
         dplyr::mutate(`:=`(!!text_id, purrr::accumulate(.data[[text_id]], magrittr::add))) %>%
         dplyr::mutate(`:=`(!!text_id, .data[[text_id]] + 1)) %>%
-  #         magrittr::set_colnames(c(cnames, text_id))
     return(tbl)
+}
+
+#' @rdname moranajp_all
+#' @export
+mecab_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932") {
+  message("'mecab_all()' will be removed in version 1.0.0.")
+  .Deprecated("moranajp_all")
+  moranajp_all(tbl=tbl, text_col = text_col, bin_dir = bin_dir, fileEncoding = fileEncoding)
+}
+#' @rdname moranajp_all
+#' @export
+mecab <- function(tbl, bin_dir, fileEncoding) {
+  message("'mecab()' will be removed in version 1.0.0.")
+  .Deprecated("moranajp")
+  moranajp(tbl = tbl, bin_dir = bin_dir, fileEncoding = fileEncoding)
 }
