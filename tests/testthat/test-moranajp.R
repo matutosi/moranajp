@@ -11,7 +11,7 @@ test_that("text_id of moranajp matches text number", {
     bin_dir <- bin_dir[file.exists(stringr::str_sub(bin_dir, end=-2))]
     fileEncoding <- "CP932"
     if(length(bin_dir) == 1){
-      res <- n
+      res <- 
           neko %>%
           dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
           dplyr::mutate(cols=1:nrow(.)) %>%
