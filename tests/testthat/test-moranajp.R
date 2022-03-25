@@ -9,7 +9,7 @@ test_that("add_text_id works", {
 test_that("text_id of moranajp matches text number", {
     bin_dir <- c("d:/pf/mecab/bin/", "/opt/local/mecab/bin/")
     bin_dir <- bin_dir[file.exists(stringr::str_sub(bin_dir, end=-2))]
-    fileEncoding <- "CP932"
+    fileEncoding <- if(Sys.info()[1] =="Windows") "CP932" else "UTF-8"
     if(length(bin_dir) == 1){
       res <- 
           neko %>%
