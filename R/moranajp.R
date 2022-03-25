@@ -10,7 +10,6 @@
 #'                     "EUC", "CP932" (shift_jis) or "UTF-8".
 #' @param input,output A text. File path of input and output.
 #' @return A tibble.   Output of MeCab and added column "text_id".
-#' @seealso mecab()
 #' @examples
 #' # not run
 #' # library(tidyverse)
@@ -21,7 +20,7 @@
 #' #   neko %>%
 #' #   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
 #' #   dplyr::mutate(cols=1:nrow(.))
-#' # mecab_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
+#' # moranajp_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
 #' #   print(n=100)
 #' @export
 moranajp_all <- function(tbl, text_col = "text", bin_dir = "", fileEncoding = "CP932") {
@@ -85,7 +84,7 @@ out_cols_mecab <- function(){
 
 #' Add id column into result of morphological analysis
 #'
-#' Internal function for mecab_all(). 
+#' Internal function for moranajp_all(). 
 #' 'EOS' means breaks of the end of a result in morphological analysis. 
 #' add_text_id() add 1 to `text_id` column when there is 'EOS' & NA. 
 #' 

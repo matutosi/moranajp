@@ -50,9 +50,6 @@ Keep other colnames in dataframe.
 #   neko \%>\%
 #   dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
 #   dplyr::mutate(cols=1:nrow(.))
-# mecab_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) \%>\%
+# moranajp_all(neko, text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) \%>\%
 #   print(n=100)
-}
-\seealso{
-mecab()
 }
