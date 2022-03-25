@@ -1,15 +1,15 @@
 #' Morphological analysis for a specific column in dataframe
 #'
-#' Using MeCab for morphological analysis.
+#' Using 'MeCab' for morphological analysis.
 #' Keep other colnames in dataframe.
 #'
 #' @param tbl          A tibble or data.frame.
 #' @param text_col     A text. Colnames for morphological analysis.
-#' @param bin_dir      A text. Directory of mecab.
-#' @param fileEncoding A text. fileEncoding in mecab. 
+#' @param bin_dir      A text. Directory of 'MeCab'.
+#' @param fileEncoding A text. fileEncoding in 'MeCab'. 
 #'                     "EUC", "CP932" (shift_jis) or "UTF-8".
 #' @param input,output A text. File path of input and output.
-#' @return A tibble.   Output of MeCab and added column "text_id".
+#' @return A tibble.   Output of 'MeCab' and added column "text_id".
 #' @examples
 #' \dontrun{
 #' library(tidyverse)

@@ -2,3 +2,5 @@
 .Rhistory
 tools/
 inst/doc
+revdep/
+.DS_store

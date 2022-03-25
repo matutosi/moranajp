@@ -6,3 +6,6 @@
 ^.Rhistory$
 ^zip$
 ^data-raw$
+^revdep$
+^\.travis\.yml$
+^\.github$
