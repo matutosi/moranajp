@@ -1,8 +1,8 @@
 ^moranajp\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-^README.*\.R*md$
-^README.*\.html$
+^READMEjp\.R*md$
+^READMEjp\.html$
 ^.Rhistory$
 ^zip$
 ^data-raw$
