@@ -5,7 +5,7 @@
 \alias{add_text_id}
 \title{Add series no col according to match condition.}
 \usage{
-add_series_no(tbl, cond = "", new_col = "series_no")
+add_series_no(tbl, cond = "", end_sep = TRUE, new_col = "series_no")
 
 add_text_id(tbl)
 }
@@ -13,6 +13,8 @@ add_text_id(tbl)
 \item{tbl}{A tibble or data.frame.}
 
 \item{cond}{Condition to split series no.}
+
+\item{end_sep}{A logical. TRUE: condition indicate the end of separation.}
 
 \item{new_col}{A string name of new column.}
 }
