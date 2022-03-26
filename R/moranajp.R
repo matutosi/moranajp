@@ -88,6 +88,25 @@ out_cols_mecab <- function(){
       "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
 }
 
+#' Add series no col according to match condition. 
+#'
+#' @param tbl     A tibble or data.frame.
+#' @param cond    Condition to split series no.
+#' @param new_col A string name of new column.
+#' @return        A tibble, which include new_col as series no. 
+add_series_no <- function(tbl, cond = "", new_col = "series_no") {
+    cnames <- colnames(tbl)
+    if (any(new_col %in% cnames))
+        stop("colnames must NOT have a colname", new_col)
+    tbl <- 
+        tbl %>%
+        dplyr::mutate(`:=`(!!new_col, dplyr::case_when(eval(str2expression(cond)) ~ 1, TRUE ~ 0))) %>%
+        dplyr::mutate(`:=`(!!new_col, purrr::accumulate(.data[[new_col]], magrittr::add))) %>%
+        dplyr::mutate(`:=`(!!new_col, .data[[new_col]] + 1)) %>%
+        dplyr::mutate(`:=`(!!new_col, dplyr::lag(.data[[new_col]], default=1)))
+    return(tbl)
+}
+
 #' Add id column into result of morphological analysis
 #'
 #' Internal function for moranajp_all(). 
@@ -95,7 +114,8 @@ out_cols_mecab <- function(){
 #' add_text_id() add 1 to `text_id` column when there is 'EOS' & NA. 
 #' 
 #' @param tbl     A tibble or data.frame.
-#' @return        A tibble.
+#' @rdname   add_series_no
+#' @return   A tibble.
 add_text_id <- function(tbl) {
     text_id <- "text_id"
     cnames <- colnames(tbl)
@@ -111,7 +131,8 @@ add_text_id <- function(tbl) {
         )) %>%
         dplyr::mutate(`:=`(!!text_id, purrr::accumulate(.data[[text_id]], magrittr::add))) %>%
         dplyr::mutate(`:=`(!!text_id, .data[[text_id]] + 1)) %>%
-        dplyr::filter(! (dplyr::select(tbl, 1) == "EOS" & is.na(dplyr::select(tbl, 2))))
+        dplyr::mutate(`:=`(!!text_id, dplyr::lag(.data[[text_id]], default=1)))
+  #         dplyr::filter(! (dplyr::select(tbl, 1) == "EOS" & is.na(dplyr::select(tbl, 2))))
     return(tbl)
 }
 
