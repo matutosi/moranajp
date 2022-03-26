@@ -94,6 +94,14 @@ out_cols_mecab <- function(){
 #' @param cond    Condition to split series no.
 #' @param new_col A string name of new column.
 #' @param end_sep A logical. TRUE: condition indicate the end of separation. 
+#' @examples
+#' tbl <- tibble::tibble(col=c(rep("a", 2), "EOS", rep("b", 3), "EOS", rep("c", 4), "EOS"))
+#' cond <- ".$col == 'EOS'"
+#'   # when separator indicate the end
+#' add_series_no(tbl, cond = cond, end_sep = TRUE,  new_col = "series_no")
+#'   # when separator indicate the begining
+#' add_series_no(tbl, cond = cond, end_sep = FALSE, new_col = "series_no")
+#' 
 #' @return        A tibble, which include new_col as series no. 
 add_series_no <- function(tbl, cond = "", end_sep = TRUE, new_col = "series_no") {
     cnames <- colnames(tbl)
