@@ -2,9 +2,12 @@
 % Please edit documentation in R/moranajp.R
 \name{add_series_no}
 \alias{add_series_no}
+\alias{add_text_id}
 \title{Add series no col according to match condition.}
 \usage{
 add_series_no(tbl, cond = "", new_col = "series_no")
+
+add_text_id(tbl)
 }
 \arguments{
 \item{tbl}{A tibble or data.frame.}
@@ -16,7 +19,11 @@ add_series_no(tbl, cond = "", new_col = "series_no")
 \value{
 \preformatted{   A tibble, which include new_col as series no. 
 }
+
+A tibble.
 }
 \description{
-Add series no col according to match condition.
+Internal function for moranajp_all().
+'EOS' means breaks of the end of a result in morphological analysis.
+add_text_id() add 1 to \code{text_id} column when there is 'EOS' & NA.
 }

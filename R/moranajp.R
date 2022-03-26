@@ -122,17 +122,20 @@ add_text_id <- function(tbl) {
     if (any(text_id %in% cnames))
         stop("colnames must NOT have a colname 'text_id'")
     tbl <- 
-        tbl %>%
-        dplyr::mutate(`:=`(!!text_id, 
-            dplyr::case_when(
-                (dplyr::select(tbl, 1) == "EOS" & is.na(dplyr::select(tbl, 2))) ~ 1, 
-                TRUE ~ 0
-            )
-        )) %>%
-        dplyr::mutate(`:=`(!!text_id, purrr::accumulate(.data[[text_id]], magrittr::add))) %>%
-        dplyr::mutate(`:=`(!!text_id, .data[[text_id]] + 1)) %>%
-        dplyr::mutate(`:=`(!!text_id, dplyr::lag(.data[[text_id]], default=1)))
-  #         dplyr::filter(! (dplyr::select(tbl, 1) == "EOS" & is.na(dplyr::select(tbl, 2))))
+        add_series_no(tbl,
+                      cond = "tbl[[1]] == 'EOS' & is.na(tbl[[2]])",
+                      new_col = text_id
+        )
+  #         tbl %>%
+  #         dplyr::mutate(`:=`(!!text_id, 
+  #             dplyr::case_when(
+  #                 (dplyr::select(tbl, 1) == "EOS" & is.na(dplyr::select(tbl, 2))) ~ 1, 
+  #                 TRUE ~ 0
+  #             )
+  #         )) %>%
+  #         dplyr::mutate(`:=`(!!text_id, purrr::accumulate(.data[[text_id]], magrittr::add))) %>%
+  #         dplyr::mutate(`:=`(!!text_id, .data[[text_id]] + 1)) %>%
+  #         dplyr::mutate(`:=`(!!text_id, dplyr::lag(.data[[text_id]], default=1)))
     return(tbl)
 }
 
