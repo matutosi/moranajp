@@ -10,3 +10,4 @@
 ^revdep$
 ^\.travis\.yml$
 ^\.github$
+^README\.Rmd$

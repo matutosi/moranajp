@@ -3,11 +3,6 @@
 
 The goal of moranajp is a tool of morphological analysis for Japanese.
 
-## Note
-
-Line breaks in the text will be removed to avoid lag text id. If you
-want to remain line breaks, please change them into other character.
-
 ## Installation
 
 You can install the released version of moranajp from \[GitHub\] (
@@ -75,6 +70,11 @@ res <-
   mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
   print(n=nrow(.))
 ```
+
+## Note
+
+Line breaks in the text will be removed to avoid lag text id. If you
+want to remain line breaks, please change them into other character.
 
 ## Citation
 
