@@ -2,7 +2,9 @@
 
 # moranajp 0.9.3
 
-* 
+* improve functions
+* add tests by testthat
+* add data-raw
 
 # moranajp 0.9.2
 
