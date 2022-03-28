@@ -23,7 +23,7 @@ This is a new release.
   Found the following files/directories:   
     'lastMiKTeXException'   
 
-check_rhub() on Windows Server shows this note. 
+check_rhub() on Windows Server and check_win_devel() show this note. 
 
 ## Downstream dependencies
 
