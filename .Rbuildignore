@@ -13,3 +13,4 @@
 ^README\.Rmd$
 ^cran-comments\.md$
 ^\tools$
+^CRAN-SUBMISSION$
