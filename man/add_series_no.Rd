@@ -5,7 +5,7 @@
 \alias{add_text_id}
 \title{Add series no col according to match condition.}
 \usage{
-add_series_no(tbl, cond = "", new_col = "series_no")
+add_series_no(tbl, cond = "", end_sep = TRUE, new_col = "series_no")
 
 add_text_id(tbl)
 }
@@ -13,6 +13,8 @@ add_text_id(tbl)
 \item{tbl}{A tibble or data.frame.}
 
 \item{cond}{Condition to split series no.}
+
+\item{end_sep}{A logical. TRUE: condition indicate the end of separation.}
 
 \item{new_col}{A string name of new column.}
 }
@@ -26,4 +28,15 @@ A tibble.
 Internal function for moranajp_all().
 'EOS' means breaks of the end of a result in morphological analysis.
 add_text_id() add 1 to \code{text_id} column when there is 'EOS' & NA.
+}
+\examples{
+\dontrun{
+  tbl <- tibble::tibble(col=c(rep("a", 2), "sep", rep("b", 3), "sep", rep("c", 4), "sep"))
+  cond <- ".$col == 'sep'"   # Use ".$'colname'" to identify column
+    # when separator indicate the end
+  add_series_no(tbl, cond = cond, end_sep = TRUE,  new_col = "series_no")
+    # when separator indicate the begining
+  add_series_no(tbl, cond = cond, end_sep = FALSE, new_col = "series_no")
+}
+
 }

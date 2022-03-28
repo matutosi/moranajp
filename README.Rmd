@@ -15,11 +15,6 @@ knitr::opts_chunk$set(
 
 The goal of moranajp is a tool of morphological analysis for Japanese. 
 
-## Note
-
-Line breaks in the text will be removed to avoid lag text id. 
-If you want to remain line breaks, please change them into other character. 
-
 ## Installation
 
 You can install the released version of moranajp from [GitHub] ( https://github.com/ ). 
@@ -89,6 +84,11 @@ res <-
   print(n=nrow(.))
 ```
 
+
+## Note
+
+Line breaks in the text will be removed to avoid lag text id. 
+If you want to remain line breaks, please change them into other character. 
 
 ## Citation
 

@@ -3,12 +3,6 @@
 
 moranajpは，日本語形態素解析をするためのものです．
 
-## Note
-
-文字列内の改行コード(,
-)は，削除されます(EOSでtext_idを見分けており，改行コードでずれるのを防ぐため)．
-改行コードに意味がある場合は，事前に改行コードを別の文字列に変更するなどの対応をしてください．
-
 ## Installation
 
 最新バージョンは，\[GitHub\] ( <https://github.com/> )
@@ -77,6 +71,12 @@ res <-
   mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
   print(n=nrow(.))
 ```
+
+## Note
+
+文字列内の改行コード(,
+)は，削除されます(EOSでtext_idを見分けており，改行コードでずれるのを防ぐため)．
+改行コードに意味がある場合は，事前に改行コードを別の文字列に変更するなどの対応をしてください．
 
 ## Citation
 

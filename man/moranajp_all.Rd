@@ -54,17 +54,17 @@ Keep other colnames in dataframe.
 }
 \examples{
 \dontrun{
-library(tidyverse)
-bin_dir <- "d:/pf/mecab/bin/"  # input your environment
-tmp_dir <- "d:/"               # input your environment
-fileEncoding <- "CP932"        # input your environment
-data(neko)
-neko <- 
-    neko \%>\%
-    dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
-    dplyr::mutate(cols=1:nrow(.))
-moranajp_all(neko, text_col = "text", 
-       bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) \%>\%
-    print(n=100)
+  library(tidyverse)
+  bin_dir <- "d:/pf/mecab/bin/"  # input your environment
+  tmp_dir <- "d:/"               # input your environment
+  fileEncoding <- "CP932"        # input your environment
+  data(neko)
+  neko <- 
+      neko \%>\%
+      dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
+      dplyr::mutate(cols=1:nrow(.))
+  moranajp_all(neko, text_col = "text", 
+         bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) \%>\%
+      print(n=100)
 }
 }

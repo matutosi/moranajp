@@ -10,3 +10,7 @@
 ^revdep$
 ^\.travis\.yml$
 ^\.github$
+^README\.Rmd$
+^NEWS\.md$
+^cran-comments\.md$
+^\tools$
