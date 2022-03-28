@@ -12,32 +12,35 @@
 #' @return A tibble.   Output of 'MeCab' and added column "text_id".
 #' @examples
 #' \dontrun{
-#' library(tidyverse)
-#' bin_dir <- "d:/pf/mecab/bin/"  # input your environment
-#' tmp_dir <- "d:/"               # input your environment
-#' fileEncoding <- "CP932"        # input your environment
-#' data(neko)
-#' neko <- 
-#'     neko %>%
-#'     dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
-#'     dplyr::mutate(cols=1:nrow(.))
-#' moranajp_all(neko, text_col = "text", 
-#'        bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) %>%
-#'     print(n=100)
+#'   library(tidyverse)
+#'   bin_dir <- "d:/pf/mecab/bin/"  # input your environment
+#'   tmp_dir <- "d:/"               # input your environment
+#'   fileEncoding <- "CP932"        # input your environment
+#'   data(neko)
+#'   neko <- 
+#'       neko %>%
+#'       dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
+#'       dplyr::mutate(cols=1:nrow(.))
+#'   moranajp_all(neko, text_col = "text", 
+#'          bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) %>%
+#'       print(n=100)
 #' }
 #' @export
 moranajp_all <- function(tbl, text_col = "text", bin_dir = "", tmp_dir = bin_dir, fileEncoding = "CP932") {
     tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
-    if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
+    if (stringr::str_detect(
+            stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
         message("Removed line breaks !")
     if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
         message("Removed line breaks !")
       # remove line breaks
     tbl <- 
         tbl %>%
-        dplyr::mutate(`:=`(!!text_col, stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
-        dplyr::mutate(`:=`(!!text_col, stringr::str_replace_all(.data[[text_col]], "\\n", "")))
+        dplyr::mutate(`:=`(!!text_col, 
+            stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
+        dplyr::mutate(`:=`(!!text_col, 
+            stringr::str_replace_all(.data[[text_col]], "\\n", "")))
     tbl <- 
         tbl %>%
         dplyr::select(dplyr::all_of(text_col)) %>%
@@ -56,7 +59,9 @@ moranajp <- function(tbl, bin_dir, tmp_dir, fileEncoding) {
     output <- stringr::str_c(tmp_dir, "output.txt")
       # write file for morphological analysis
       #     (maybe) can not set file encoding in write_tsv()
-    utils::write.table(tbl, input, quote = FALSE, col.names = FALSE, row.names = FALSE, fileEncoding = fileEncoding)
+    utils::write.table(tbl, input, 
+            quote = FALSE, col.names = FALSE, row.names = FALSE, 
+            fileEncoding = fileEncoding)
       # run command in a terminal
     cmd <- make_cmd_mecab(bin_dir, input, output)
     system(cmd)
@@ -65,7 +70,8 @@ moranajp <- function(tbl, bin_dir, tmp_dir, fileEncoding) {
     tbl <- 
         readLines(con = file(output, encoding = fileEncoding)) %>%
         tibble::tibble() %>%
-        tidyr::separate(1, sep = "\t|,", into = letters[1:length(out_cols)], fill = "right", extra = "drop") %>%
+        tidyr::separate(1, sep = "\t|,", 
+            into = letters[1:length(out_cols)], fill = "right", extra = "drop") %>%
         magrittr::set_colnames(out_cols)
     file.remove(c(input, output))  # delete temporary file
     return(tbl)
@@ -95,12 +101,14 @@ out_cols_mecab <- function(){
 #' @param new_col A string name of new column.
 #' @param end_sep A logical. TRUE: condition indicate the end of separation. 
 #' @examples
-#' tbl <- tibble::tibble(col=c(rep("a", 2), "sep", rep("b", 3), "sep", rep("c", 4), "sep"))
-#' cond <- ".$col == 'sep'"   # Use ".$'colname'" to identify column
-#'   # when separator indicate the end
-#' add_series_no(tbl, cond = cond, end_sep = TRUE,  new_col = "series_no")
-#'   # when separator indicate the begining
-#' add_series_no(tbl, cond = cond, end_sep = FALSE, new_col = "series_no")
+#' \dontrun{
+#'   tbl <- tibble::tibble(col=c(rep("a", 2), "sep", rep("b", 3), "sep", rep("c", 4), "sep"))
+#'   cond <- ".$col == 'sep'"   # Use ".$'colname'" to identify column
+#'     # when separator indicate the end
+#'   add_series_no(tbl, cond = cond, end_sep = TRUE,  new_col = "series_no")
+#'     # when separator indicate the begining
+#'   add_series_no(tbl, cond = cond, end_sep = FALSE, new_col = "series_no")
+#' }
 #' 
 #' @return        A tibble, which include new_col as series no. 
 add_series_no <- function(tbl, cond = "", end_sep = TRUE, new_col = "series_no") {
@@ -109,13 +117,16 @@ add_series_no <- function(tbl, cond = "", end_sep = TRUE, new_col = "series_no")
         stop("colnames must NOT have a colname", new_col)
     tbl <- 
         tbl %>%
-        dplyr::mutate(`:=`(!!new_col, dplyr::case_when(eval(str2expression(cond)) ~ 1, TRUE ~ 0))) %>%
-        dplyr::mutate(`:=`(!!new_col, purrr::accumulate(.data[[new_col]], magrittr::add)))
+        dplyr::mutate(`:=`(!!new_col, 
+            dplyr::case_when(eval(str2expression(cond)) ~ 1, TRUE ~ 0))) %>%
+        dplyr::mutate(`:=`(!!new_col, 
+            purrr::accumulate(.data[[new_col]], magrittr::add)))
     if(end_sep){  # when condition indicate the end of separation
         tbl <- 
             tbl %>%
             dplyr::mutate(`:=`(!!new_col, .data[[new_col]] + 1)) %>%
-            dplyr::mutate(`:=`(!!new_col, dplyr::lag(.data[[new_col]], default=1)))
+            dplyr::mutate(`:=`(!!new_col, 
+                dplyr::lag(.data[[new_col]], default=1)))
     }
    return(tbl)
 }
