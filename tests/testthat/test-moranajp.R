@@ -29,12 +29,20 @@ test_that("cmd makes (this command is only for test)", {
     tbl <- "This is sample, so not tibble."
     bin_dir <- "d:/pf/mecab"
     option <- "some options"
-    exp <- "echo This is sample, so not tibble. \\|d:\\pf\\mecab\\mecab -b 72 some options"
+    if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
+        exp <- "echo This is sample, so not tibble. \\|d:\\pf\\mecab\\mecab -b 72 some options"
+    } else {
+        exp <- "echo This is sample, so not tibble. \\|d:/pf/mecab/mecab -b 72 some options"
+    }
     expect_equal(make_cmd_mecab(tbl, bin_dir, option), exp)
 
     bin_dir <- "d:/pf/mecab/"
     option <- NULL
-    exp <- "echo This is sample, so not tibble. \\|d:\\pf\\mecab\\mecab -b 72 "
+    if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
+        exp <- "echo This is sample, so not tibble. \\|d:\\pf\\mecab\\mecab -b 72 "
+    } else {
+        exp <- "echo This is sample, so not tibble. \\|d:/pf/mecab/mecab -b 72 "
+    }
     expect_equal(make_cmd_mecab(tbl, bin_dir, option), exp)
 
 })
