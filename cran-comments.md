@@ -17,7 +17,10 @@ This is a resubmission. In this version I have:
     * Windows Server 2022, R-devel, 64 bit
     * Ubuntu Linux 20.04.1 LTS, R-release, GCC
     * Fedora Linux, R-devel, clang, gfortran
-* devtools::check_win_devel()
+* devtools::check_win_release() 
+    ( devtools::check_win_devel() does not work because of 
+      "Error in curl::curl_fetch_memory(url, handle = h) : 
+      Failed FTP upload: 550" )
 
 ## R CMD check results
 
