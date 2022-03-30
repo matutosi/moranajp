@@ -43,7 +43,7 @@ bin_dir <- "c:/MeCab/bin/"  # set your environment
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
-  mecab_all(text_col="text", bin_dir=bin_dir) %>%
+  moranajp_all(text_col="text", bin_dir=bin_dir) %>%
   print(n=nrow(.))
 ```
 
@@ -65,7 +65,7 @@ bin_dir <- "/opt/local/mecab/bin/"  # set your environment
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
-  mecab_all(text_col="text", bin_dir=bin_dir) %>%
+  moranajp_all(text_col="text", bin_dir=bin_dir) %>%
   print(n=nrow(.))
 ```
 
