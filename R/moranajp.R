@@ -82,7 +82,7 @@ make_cmd_mecab <- function(tbl, bin_dir, option = "") {
     text <- 
         tbl %>%
         unlist() %>%
-        stringi::stri_unescape_unicode() %>%
+  #         stringi::stri_unescape_unicode() %>%
         stringr::str_c(collapse="EOS")
      # input-buffer size for mecab option
     times_jp2en <- 2      # Most Japanese are 2byte.
