@@ -4,7 +4,7 @@ This is a resubmission. In this version I have:
 
 * Exported add_series_no() and add_text_id() in: add_series_no.Rd.
 * Removed \dontrun{} in example of add_series_no().
-* Removed the codes of moranajp() that write user's filespace.
+* Removed the codes of moranajp() that write in user's filespace.
 * Removed encoding setting from vignettes because of needless.
 * Revised readme.md, vignettes, and text to match the above.
 

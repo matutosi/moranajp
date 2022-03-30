@@ -19,8 +19,7 @@ Imports:
     rlang,
     stringr,
     tibble,
-    tidyr,
-    utils
+    tidyr
 Suggests:
     knitr,
     rmarkdown,
