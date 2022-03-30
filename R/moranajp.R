@@ -89,7 +89,11 @@ make_cmd_mecab <- function(tbl, bin_dir, option = "") {
     times_reserve <- 1.2  # Reserve room
     len <- ceiling(stringr::str_length(text) * times_jp2en  * times_reserve)
       # NEEDS SPACES as separater
-    cmd <- stringr::str_c("echo ", text, " \\|", bin_dir, "mecab -b ", len, " ", option)
+    if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
+        cmd <- stringr::str_c("echo ", text, " \\|", bin_dir, "mecab -b ", len, " ", option)
+    } else {
+        cmd <- stringr::str_c("echo ", text, " |", bin_dir, "mecab -b ", len, " ", option)
+    }
     return(cmd)
 }
 
