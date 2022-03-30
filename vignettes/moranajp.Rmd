@@ -21,10 +21,8 @@ library(tidyverse)
 library(moranajp)
 ```
 
-```{r }
+```{r}
 bin_dir <- "d:/pf/mecab/bin/" # input your environment
-tmp_dir <- "d:/pf/mecab/bin/" # input your environment
-fileEncoding <- "CP932"       # input your environment
 library(tidyverse)
 
 data(neko)
@@ -40,7 +38,7 @@ n_match <-
   sum()
 
 if(n_match > 0){
-  moranajp_all(neko, text_col = "text", bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) %>%
+  moranajp_all(neko, text_col = "text", bin_dir = bin_dir) %>%
     print(n=100)
 }
 ```

@@ -3,6 +3,9 @@
 
 The goal of moranajp is a tool of morphological analysis for Japanese.
 
+readme in Japanese:
+<https://github.com/matutosi/moranajp/blob/main/READMEjp.md>
+
 ## Installation
 
 You can install the released version of moranajp from \[GitHub\] (
@@ -11,6 +14,8 @@ the main user is only Japanese speakers. You need install MeCab (
 <https://taku910.github.io/mecab/> ).
 
 ``` r
+install.packages("moranajp")
+
 # install.packages("devtools")
 devtools::install_github("matutosi/moranajp")
 ```
@@ -35,13 +40,10 @@ neko  # The first part of 'I Am a Cat' by Soseki Natsume
   # No need when setting path to mecab
 bin_dir <- "c:/MeCab/bin/"  # set your environment
 
-  # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
-fileEncoding <- "CP932"  # set your environment
-
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
-  mecab_all(text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
+  mecab_all(text_col="text", bin_dir=bin_dir) %>%
   print(n=nrow(.))
 ```
 
@@ -53,21 +55,17 @@ library(tidyverse)
 library(magrittr)
 
 data(neko)
-neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
+neko$text <- iconv(neko$text, from="cp932", to="utf-8") # for Mac and Linux (UTF-8)
 neko
 
   # Directory of mecab
   # No need when setting path to mecab
 bin_dir <- "/opt/local/mecab/bin/"  # set your environment
-tmp_dir <- "/Users/foo"             # set your environment
-
-  # Fileencoding in mecab. "CP932" (shift_jis) , "UTF-8" or "EUC"
-fileEncoding <- "utf-8"  # set your environment
 
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
-  mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
+  mecab_all(text_col="text", bin_dir=bin_dir) %>%
   print(n=nrow(.))
 ```
 

@@ -12,6 +12,8 @@ MeCab ( <https://taku910.github.io/mecab/> )
 を別途インストールする必要があります．
 
 ``` r
+install.packages("moranajp")
+
 # install.packages("devtools")
 devtools::install_github("matutosi/moranajp")
 ```
@@ -36,13 +38,10 @@ neko  # 『吾輩は猫である』(夏目漱石)の冒頭部分
   # pathがとおっている場合は，設定不要
 bin_dir <- "c:/MeCab/bin/"  # set your environment
 
-  # MeCabの文字コード  "CP932" (shift_jis) , "UTF-8" or "EUC"
-fileEncoding <- "CP932"  # set your environment
-
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
-  mecab_all(text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding) %>%
+  mecab_all(text_col="text", bin_dir=bin_dir) %>%
   print(n=nrow(.))
 ```
 
@@ -60,15 +59,11 @@ neko
   # MeCabの実行ファイルのディレクトリ
   # pathがとおっている場合は，設定不要
 bin_dir <- "/opt/local/mecab/bin/"  # set your environment
-tmp_dir <- "/Users/foo"             # set your environment
-
-  # MeCabの文字コード  "CP932" (shift_jis) , "UTF-8" or "EUC"
-fileEncoding <- "utf-8"  # set your environment
 
 res <- 
   neko %>%
   mutate(cols=rep(1:2, each=2)) %>%
-  mecab_all(text_col="text", bin_dir=bin_dir, tmp_dir=tmp_dir, fileEncoding=fileEncoding) %>%
+  mecab_all(text_col="text", bin_dir=bin_dir) %>%
   print(n=nrow(.))
 ```
 

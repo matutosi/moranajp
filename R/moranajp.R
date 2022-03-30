@@ -3,30 +3,26 @@
 #' Using 'MeCab' for morphological analysis.
 #' Keep other colnames in dataframe.
 #'
-#' @param tbl              A tibble or data.frame.
-#' @param text_col         A text. Colnames for morphological analysis.
-#' @param bin_dir,tmp_dir  A text. Directory of 'MeCab' and temporal use.
-#' @param fileEncoding     A text. fileEncoding in 'MeCab'. 
-#'                         "EUC", "CP932" (shift_jis) or "UTF-8".
-#' @param input,output     A text. File path of input and output.
+#' @param tbl          A tibble or data.frame.
+#' @param text_col     A text. Colnames for morphological analysis.
+#' @param bin_dir      A text. Directory of mecab.
+#' @param option       A text. Options for mecab.
+#'                     "-b" option is already set by moranajp.
+#'                     See by "mecab -h".
 #' @return A tibble.   Output of 'MeCab' and added column "text_id".
 #' @examples
 #' \dontrun{
 #'   library(tidyverse)
-#'   bin_dir <- "d:/pf/mecab/bin/"  # input your environment
-#'   tmp_dir <- "d:/"               # input your environment
-#'   fileEncoding <- "CP932"        # input your environment
 #'   data(neko)
 #'   neko <- 
 #'       neko %>%
 #'       dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
 #'       dplyr::mutate(cols=1:nrow(.))
-#'   moranajp_all(neko, text_col = "text", 
-#'          bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) %>%
+#'   moranajp_all(neko, text_col = "text") %>%
 #'       print(n=100)
 #' }
 #' @export
-moranajp_all <- function(tbl, text_col = "text", bin_dir = "", tmp_dir = bin_dir, fileEncoding = "CP932") {
+moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "") {
     tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(
@@ -44,7 +40,7 @@ moranajp_all <- function(tbl, text_col = "text", bin_dir = "", tmp_dir = bin_dir
     tbl <- 
         tbl %>%
         dplyr::select(dplyr::all_of(text_col)) %>%
-        moranajp(bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) %>%
+        moranajp(bin_dir = bin_dir, option = option) %>%
         add_text_id() %>%
         dplyr::left_join(others, by = "text_id") %>%
         dplyr::relocate(.data[["text_id"]], colnames(others))
@@ -53,35 +49,43 @@ moranajp_all <- function(tbl, text_col = "text", bin_dir = "", tmp_dir = bin_dir
 
 #' @rdname moranajp_all
 #' @export
-moranajp <- function(tbl, bin_dir, tmp_dir, fileEncoding) {
-      # set file names and command
-    input  <- stringr::str_c(tmp_dir, "input.txt")
-    output <- stringr::str_c(tmp_dir, "output.txt")
-      # write file for morphological analysis
-      #     (maybe) can not set file encoding in write_tsv()
-    utils::write.table(tbl, input, 
-            quote = FALSE, col.names = FALSE, row.names = FALSE, 
-            fileEncoding = fileEncoding)
-      # run command in a terminal
-    cmd <- make_cmd_mecab(bin_dir, input, output)
-    system(cmd)
-      # read a result file
+moranajp <- function(tbl, bin_dir, option = "") {
+      # Make command
+    cmd <- make_cmd_mecab(tbl, bin_dir, option = "")
+      # Run
+    output <- shell(cmd, intern=TRUE)
+      # To tidy data
     out_cols <- out_cols_mecab()
-    tbl <- 
-        readLines(con = file(output, encoding = fileEncoding)) %>%
+    tbl <-
+        output %>%
         tibble::tibble() %>%
         tidyr::separate(1, sep = "\t|,", 
             into = letters[1:length(out_cols)], fill = "right", extra = "drop") %>%
         magrittr::set_colnames(out_cols)
-    file.remove(c(input, output))  # delete temporary file
     return(tbl)
 }
 
 #' @rdname moranajp_all
-make_cmd_mecab <- function(bin_dir, input, output) {
-    mecab <- stringr::str_c(bin_dir, "mecab") 
-        # NEEDS SPACE after 'mecab' as separater
-    cmd <- stringr::str_c(mecab,  " ", input, " -o ", output)
+make_cmd_mecab <- function(tbl, bin_dir, option = "") {
+      # check and modify directory name
+    if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
+        bin_dir <- stringr::str_replace_all(bin_dir, "/", "\\\\")
+        if(stringr::str_sub(bin_dir, start=-1) != "\\") bin_dir <- stringr::str_c(bin_dir, "\\")
+    } else {
+        if(stringr::str_sub(bin_dir, start=-1) != "/") bin_dir <- stringr::str_c(bin_dir, "/")
+    }
+      # make text string
+    text <- 
+        tbl %>%
+        unlist() %>%
+        stringi::stri_unescape_unicode() %>%
+        stringr::str_c(collapse="EOS")
+     # input-buffer size for mecab option
+    times_jp2en <- 2      # Most Japanese are 2byte.
+    times_reserve <- 1.2  # Reserve room
+    len <- ceiling(stringr::str_length(text) * times_jp2en  * times_reserve)
+      # NEEDS SPACES as separater
+    cmd <- stringr::str_c("echo ", text, " \\|", bin_dir, "mecab -b ", len, " ", option)
     return(cmd)
 }
 
@@ -111,6 +115,7 @@ out_cols_mecab <- function(){
 #' }
 #' 
 #' @return        A tibble, which include new_col as series no. 
+#' @export
 add_series_no <- function(tbl, cond = "", end_sep = TRUE, new_col = "series_no") {
     cnames <- colnames(tbl)
     if (any(new_col %in% cnames))
@@ -134,36 +139,32 @@ add_series_no <- function(tbl, cond = "", end_sep = TRUE, new_col = "series_no")
 #' Add id column into result of morphological analysis
 #'
 #' Internal function for moranajp_all(). 
-#' 'EOS' means breaks of the end of a result in morphological analysis. 
-#' add_text_id() add 1 to `text_id` column when there is 'EOS' & NA. 
+#' 'EOS' means breaks of text in this package (and most of morphological analysis). 
+#' add_text_id() add `text_id` column when there is 'EOS'. 
 #' 
-#' @param tbl     A tibble or data.frame.
 #' @rdname   add_series_no
 #' @return   A tibble.
+#' @export
 add_text_id <- function(tbl) {
     text_id <- "text_id"
     cnames <- colnames(tbl)
     if (any(text_id %in% cnames))
         stop("colnames must NOT have a colname 'text_id'")
-    tbl <- 
-        add_series_no(tbl,
-                      cond = "tbl[[1]] == 'EOS' & is.na(tbl[[2]])",
-                      new_col = text_id
-        )
+    tbl <- add_series_no(tbl, cond = "tbl[[1]] == 'EOS'", new_col = text_id)
     return(tbl)
 }
 
 #' @rdname moranajp_all
 #' @export
-mecab_all <- function(tbl, text_col = "text", bin_dir = "", tmp_dir = bin_dir, fileEncoding = "CP932") {
+mecab_all <- function(tbl, text_col = "text", bin_dir = "") {
   message("'mecab_all()' will be removed in version 1.0.0.")
   .Deprecated("moranajp_all")
-  moranajp_all(tbl=tbl, text_col = text_col, bin_dir = bin_dir, fileEncoding = fileEncoding)
+  moranajp_all(tbl=tbl, text_col = text_col)
 }
 #' @rdname moranajp_all
 #' @export
-mecab <- function(tbl, bin_dir, tmp_dir, fileEncoding) {
+mecab <- function(tbl, bin_dir) {
   message("'mecab()' will be removed in version 1.0.0.")
   .Deprecated("moranajp")
-  moranajp(tbl = tbl, bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding)
+  moranajp(tbl = tbl, bin_dir = bin_dir)
 }

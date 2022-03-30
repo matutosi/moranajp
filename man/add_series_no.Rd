@@ -26,8 +26,8 @@ A tibble.
 }
 \description{
 Internal function for moranajp_all().
-'EOS' means breaks of the end of a result in morphological analysis.
-add_text_id() add 1 to \code{text_id} column when there is 'EOS' & NA.
+'EOS' means breaks of text in this package (and most of morphological analysis).
+add_text_id() add \code{text_id} column when there is 'EOS'.
 }
 \examples{
 \dontrun{

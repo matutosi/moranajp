@@ -14,15 +14,27 @@ test_that("add_series_no and add_text_id work", {
 
 test_that("text_id of moranajp matches text number", {
     bin_dir <- c("d:/pf/mecab/bin/", "/opt/local/mecab/bin/")
-    bin_dir <- bin_dir[file.exists(stringr::str_sub(bin_dir, end=-2))]
-    fileEncoding <- if(Sys.info()[1] =="Windows") "CP932" else "UTF-8"
     if(length(bin_dir) == 1){
       res <- 
           neko %>%
           dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
           dplyr::mutate(cols=1:nrow(.)) %>%
-          moranajp_all(text_col="text", bin_dir=bin_dir, fileEncoding=fileEncoding)
+          moranajp_all(text_col="text", bin_dir=bin_dir)
     }
     skip_if(length(bin_dir) != 1)
     expect_equal(res$cols, res$text_id)
+})
+
+test_that("cmd makes (this command is only for test)", {
+    tbl <- "This is sample, so not tibble."
+    bin_dir <- "d:/pf/mecab"
+    option <- "some options"
+    exp <- "echo This is sample, so not tibble. \\|d:\\pf\\mecab\\mecab -b 72 some options"
+    expect_equal(make_cmd_mecab(tbl, bin_dir, option), exp)
+
+    bin_dir <- "d:/pf/mecab/"
+    option <- NULL
+    exp <- "echo This is sample, so not tibble. \\|d:\\pf\\mecab\\mecab -b 72 "
+    expect_equal(make_cmd_mecab(tbl, bin_dir, option), exp)
+
 })

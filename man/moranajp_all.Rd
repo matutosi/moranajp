@@ -9,41 +9,28 @@
 \alias{mecab}
 \title{Morphological analysis for a specific column in dataframe}
 \usage{
-moranajp_all(
-  tbl,
-  text_col = "text",
-  bin_dir = "",
-  tmp_dir = bin_dir,
-  fileEncoding = "CP932"
-)
+moranajp_all(tbl, bin_dir, text_col = "text", option = "")
 
-moranajp(tbl, bin_dir, tmp_dir, fileEncoding)
+moranajp(tbl, bin_dir, option = "")
 
-make_cmd_mecab(bin_dir, input, output)
+make_cmd_mecab(tbl, bin_dir, option = "")
 
 out_cols_mecab()
 
-mecab_all(
-  tbl,
-  text_col = "text",
-  bin_dir = "",
-  tmp_dir = bin_dir,
-  fileEncoding = "CP932"
-)
+mecab_all(tbl, text_col = "text", bin_dir = "")
 
-mecab(tbl, bin_dir, tmp_dir, fileEncoding)
+mecab(tbl, bin_dir)
 }
 \arguments{
 \item{tbl}{A tibble or data.frame.}
 
+\item{bin_dir}{A text. Directory of mecab.}
+
 \item{text_col}{A text. Colnames for morphological analysis.}
 
-\item{bin_dir, tmp_dir}{A text. Directory of 'MeCab' and temporal use.}
-
-\item{fileEncoding}{A text. fileEncoding in 'MeCab'.
-"EUC", "CP932" (shift_jis) or "UTF-8".}
-
-\item{input, output}{A text. File path of input and output.}
+\item{option}{A text. Options for mecab.
+"-b" option is already set by moranajp.
+See by "mecab -h".}
 }
 \value{
 A tibble.   Output of 'MeCab' and added column "text_id".
@@ -55,16 +42,12 @@ Keep other colnames in dataframe.
 \examples{
 \dontrun{
   library(tidyverse)
-  bin_dir <- "d:/pf/mecab/bin/"  # input your environment
-  tmp_dir <- "d:/"               # input your environment
-  fileEncoding <- "CP932"        # input your environment
   data(neko)
   neko <- 
       neko \%>\%
       dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
       dplyr::mutate(cols=1:nrow(.))
-  moranajp_all(neko, text_col = "text", 
-         bin_dir = bin_dir, tmp_dir = tmp_dir, fileEncoding = fileEncoding) \%>\%
+  moranajp_all(neko, text_col = "text") \%>\%
       print(n=100)
 }
 }
