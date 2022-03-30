@@ -26,47 +26,23 @@ You can download binary version (zip file).
 
 ## Example
 
-Example for Windows
-
 ``` r
 library(moranajp)
 library(tidyverse)
 library(magrittr)
 
 data(neko)
-neko  # The first part of 'I Am a Cat' by Soseki Natsume
+neko <- 
+  neko %>%
+  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
+  dplyr::mutate(cols = 1:nrow(.))
+neko  # First part of 'I Am a Cat' by Soseki Natsume
 
   # Directory of mecab
-  # No need when setting path to mecab
 bin_dir <- "c:/MeCab/bin/"  # set your environment
 
-res <- 
-  neko %>%
-  mutate(cols=rep(1:2, each=2)) %>%
-  moranajp_all(text_col="text", bin_dir=bin_dir) %>%
-  print(n=nrow(.))
-```
-
-Example for Mac
-
-``` r
-library(moranajp)
-library(tidyverse)
-library(magrittr)
-
-data(neko)
-neko$text <- iconv(neko$text, from="cp932", to="utf-8") # for Mac and Linux (UTF-8)
-neko
-
-  # Directory of mecab
-  # No need when setting path to mecab
-bin_dir <- "/opt/local/mecab/bin/"  # set your environment
-
-res <- 
-  neko %>%
-  mutate(cols=rep(1:2, each=2)) %>%
-  moranajp_all(text_col="text", bin_dir=bin_dir) %>%
-  print(n=nrow(.))
+res <- moranajp_all(neko, text_col="text", bin_dir=bin_dir)
+res
 ```
 
 ## Note

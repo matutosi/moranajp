@@ -36,54 +36,29 @@ https://github.com/matutosi/moranajp/tree/main/zip
 
 ## Example
 
-Windows用の例
-
 ``` r
 library(moranajp)
 library(tidyverse)
 library(magrittr)
 
 data(neko)
+neko <- 
+  neko %>%
+  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
+  dplyr::mutate(cols = 1:nrow(.))
 neko  # 『吾輩は猫である』(夏目漱石)の冒頭部分
 
   # MeCabの実行ファイルのディレクトリ
-  # pathがとおっている場合は，設定不要
-bin_dir <- "c:/MeCab/bin/"  # set your environment
+  # bin_dir <- "/opt/local/mecab/bin/"  # MacやLinuxの例
+bin_dir <- "c:/MeCab/bin/" # winddowsの例
 
-res <- 
-  neko %>%
-  mutate(cols=rep(1:2, each=2)) %>%
-  moranajp_all(text_col="text", bin_dir=bin_dir) %>%
-  print(n=nrow(.))
+res <- moranajp_all(neko, text_col="text", bin_dir=bin_dir)
+res
 ```
-
-
-Mac用の例
-
-``` r
-library(moranajp)
-library(tidyverse)
-library(magrittr)
-
-data(neko)
-neko$text <- iconv(neko$text, from="cp932", to="utf-8")# Mac, LinuxなどUTF-8の場合
-neko
-
-  # MeCabの実行ファイルのディレクトリ
-  # pathがとおっている場合は，設定不要
-bin_dir <- "/opt/local/mecab/bin/"  # set your environment
-
-res <- 
-  neko %>%
-  mutate(cols=rep(1:2, each=2)) %>%
-  moranajp_all(text_col="text", bin_dir=bin_dir) %>%
-  print(n=nrow(.))
-```
-
 
 ## Note
 
-文字列内の改行コード(\r\n, \n)は，削除されます(EOSでtext_idを見分けており，改行コードでずれるのを防ぐため)．
+文字列内の改行コード(\r\n, \n)は，削除されます(改行コードでずれるのを防ぐため)．
 改行コードに意味がある場合は，事前に改行コードを別の文字列に変更するなどの対応をしてください．
 
 ## Citation
