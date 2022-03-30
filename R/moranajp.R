@@ -53,7 +53,11 @@ moranajp <- function(tbl, bin_dir, option = "") {
       # Make command
     cmd <- make_cmd_mecab(tbl, bin_dir, option = "")
       # Run
-    output <- shell(cmd, intern=TRUE)
+    if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
+        output <- shell(cmd, intern=TRUE)
+    } else {
+        output <- system(cmd, intern=TRUE)
+    }
       # To tidy data
     out_cols <- out_cols_mecab()
     tbl <-
