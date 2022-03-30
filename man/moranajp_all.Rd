@@ -43,7 +43,7 @@ Keep other colnames in dataframe.
 \dontrun{
   library(tidyverse)
   data(neko)
-  neko <- 
+  neko <-
       neko \%>\%
       dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
       dplyr::mutate(cols=1:nrow(.))
