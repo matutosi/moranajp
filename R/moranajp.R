@@ -86,7 +86,7 @@ make_cmd_mecab <- function(tbl, bin_dir, option = "") {
         stringr::str_c(collapse="EOS")
      # input-buffer size for mecab option
     times_jp2en <- 2      # Most Japanese are 2byte.
-    times_reserve <- 1.2  # Reserve room
+    times_reserve <- 2    # Reserve room
     len <- ceiling(stringr::str_length(text) * times_jp2en  * times_reserve)
       # NEEDS SPACES as separater
     if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
