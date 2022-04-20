@@ -13,7 +13,8 @@ test_that("add_series_no and add_text_id work", {
 })
 
 test_that("text_id of moranajp matches text number", {
-    bin_dir <- c("d:/pf/mecab/bin/", "/opt/local/mecab/bin/")
+    bin_dir <- c("d:/pf/mecab/bin", "/opt/local/mecab/bin")
+    bin_dir <- bin_dir[file.exists(bin_dir)]
     if(length(bin_dir) == 1){
       res <- 
           neko %>%
@@ -22,7 +23,7 @@ test_that("text_id of moranajp matches text number", {
           moranajp_all(text_col="text", bin_dir=bin_dir)
     }
     skip_if(length(bin_dir) != 1)
-    expect_equal(res$cols, res$text_id)
+        expect_equal(res$cols, res$text_id)
 })
 
 test_that("cmd makes (this command is only for test)", {
