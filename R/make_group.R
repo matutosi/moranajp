@@ -40,17 +40,3 @@ max_sum_str_length <- function(tbl) {
     dplyr::summarise(sum = sum(.data[["str_length"]])) %>%
     dplyr::summarise(max(sum))
 }
-
-  # library(tidyverse)
-  # set.seed(12)
-  # len <- round(stats::runif(200, min=100, max=200), 0)
-  # text <- 
-  #   len %>%
-  #   purrr::map(~rep("a", .)) %>%
-  #   purrr::map(~stringr::str_c(., collapse = "")) %>%
-  #   unlist()
-  # tbl <- tibble::tibble(text=text)
-  # length <- 8000
-  # text_col <- "text"
-  # make_groups(tbl, text_col, length) %>%
-  #   split(.$gr)

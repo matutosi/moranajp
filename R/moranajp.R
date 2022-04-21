@@ -39,8 +39,11 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "") {
             stringr::str_replace_all(.data[[text_col]], "\\n", "")))
     tbl <-
         tbl %>%
-        dplyr::select(dplyr::all_of(text_col)) %>%
-        moranajp(bin_dir = bin_dir, option = option) %>%
+        make_groups(text_col = text_col, length = 8000) %>%
+        split(.$gr) %>%
+        purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
+        purrr::map(moranajp, bin_dir = bin_dir, option = option) %>%
+        dplyr::bind_rows() %>%
         add_text_id() %>%
         dplyr::left_join(others, by = "text_id") %>%
         dplyr::relocate(.data[["text_id"]], colnames(others))
