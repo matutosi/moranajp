@@ -1,12 +1,6 @@
 #' Make groups by splitting string length
 #'
 #' @inherit morana_jp
-make_groups <- function(tbl, text_col = "text", length = 8000) {
-
-
-  #    make_groups_sub: no visible binding for global variable 'text'
-  #    max_str_length: no visible binding for global variable 'gr'
-  #    max_str_length: no visible binding for global variable 'str_length'
 
 library(tidyverse)
 set.seed(12)
@@ -18,6 +12,13 @@ text <-
   unlist()
 tbl <- tibble::tibble(text=text)
 length <- 800
+
+make_groups <- function(tbl, text_col = "text", length = 8000) {
+
+
+  #    make_groups_sub: no visible binding for global variable 'text'
+  #    max_str_length: no visible binding for global variable 'gr'
+  #    max_str_length: no visible binding for global variable 'str_length'
 
   len_sum <- sum(stringr::str_length(tbl$text))
   ratio <- seq(from = 0.8, to = 0.3, by = -0.1)
