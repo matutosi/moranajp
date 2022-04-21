@@ -12,9 +12,11 @@ MeCab ( <https://taku910.github.io/mecab/> )
 を別途インストールする必要があります．
 
 ``` r
+  # CRAN
 install.packages("moranajp")
 
-# install.packages("devtools")
+  # development
+  # install.packages("devtools")
 devtools::install_github("matutosi/moranajp")
 ```
 

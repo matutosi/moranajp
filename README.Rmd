@@ -24,9 +24,11 @@ moranajp will not be released in cran, because the main user is only Japanese sp
 You need install MeCab ( https://taku910.github.io/mecab/ ). 
 
 ``` r
+  # CRAN
 install.packages("moranajp")
 
-# install.packages("devtools")
+  # development
+  # install.packages("devtools")
 devtools::install_github("matutosi/moranajp")
 ```
 

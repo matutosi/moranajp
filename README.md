@@ -14,9 +14,11 @@ the main user is only Japanese speakers. You need install MeCab (
 <https://taku910.github.io/mecab/> ).
 
 ``` r
+  # CRAN
 install.packages("moranajp")
 
-# install.packages("devtools")
+  # development
+  # install.packages("devtools")
 devtools::install_github("matutosi/moranajp")
 ```
 
