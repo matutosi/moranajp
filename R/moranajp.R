@@ -9,6 +9,10 @@
 #' @param option       A text. Options for mecab.
 #'                     "-b" option is already set by moranajp.
 #'                     See by "mecab -h".
+#' @param iconv        A text. Convert encoding of MeCab output. 
+#'                     Default (NULL): don't convert. 
+#'                     "CP932_UTF-8": iconv(output, from = "Shift-JIS" to = "UTF-8")
+#'                     "EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")
 #' @return A tibble.   Output of 'MeCab' and added column "text_id".
 #' @examples
 #' \dontrun{
@@ -22,7 +26,7 @@
 #'       print(n=100)
 #' }
 #' @export
-moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "") {
+moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = NULL) {
     tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(
@@ -42,7 +46,7 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "") {
         make_groups(text_col = text_col, length = 8000) %>%
         split(~gr) %>%
         purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
-        purrr::map(moranajp, bin_dir = bin_dir, option = option) %>%
+        purrr::map(moranajp, bin_dir = bin_dir, option = option, iconv = iconv) %>%
         dplyr::bind_rows() %>%
         add_text_id() %>%
         dplyr::left_join(others, by = "text_id") %>%
@@ -52,7 +56,7 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "") {
 
 #' @rdname moranajp_all
 #' @export
-moranajp <- function(tbl, bin_dir, option = "") {
+moranajp <- function(tbl, bin_dir, option = "", iconv = NULL) {
       # Make command
     cmd <- make_cmd_mecab(tbl, bin_dir, option = "")
       # Run
@@ -61,6 +65,11 @@ moranajp <- function(tbl, bin_dir, option = "") {
     } else {
         output <- system(cmd, intern=TRUE)
     }
+      # Convert Encoding
+    if(iconv == "CP932_UTF-8")
+        output <- iconv(output, from = "Shift-JIS", to = "UTF-8")
+    if(iconv == "EUC_UTF-8")
+        output <- iconv(output, from = "eucjp", to = "UTF-8")
       # To tidy data
     out_cols <- out_cols_mecab()
     tbl <-
