@@ -10,7 +10,7 @@
 #'                     "-b" option is already set by moranajp.
 #'                     See by "mecab -h".
 #' @param iconv        A text. Convert encoding of MeCab output. 
-#'                     Default (NULL): don't convert. 
+#'                     Default (""): don't convert. 
 #'                     "CP932_UTF-8": iconv(output, from = "Shift-JIS" to = "UTF-8")
 #'                     "EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")
 #' @return A tibble.   Output of 'MeCab' and added column "text_id".
@@ -26,7 +26,7 @@
 #'       print(n=100)
 #' }
 #' @export
-moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = NULL) {
+moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "") {
     tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(
@@ -56,7 +56,7 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = N
 
 #' @rdname moranajp_all
 #' @export
-moranajp <- function(tbl, bin_dir, option = "", iconv = NULL) {
+moranajp <- function(tbl, bin_dir, option = "", iconv = "") {
       # Make command
     cmd <- make_cmd_mecab(tbl, bin_dir, option = "")
       # Run

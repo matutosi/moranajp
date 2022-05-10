@@ -9,9 +9,9 @@
 \alias{mecab}
 \title{Morphological analysis for a specific column in dataframe}
 \usage{
-moranajp_all(tbl, bin_dir, text_col = "text", option = "", iconv = NULL)
+moranajp_all(tbl, bin_dir, text_col = "text", option = "", iconv = "")
 
-moranajp(tbl, bin_dir, option = "", iconv = NULL)
+moranajp(tbl, bin_dir, option = "", iconv = "")
 
 make_cmd_mecab(tbl, bin_dir, option = "")
 
@@ -33,7 +33,7 @@ mecab(tbl, bin_dir)
 See by "mecab -h".}
 
 \item{iconv}{A text. Convert encoding of MeCab output.
-Default (NULL): don't convert.
+Default (""): don't convert.
 "CP932_UTF-8": iconv(output, from = "Shift-JIS" to = "UTF-8")
 "EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")}
 }
