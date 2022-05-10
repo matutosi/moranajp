@@ -27,6 +27,7 @@ Windows版のzipファイルは，以下からダウンロード可能です．
 ## Example
 
 ``` r
+options(encoding="UTF-8")
 library(moranajp)
 library(tidyverse)
 library(magrittr)
@@ -44,6 +45,9 @@ bin_dir <- "c:/MeCab/bin/" # winddowsの例
 
 res <- moranajp_all(neko, text_col="text", bin_dir=bin_dir)
 res
+  # # 文字化けする場合は，引数 iconv を使ってください．
+  #   iconv = "CP932_UTF-8" or iconv = "EUC_UTF-8"
+  # moranajp_all(neko, text_col="text", bin_dir=bin_dir, iconv="CP932_UTF-8")
 ```
 
 ## Note

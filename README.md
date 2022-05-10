@@ -29,6 +29,7 @@ You can download binary version (zip file).
 ## Example
 
 ``` r
+options(encoding="UTF-8")
 library(moranajp)
 library(tidyverse)
 library(magrittr)
@@ -45,6 +46,8 @@ bin_dir <- "c:/MeCab/bin/"  # set your environment
 
 res <- moranajp_all(neko, text_col="text", bin_dir=bin_dir)
 res
+  # # if illegal character, use iconv = "CP932_UTF-8" or iconv = "EUC_UTF-8"
+  # moranajp_all(neko, text_col="text", bin_dir=bin_dir, iconv="CP932_UTF-8")
 ```
 
 ## Note
