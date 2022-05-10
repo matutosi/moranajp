@@ -1,13 +1,18 @@
 # moranajp release news
 
 
-# moranajp 0.9.4.9000
+# moranajp 0.9.5.9000
 
 * Todo
     * Deprecate `mecab()` and `mecab_all()`.
     * Add `method` argument in `mecab()` and `mecab_all()` 
       to be able to use "sudachi"
 * Done
+
+# moranajp 0.9.5
+
+* Fix Bugs: to apply illegal character
+    * `moranajp()` add argument "iconv" to convert encoding of MeCab output
 
 # moranajp 0.9.4
 
