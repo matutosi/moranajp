@@ -34,13 +34,17 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "
         message("Removed line breaks !")
     if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
         message("Removed line breaks !")
-      # remove line breaks
+    if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), '&|\\||<|>|"'))
+        message('Removed &, |, <. > or " !')
+      # remove line breaks and '&||<>"'
     tbl <-
         tbl %>%
         dplyr::mutate(`:=`(!!text_col,
             stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
         dplyr::mutate(`:=`(!!text_col,
             stringr::str_replace_all(.data[[text_col]], "\\n", "")))
+        dplyr::mutate(`:=`(!!text_col,
+            stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
     tbl <-
         tbl %>%
         make_groups(text_col = text_col, length = 8000) %>%
