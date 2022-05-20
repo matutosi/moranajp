@@ -48,7 +48,8 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "
     tbl <-
         tbl %>%
         make_groups(text_col = text_col, length = 8000) %>%
-        split(~gr) %>%
+        group_split(gr) %>%
+  #         split(~gr) %>%
         purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
         purrr::map(moranajp, bin_dir = bin_dir, option = option, iconv = iconv) %>%
         dplyr::bind_rows() %>%
