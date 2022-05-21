@@ -27,7 +27,8 @@
 #' }
 #' @export
 moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "") {
-    tbl <- dplyr::mutate(tbl, `:=`("text_id", 1:nrow(tbl)))
+    text_id <- "text_id"
+    tbl <- dplyr::mutate(tbl, `:=`(text_id, 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(
             stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
@@ -39,23 +40,22 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "
       # remove line breaks and '&||<>"'
     tbl <-
         tbl %>%
-        dplyr::mutate(`:=`(!!text_col,
+        dplyr::mutate(`:=`({{text_col}},
             stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
-        dplyr::mutate(`:=`(!!text_col,
-            stringr::str_replace_all(.data[[text_col]], "\\n", "")))
-        dplyr::mutate(`:=`(!!text_col,
+        dplyr::mutate(`:=`({{text_col}},
+            stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
+        dplyr::mutate(`:=`({{text_col}},
             stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
     tbl <-
         tbl %>%
         make_groups(text_col = text_col, length = 8000) %>%
-  #         dplyr::group_split(gr) %>%
-        split(~gr) %>%
+        dplyr::group_split(gr) %>%
         purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
         purrr::map(moranajp, bin_dir = bin_dir, option = option, iconv = iconv) %>%
         dplyr::bind_rows() %>%
         add_text_id() %>%
-        dplyr::left_join(others, by = "text_id") %>%
-        dplyr::relocate(.data[["text_id"]], colnames(others))
+        dplyr::left_join(others, by = text_id) %>%
+        dplyr::relocate(.data[[text_id]], colnames(others))
     return(dplyr::slice(tbl, -nrow(tbl)))
 }
 
@@ -147,15 +147,15 @@ add_series_no <- function(tbl, cond = "", end_sep = TRUE, new_col = "series_no")
         stop("colnames must NOT have a colname", new_col)
     tbl <-
         tbl %>%
-        dplyr::mutate(`:=`(!!new_col,
+        dplyr::mutate(`:=`({{new_col}},
             dplyr::case_when(eval(str2expression(cond)) ~ 1, TRUE ~ 0))) %>%
-        dplyr::mutate(`:=`(!!new_col,
+        dplyr::mutate(`:=`({{new_col}},
             purrr::accumulate(.data[[new_col]], magrittr::add)))
     if(end_sep){  # when condition indicate the end of separation
         tbl <-
             tbl %>%
-            dplyr::mutate(`:=`(!!new_col, .data[[new_col]] + 1)) %>%
-            dplyr::mutate(`:=`(!!new_col,
+            dplyr::mutate(`:=`({{new_col}}, .data[[new_col]] + 1)) %>%
+            dplyr::mutate(`:=`({{new_col}},
                 dplyr::lag(.data[[new_col]], default=1)))
     }
    return(tbl)
