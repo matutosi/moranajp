@@ -19,8 +19,8 @@ add_text_id(tbl)
 \item{new_col}{A string name of new column.}
 }
 \value{
-\preformatted{   A tibble, which include new_col as series no.
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{   A tibble, which include new_col as series no.
+}\if{html}{\out{</div>}}
 
 A tibble.
 }

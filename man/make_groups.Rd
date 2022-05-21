@@ -6,11 +6,17 @@
 \alias{max_sum_str_length}
 \title{Make groups by splitting string length}
 \usage{
-make_groups(tbl, text_col = "text", length = 8000)
+make_groups(
+  tbl,
+  text_col = "text",
+  length = 8000,
+  group = "tmp_group",
+  str_length = "str_length"
+)
 
-make_groups_sub(tbl, text_col, n_group)
+make_groups_sub(tbl, text_col, n_group, group, str_length)
 
-max_sum_str_length(tbl)
+max_sum_str_length(tbl, group, str_length)
 }
 \arguments{
 \item{tbl}{A tibble or data.frame.}
@@ -18,6 +24,8 @@ max_sum_str_length(tbl)
 \item{text_col}{A text. Colnames for morphological analysis.}
 
 \item{length}{A numeric.}
+
+\item{group, str_length}{A string to use temporary.}
 
 \item{n_group}{A numeric.}
 }
