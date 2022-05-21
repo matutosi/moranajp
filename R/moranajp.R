@@ -46,10 +46,11 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "
             stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
         dplyr::mutate(`:=`({{text_col}},
             stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
+    group <- "tmp_group"
     tbl <-
         tbl %>%
-        make_groups(text_col = text_col, length = 8000) %>%
-        dplyr::group_split(gr) %>%
+        make_groups(text_col = text_col, length = 8000, group = group) %>%
+        dplyr::group_split(.data[[group]]) %>%
         purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
         purrr::map(moranajp, bin_dir = bin_dir, option = option, iconv = iconv) %>%
         dplyr::bind_rows() %>%
