@@ -1,8 +1,8 @@
 #' Morphological analysis for a specific column in dataframe
-#'
+#' 
 #' Using 'MeCab' for morphological analysis.
 #' Keep other colnames in dataframe.
-#'
+#' 
 #' @param tbl          A tibble or data.frame.
 #' @param text_col     A text. Colnames for morphological analysis.
 #' @param bin_dir      A text. Directory of mecab.
