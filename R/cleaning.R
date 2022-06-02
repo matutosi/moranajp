@@ -11,7 +11,7 @@
 #' @param ...              Extra arguments to internal fuctions.
 #' @return A dataframe. 
 #' @name clean_up
-#' @examples
+#' # @examples
 #' 
 #' @export
 clean_mecab_local <- function(df, ...){
