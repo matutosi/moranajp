@@ -1,25 +1,26 @@
-clean_chamame <- function(df){
+clean_mecab_local <- function(df, ...){
   df %>%
-    pos_filter_chamame() %>%
-    delete_stop_words() %>%
-    replace_words()
+    pos_filter_mecab_local(...) %>%
+    delete_stop_words(...) %>%
+    replace_words(...)
 }
 
-clean_mecab_local <- function(df){
+clean_chamame <- function(df, ...){
   df %>%
-    pos_filter_mecab_local() %>%
-    delete_stop_words() %>%
-    replace_words()
+    pos_filter_chamame(...) %>%
+    delete_stop_words(...) %>%
+    replace_words(...)
 }
 
-pos_filter_mecab_local <- function(df){
+pos_filter_mecab_local <- function(df, ...){
   # pos filter setting
   filter_pos0 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
     stringi::stri_unescape_unicode()
   filter_pos1 <- 
-    c("\\u666e\\u901a\\u540d\\u8a5e", "\\u56fa\\u6709\\u540d\\u8a5e", "\\u56fa\\u6709", 
-      "\\u4e00\\u822c", "\\u81ea\\u7acb", "\\u30b5\\u5909\\u63a5\\u7d9a", 
+    c("\\u666e\\u901a\\u540d\\u8a5e", "\\u56fa\\u6709\\u540d\\u8a5e", 
+      "\\u56fa\\u6709", "\\u4e00\\u822c", "\\u81ea\\u7acb", 
+      "\\u30b5\\u5909\\u63a5\\u7d9a", 
       "\\u5f62\\u5bb9\\u52d5\\u8a5e\\u8a9e\\u5e79", 
       "\\u30ca\\u30a4\\u5f62\\u5bb9\\u8a5e\\u8a9e\\u5e79", 
       "\\u526f\\u8a5e\\u53ef\\u80fd") %>%
@@ -29,23 +30,25 @@ pos_filter_mecab_local <- function(df){
     c("\\u539f\\u5f62", "\\u54c1\\u8a5e", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
     stringi::stri_unescape_unicode()
 
-  df <- 
-    df %>%
-    dplyr::rename("term" := cols[1], "pos0" := cols[2], "pos1" := cols[3]) %>%
+  df <- df %>%
+    dplyr::rename("term" := cols[1], "pos0" := cols[2], "pos1" := cols[3]) 
+
+  if(! "text_id" %in% colnames(df)){
+    df <- 
+      df %>%
+      add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+  }
+
+  df <- df %>%
     dplyr::filter(pos0 %in% filter_pos0) %>% # filter by pos (parts of speech)
     dplyr::filter(pos1 %in% filter_pos1) %>%
     dplyr::mutate(pos0 = tidyr::replace_na(pos0, "-")) %>%
     dplyr::mutate(pos1 = tidyr::replace_na(pos1, "-"))
 
-  if(! "text_id" %in% colnames(df)){
-    df <- df %>%
-      add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
-  }
-
   return(df)
 }
 
-pos_filter_chamame <- function(df){
+pos_filter_chamame <- function(df, ...){
   df <-   # splite pos
     df %>%
     magrittr::set_colnames(c("term", "pos")) %>% # already selected, but not renamed yet in load_dataServer
@@ -76,14 +79,9 @@ pos_filter_chamame <- function(df){
   return(df)
 }
 
-  #     c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
-  #       "\\u3044\\u308b", "\\u306e", "\\u306a\\u308b", 
-  #       "\\u304a\\u308b", "\\u3093", "\\u308c\\u308b", "*") %>%
-  #     stringi::stri_unescape_unicode()
-  # c("ある", "する", "てる", "いる", "の", "なる", "おる", "ん", "れる", "*")
 delete_stop_words <- function(df, 
                               use_stop_words_data = TRUE,
-                              add_stop_words = ""){
+                              add_stop_words = NULL, ...){
   stop_words <- if(use_stop_words_data){
     data(stop_words)
     stop_words %>%
@@ -98,7 +96,7 @@ delete_stop_words <- function(df,
 
 replace_words <- function(df, use_synonym_data = TRUE, 
                               add_synonym_from = NULL,
-                              add_synonym_to = NULL){
+                              add_synonym_to = NULL, ...){
   replace_words <- if(use_synonym_data){
     data(synonym)
     synonym %>%
