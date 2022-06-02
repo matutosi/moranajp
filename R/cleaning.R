@@ -1,18 +1,38 @@
+#' Clean up result of morphological analyzed data frame
+#' 
+#' @param df               A dataframe including result of morphological analysis.
+#' @param use_common_data  A logical. TRUE: use data(stop_words).
+#' @param stop_words       A string vector.
+#' @param synonym_df       A datarame including synonym word pairs. 
+#'                         The first column: replace from, the second: replace to.
+#' @param synonym_from,synonym_to
+#'                         A string vector. Length of synonym_from and synonym_to 
+#'                         should be the same.
+#' @param ...              Extra arguments to internal fuctions.
+#' @return A dataframe. 
+#' @name clean_up
+#' @examples
+#' 
+#' @export
 clean_mecab_local <- function(df, ...){
   df %>%
-    pos_filter_mecab_local(...) %>%
+    pos_filter_mecab_local() %>%
     delete_stop_words(...) %>%
     replace_words(...)
 }
 
+#' @rdname clean_up
+#' @export
 clean_chamame <- function(df, ...){
   df %>%
-    pos_filter_chamame(...) %>%
+    pos_filter_chamame() %>%
     delete_stop_words(...) %>%
     replace_words(...)
 }
 
-pos_filter_mecab_local <- function(df, ...){
+#' @rdname clean_up
+#' @export
+pos_filter_mecab_local <- function(df){
   # pos filter setting
   filter_pos0 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
@@ -49,8 +69,10 @@ pos_filter_mecab_local <- function(df, ...){
   return(df)
 }
 
-pos_filter_chamame <- function(df, ...){
-  df <-   # splite pos
+#' @rdname clean_up
+#' @export
+pos_filter_chamame <- function(df){
+  df <-
     df %>%
     # already selected, but not renamed yet
     magrittr::set_colnames(c("term", "pos")) %>%
@@ -83,10 +105,12 @@ pos_filter_chamame <- function(df, ...){
   return(df)
 }
 
+#' @rdname clean_up
+#' @export
 delete_stop_words <- function(df, 
-                              use_stop_words_data = TRUE,
-                              add_stop_words = NULL, ...){
-  stop_words <- if(use_stop_words_data){
+                              use_common_data = TRUE,
+                              stop_words = NULL){
+  stop_words <- if(use_common_data){
     data(stop_words)
     stop_words %>%
       dplyr::mutate(stop_word = stringi::stri_unescape_unicode(stop_word))
@@ -94,19 +118,20 @@ delete_stop_words <- function(df,
   stop_words <- 
     stop_words %>%
       magrittr::set_colnames("term") %>%
-      dplyr::add_row(term = add_stop_words)
+      dplyr::add_row(term = stop_words)
   return(dplyr::anti_join(df, stop_words))
 }
 
-replace_words <- function(df, use_synonym_data = TRUE,
-                              add_synonym_from = NULL,
-                              add_synonym_to = NULL, ...){
-  replace_words <- if(use_synonym_data){
-    data(synonym)
-    synonym %>%
-      dplyr::mutate_all(stringi::stri_unescape_unicode)
+#' @rdname clean_up
+#' @export
+replace_words <- function(df, synonym_df = NULL,
+                              synonym_from = NULL,
+                              synonym_to = NULL){
+  rep_words        <- synonym_to
+  names(rep_words) <- synonym_from
+  replace_words <- if(!is.null(synonym_df)){
+    rep_words        <- c(synonym_to,   synonym_df[[2]]) # 2: TO
+    names(rep_words) <- c(synonym_from, synonym_df[[1]]) # 1: FROM
   }
-  rep_words        <- c(synonym$to,   add_synonym_to)
-  names(rep_words) <- c(synonym$from, add_synonym_from)
   return(dplyr::mutate(df, term = stringr::str_replace_all(term, rep_words)))
 }
