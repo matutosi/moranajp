@@ -25,26 +25,38 @@ pos_filter_mecab_local <- function(df){
       "\\u526f\\u8a5e\\u53ef\\u80fd") %>%
     stringi::stri_unescape_unicode()
 
+  cols <- 
+    c("\\u539f\\u5f62", "\\u54c1\\u8a5e", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
+    stringi::stri_unescape_unicode()
+
   df <- 
-    df %>%  # already selected and renamed in mecabServer
+    df %>%
+    dplyr::rename("term" := cols[1], "pos0" := cols[2], "pos1" := cols[3]) %>%
     dplyr::filter(pos0 %in% filter_pos0) %>% # filter by pos (parts of speech)
     dplyr::filter(pos1 %in% filter_pos1) %>%
     dplyr::mutate(pos0 = tidyr::replace_na(pos0, "-")) %>%
-    dplyr::mutate(pos1 = tidyr::replace_na(pos1, "-")) %>%
-    add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+    dplyr::mutate(pos1 = tidyr::replace_na(pos1, "-"))
+
+  if(! "text_id" %in% colnames(df)){
+    df <- df %>%
+      add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+  }
 
   return(df)
 }
 
 pos_filter_chamame <- function(df){
-  # splite pos
-  df <- 
+  df <-   # splite pos
     df %>%
     magrittr::set_colnames(c("term", "pos")) %>% # already selected, but not renamed yet in load_dataServer
     tidyr::separate(pos, into = c("pos0", "pos1"), sep="-", extra = "drop", fill = "right") %>%
     dplyr::mutate(pos0 = tidyr::replace_na(pos0, "-")) %>%
-    dplyr::mutate(pos1 = tidyr::replace_na(pos1, "-")) %>%
-    add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+    dplyr::mutate(pos1 = tidyr::replace_na(pos1, "-"))
+
+  if(! "text_id" %in% colnames(df)){
+    df <- df %>%
+      add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+  }
 
   # pos filter setting
     # stringi::stri_escape_unicode()
@@ -64,33 +76,35 @@ pos_filter_chamame <- function(df){
   return(df)
 }
 
-delete_stop_words <- function(df, path = NULL){
-  # http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt
-  if(is.null(path)) path <- "data/stop_words.txt"
-
-  # stringi::stri_escape_unicode()
-  # stringi::stri_unescape_unicode()
-  add_stop_words <- 
-    c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
-      "\\u3044\\u308b", "\\u306e", "\\u306a\\u308b", 
-      "\\u304a\\u308b", "\\u3093", "\\u308c\\u308b", "*") %>%
-    stringi::stri_unescape_unicode()
+  #     c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
+  #       "\\u3044\\u308b", "\\u306e", "\\u306a\\u308b", 
+  #       "\\u304a\\u308b", "\\u3093", "\\u308c\\u308b", "*") %>%
+  #     stringi::stri_unescape_unicode()
+  # c("ある", "する", "てる", "いる", "の", "なる", "おる", "ん", "れる", "*")
+delete_stop_words <- function(df, 
+                              use_stop_words_data = TRUE,
+                              add_stop_words = ""){
+  stop_words <- if(use_stop_words_data){
+    data(stop_words)
+    stop_words %>%
+      dplyr::mutate(stop_word = stringi::stri_unescape_unicode(stop_word))
+  }
   stop_words <- 
-    readr::read_tsv(path, col_names = FALSE, col_types = "c") %>%
-    magrittr::set_colnames("term") %>%
-    dplyr::add_row(term = add_stop_words)
-
+    stop_words %>%
+      magrittr::set_colnames("term") %>%
+      dplyr::add_row(term = add_stop_words)
   return(dplyr::anti_join(df, stop_words))
 }
 
-
-replace_words <- function(df, path = NULL){
-  if(is.null(path)) path <- "data/replace_words.txt"
-
-  # words for replacement (synonym) settings
-  rep_words <- readr::read_tsv(path, col_types = "c")
-  replace_words        <- rep_words$to
-  names(replace_words) <- rep_words$from
-
-  return(dplyr::mutate(df, term = stringr::str_replace_all(term, replace_words)))
+replace_words <- function(df, use_synonym_data = TRUE, 
+                              add_synonym_from = NULL,
+                              add_synonym_to = NULL){
+  replace_words <- if(use_synonym_data){
+    data(synonym)
+    synonym %>%
+      dplyr::mutate_all(stringi::stri_unescape_unicode)
+  }
+  rep_words        <- c(synonym$to,   add_synonym_to)
+  names(rep_words) <- c(synonym$from, add_synonym_from)
+  return(dplyr::mutate(df, term = stringr::str_replace_all(term, rep_words)))
 }
