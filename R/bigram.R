@@ -43,41 +43,43 @@ freq_ratio <- function(df, bigram_net){
     round(0) * 2
 }
 
+bigram_network_plot <- function(bigram_net, 
+                           freq,
+                           arrow_size  = 5,
+                           circle_size = 5,
+                           text_size   = 5,
+                           font_family = "",
+                           arrow_col   = "darkgreen",
+                           circle_col  = "skyblue",
+                           x_limits    = NULL,
+                           y_limits    = NULL,
+                           no_scale    = TRUE){
 
-bigram_network <- function(bigram_net, freq){
-  arrow_size  <- unit(input$arrow_size, 'mm')
-  cap_size    <- circle(input$arrow_size, 'mm')
-  circle_size <- input$circle_size
-  text_size   <- input$text_size
-  font_family <- if(exists("input$font")) input$font else ""
-  arrow_col  <- input$arrow_col
-  ccircle_col <- input$circle_col
+  cap_size    <- ggraph::circle(arrow_size, 'mm')
+  arrow_size  <- grid::unit(arrow_size, 'mm')
+  breaks      <- if(no_scale) NULL else ggplot2::waiver()
 
-  bigram_net %>%
-    ggraph(layout = "fr") +        # the most understandable layout
-    geom_edge_link(color  = arrow_col,  arrow = arrow(length = arrow_size), start_cap = cap_size, end_cap = ccap_size) +
-    geom_node_point(color = circle_col, size = freq_ratio() * circle_size * 0.2) +  # default (5) means 5 * 0.2 = 1
-    geom_node_text(aes(label = name), vjust = 1, hjust = 1, size = text_size, family = font_family) +
+  bigram_net_plot <- 
+    bigram_net %>%
+    # the most understandable layout
+    ggraph::ggraph(layout = "fr") + 
+    ggraph::geom_edge_link(color  = arrow_col, 
+                           arrow  = grid::arrow(length = arrow_size), 
+                           start_cap = cap_size, 
+                           end_cap   = cap_size) +
+    ggraph::geom_node_point(color = circle_col, 
+                            # default (5) means 5 * 0.2 = 1
+                            size  = freq * circle_size * 0.2) +  
+    ggraph::geom_node_text(ggplot2::aes(label = name), 
+                           vjust  = 1, 
+                           hjust  = 1, 
+                           size   = text_size, 
+                           family = font_family) +
     ggplot2::theme_bw() + 
-    ggplot2::theme(axis.title.x = element_blank(),
-                   axis.title.y = element_blank())
-}
+    ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank()) + 
+    ggplot2::scale_x_continuous(limits = x_limits, breaks = breaks) + 
+    ggplot2::scale_y_continuous(limits = y_limits, breaks = breaks)
 
-
-bigram_network_detail <- function(){
-  bigram_network_raw() + 
-    scale_x_continuous(limits = input$detail_x) + 
-    scale_y_continuous(limits = input$detail_y)
-}
-
-bigram_network_detail_noscale <- function(){
-  bigram_network_raw() + 
-    scale_x_continuous(breaks = NULL, limits = input$detail_x) + 
-    scale_y_continuous(breaks = NULL, limits = input$detail_y)
-}
-
-bigram_network_raw_noscale <- function(){
-  bigram_network_raw() +
-    scale_x_continuous(breaks = NULL) + 
-    scale_y_continuous(breaks = NULL)
+  return(bigram_net_plot)
 }
