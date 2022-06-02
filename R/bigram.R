@@ -1,21 +1,7 @@
-library(moranajp)
-library(tidyverse)
-data(neko)
-bin_dir <- "d:/pf/mecab/bin"
-mcb <- 
-  neko %>%
-  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
-  moranajp_all(bin_dir =  bin_dir, iconv="CP932_UTF-8")
-mcb %>%
-
-
-usethis::use_data_raw("review")
-usethis::use_data_raw("replace_words")
-
-bigram <- function(df, text_id = "text_id")
+bigram <- function(df, text_id = "text_id"){
   df %>%
     dplyr::group_by(.data[[text_id]]) %>%
-    # according to arrow direction in ggplot: "word_2-word_1"
+  # according to arrow direction in ggplot: "word_2-word_1"
     dplyr::transmute(text_id, 
                      word_2 = term, 
                      word_1 = dplyr::lag(term), 
@@ -26,23 +12,10 @@ bigram <- function(df, text_id = "text_id")
     dplyr::summarise(freq = dplyr::n()) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(dplyr::desc(.data[[freq]]))
-})
-
-# Show table
-output$table <- renderReactable({
-  req(bigram())
-  bigram() %>%
-    dplyr::select(word_1, word_2, freq) %>% 
-    reactable::reactable(resizable = TRUE, filterable = TRUE, searchable = TRUE,)
-})
+}
 
 
-# Download bigram data
-download_tsv_dataServer("download_bigram_data", bigram(), "bigram")
-
-
-# word frequency
-freq_ratio <- reactive({
+freq_ratio <- function(){
   term <- 
     bigram_net() %>%
     igraph::V() %>%
@@ -54,20 +27,19 @@ freq_ratio <- reactive({
     .$n %>%
     log() %>%
     round(0) * 2
-})
+}
 
-# bigram network
-bigram_net <- reactive({
+  # bigram network
+bigram_net <- function(){
   set.seed(input$rand_seed)
   threshold <- input$threshold
   bigram() %T>%
     { freq_thresh <<- dplyr::slice(., threshold)$freq } %>%
     dplyr::filter(freq > freq_thresh) %>%
     graph_from_data_frame()
-})
+}
 
-# plot
-bigram_network_raw <- reactive({
+bigram_network_raw <- function(){
   req(bigram_net())
 
   arrow_size  <- unit(input$arrow_size, 'mm')
@@ -82,23 +54,23 @@ bigram_network_raw <- reactive({
     ggplot2::theme_bw() + 
     ggplot2::theme(axis.title.x = element_blank(),
                    axis.title.y = element_blank())
-})
+}
 
 
-bigram_network_detail <- reactive({
+bigram_network_detail <- function(){
   bigram_network_raw() + 
     scale_x_continuous(limits = input$detail_x) + 
     scale_y_continuous(limits = input$detail_y)
-})
+}
 
-bigram_network_detail_noscale <- reactive({
+bigram_network_detail_noscale <- function(){
   bigram_network_raw() + 
     scale_x_continuous(breaks = NULL, limits = input$detail_x) + 
     scale_y_continuous(breaks = NULL, limits = input$detail_y)
-})
+}
 
-bigram_network_raw_noscale <- reactive({
+bigram_network_raw_noscale <- function(){
   bigram_network_raw() +
     scale_x_continuous(breaks = NULL) + 
     scale_y_continuous(breaks = NULL)
-})
+}
