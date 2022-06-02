@@ -9,9 +9,8 @@
 #'                         A string vector. Length of synonym_from and synonym_to 
 #'                         should be the same.
 #' @param ...              Extra arguments to internal fuctions.
-#' @return A dataframe. 
+#' @return A dataframe.
 #' @name clean_up
-#' # @examples
 #' 
 #' @export
 clean_mecab_local <- function(df, ...){

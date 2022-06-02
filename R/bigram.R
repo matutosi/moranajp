@@ -1,3 +1,35 @@
+#' Draw bigram network using morphological analysis data.
+#' 
+#' @param df           A dataframe including result of morphological analysis.
+#' @param bigram       A result of bigram().
+#' @param bigram_net   A result of bigram_net().
+#' @param rand_seed    A numeric.
+#' @param threshold    A numeric used as threshold for frequency of bigram.
+#' @param freq         A numeric of word frequency in bigram_net.
+#'                     Can be got using word_freq().
+#' @param arrow_size,circle_size,text_size,
+#'                     A numeric.
+#' @param font_family  A string. 
+#' @param arrow_col,circle_col
+#'                     A string to specicy arrow and circle color 
+#'                     in bigram network.
+#' @param x_limits,y_limits
+#'                     A Pair of numeric to specify range.
+#' @param no_scale     A logical. FALSE: Not draw x and y axis.
+#' @param ...          Extra arguments to internal fuctions.
+#' @return  A gg object of bigram network plot.
+#' 
+#' @export
+draw_bigram_network <- function(df, ...){
+  bigram_net <- 
+    bigram(df) %>%
+    bigram_net()
+  freq <- word_freq(df, bigram_net)
+  bigram_network_plot(bigram_net, freq)
+}
+
+#' @rdname draw_bigram_network
+#' @export
 bigram <- function(df, text_id = "text_id"){
   word_1 <- "word_1"
   word_2 <- "word_2"
@@ -9,7 +41,6 @@ bigram <- function(df, text_id = "text_id"){
     dplyr::transmute(text_id, 
                      {{word_2}} := term, 
                      {{word_1}} := dplyr::lag(.data[[term]])) %>%
-  #                      bigram = stringr::str_c(.data[[word_2]], " - ",.data[[ word_1]])) %>%
     dplyr::ungroup() %>%
     na.omit() %>%
     dplyr::group_by(.data[[word_1]], .data[[word_2]]) %>%
@@ -18,16 +49,19 @@ bigram <- function(df, text_id = "text_id"){
     dplyr::arrange(dplyr::desc(.data[[freq]]))
 }
 
-  # bigram network
+#' @rdname draw_bigram_network
+#' @export
 bigram_net <- function(bigram, rand_seed = 12, threshold = 100){
   set.seed(rand_seed)
-  bigram %T>%
-    { freq_thresh <<- dplyr::slice(., threshold)$freq } %>%
+  freq_thresh <- dplyr::slice(bigram, threshold)[["freq"]]
+  bigram %>%
     dplyr::filter(freq > freq_thresh) %>%
     igraph::graph_from_data_frame()
 }
 
-freq_ratio <- function(df, bigram_net){
+#' @rdname draw_bigram_network
+#' @export
+word_freq <- function(df, bigram_net){
   freq <- "freq"
   term <- 
     bigram_net %>%
@@ -43,18 +77,20 @@ freq_ratio <- function(df, bigram_net){
     round(0) * 2
 }
 
+#' @rdname draw_bigram_network
+#' @export
 bigram_network_plot <- function(bigram_net, 
-                           freq,
-                           arrow_size  = 5,
-                           circle_size = 5,
-                           text_size   = 5,
-                           font_family = "",
-                           arrow_col   = "darkgreen",
-                           circle_col  = "skyblue",
-                           x_limits    = NULL,
-                           y_limits    = NULL,
-                           no_scale    = TRUE){
-
+                                freq,
+                                arrow_size  = 5,
+                                circle_size = 5,
+                                text_size   = 5,
+                                font_family = "",
+                                arrow_col   = "darkgreen",
+                                circle_col  = "skyblue",
+                                x_limits    = NULL,
+                                y_limits    = NULL,
+                                no_scale    = TRUE){
+  # settings
   cap_size    <- ggraph::circle(arrow_size, 'mm')
   arrow_size  <- grid::unit(arrow_size, 'mm')
   breaks      <- if(no_scale) NULL else ggplot2::waiver()
