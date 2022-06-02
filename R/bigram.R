@@ -22,10 +22,10 @@
 #' @export
 draw_bigram_network <- function(df, ...){
   bigram_net <- 
-    bigram(df) %>%
-    bigram_net()
+    bigram(df, ...) %>%
+    bigram_net(...)
   freq <- word_freq(df, bigram_net)
-  bigram_network_plot(bigram_net, freq)
+  bigram_network_plot(bigram_net, freq, ...)
 }
 
 #' @rdname draw_bigram_network
