@@ -27,7 +27,8 @@ pos_filter_mecab_local <- function(df, ...){
     stringi::stri_unescape_unicode()
 
   cols <- 
-    c("\\u539f\\u5f62", "\\u54c1\\u8a5e", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
+    c("\\u539f\\u5f62", "\\u54c1\\u8a5e", 
+      "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
     stringi::stri_unescape_unicode()
 
   df <- df %>%
@@ -51,7 +52,8 @@ pos_filter_mecab_local <- function(df, ...){
 pos_filter_chamame <- function(df, ...){
   df <-   # splite pos
     df %>%
-    magrittr::set_colnames(c("term", "pos")) %>% # already selected, but not renamed yet in load_dataServer
+    # already selected, but not renamed yet
+    magrittr::set_colnames(c("term", "pos")) %>%
     tidyr::separate(pos, into = c("pos0", "pos1"), sep="-", extra = "drop", fill = "right") %>%
     dplyr::mutate(pos0 = tidyr::replace_na(pos0, "-")) %>%
     dplyr::mutate(pos1 = tidyr::replace_na(pos1, "-"))
@@ -62,13 +64,15 @@ pos_filter_chamame <- function(df, ...){
   }
 
   # pos filter setting
-    # stringi::stri_escape_unicode()
-    # stringi::stri_unescape_unicode()
+  #   stringi::stri_escape_unicode()
+  #   stringi::stri_unescape_unicode()
   filter_pos0 <- 
-    c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e", "\\u526f\\u8a5e") %>%
+    c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
+      "\\u5f62\\u5bb9\\u8a5e", "\\u526f\\u8a5e") %>%
     stringi::stri_unescape_unicode()
   filter_pos1 <- 
-    c("\\u666e\\u901a\\u540d\\u8a5e", "\\u975e\\u81ea\\u7acb\\u53ef\\u80fd", "\\u4e00\\u822c") %>%
+    c("\\u666e\\u901a\\u540d\\u8a5e", 
+      "\\u975e\\u81ea\\u7acb\\u53ef\\u80fd", "\\u4e00\\u822c") %>%
     stringi::stri_unescape_unicode()
 
   df <- 
@@ -94,7 +98,7 @@ delete_stop_words <- function(df,
   return(dplyr::anti_join(df, stop_words))
 }
 
-replace_words <- function(df, use_synonym_data = TRUE, 
+replace_words <- function(df, use_synonym_data = TRUE,
                               add_synonym_from = NULL,
                               add_synonym_to = NULL, ...){
   replace_words <- if(use_synonym_data){
