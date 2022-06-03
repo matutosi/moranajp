@@ -2,12 +2,16 @@
 #' 
 #' @param df               A dataframe including result of morphological analysis.
 #' @param use_common_data  A logical. TRUE: use data(stop_words).
-#' @param stop_words       A string vector.
+#' @param add_stop_words   A string vector adding into stop words. 
+#'                         When use_common_data is TRUE and add_stop_words are given, 
+#'                         both of them will be used as stop_words.
 #' @param synonym_df       A datarame including synonym word pairs. 
 #'                         The first column: replace from, the second: replace to.
 #' @param synonym_from,synonym_to
 #'                         A string vector. Length of synonym_from and synonym_to 
 #'                         should be the same.
+#'                         When synonym_df and synonym pairs (synonym_from and synonym_to)
+#'                         are given, both of them will be used as synonym.
 #' @param ...              Extra arguments to internal fuctions.
 #' @return A dataframe.
 #' @name clean_up
@@ -85,8 +89,6 @@ pos_filter_chamame <- function(df){
   }
 
   # pos filter setting
-  #   stringi::stri_escape_unicode()
-  #   stringi::stri_unescape_unicode()
   filter_pos0 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
       "\\u5f62\\u5bb9\\u8a5e", "\\u526f\\u8a5e") %>%
@@ -106,26 +108,29 @@ pos_filter_chamame <- function(df){
 
 #' @rdname clean_up
 #' @export
-delete_stop_words <- function(df, 
+delete_stop_words <- function(df, ..., # `...' will be omitted
                               use_common_data = TRUE,
-                              stop_words = NULL){
-  stop_words <- if(use_common_data){
+                              add_stop_words = NULL){
+  stop_words <- 
+  if(use_common_data){
     data(stop_words)
     stop_words %>%
-      dplyr::mutate(stop_word = stringi::stri_unescape_unicode(stop_word))
+      dplyr::transmute("term" := stringi::stri_unescape_unicode(stop_word))
+  } else {
+    tibble::tibble()
   }
   stop_words <- 
     stop_words %>%
-      magrittr::set_colnames("term") %>%
-      dplyr::add_row(term = stop_words)
+      dplyr::add_row(term = add_stop_words)
   return(dplyr::anti_join(df, stop_words))
 }
 
 #' @rdname clean_up
 #' @export
-replace_words <- function(df, synonym_df = NULL,
-                              synonym_from = NULL,
-                              synonym_to = NULL){
+replace_words <- function(df, ...,  # `...' will be omitted
+                          synonym_df = NULL,
+                          synonym_from = NULL,
+                          synonym_to = NULL){
   rep_words        <- synonym_to
   names(rep_words) <- synonym_from
   replace_words <- if(!is.null(synonym_df)){

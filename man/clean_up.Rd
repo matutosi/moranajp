@@ -18,9 +18,15 @@ pos_filter_mecab_local(df)
 
 pos_filter_chamame(df)
 
-delete_stop_words(df, use_common_data = TRUE, stop_words = NULL)
+delete_stop_words(df, ..., use_common_data = TRUE, add_stop_words = NULL)
 
-replace_words(df, synonym_df = NULL, synonym_from = NULL, synonym_to = NULL)
+replace_words(
+  df,
+  ...,
+  synonym_df = NULL,
+  synonym_from = NULL,
+  synonym_to = NULL
+)
 }
 \arguments{
 \item{df}{A dataframe including result of morphological analysis.}
@@ -29,13 +35,17 @@ replace_words(df, synonym_df = NULL, synonym_from = NULL, synonym_to = NULL)
 
 \item{use_common_data}{A logical. TRUE: use data(stop_words).}
 
-\item{stop_words}{A string vector.}
+\item{add_stop_words}{A string vector adding into stop words.
+When use_common_data is TRUE and add_stop_words are given,
+both of them will be used as stop_words.}
 
 \item{synonym_df}{A datarame including synonym word pairs.
 The first column: replace from, the second: replace to.}
 
 \item{synonym_from, synonym_to}{A string vector. Length of synonym_from and synonym_to
-should be the same.}
+should be the same.
+When synonym_df and synonym pairs (synonym_from and synonym_to)
+are given, both of them will be used as synonym.}
 }
 \value{
 A dataframe.

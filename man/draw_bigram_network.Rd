@@ -10,14 +10,15 @@
 \usage{
 draw_bigram_network(df, ...)
 
-bigram(df, text_id = "text_id")
+bigram(df, text_id = "text_id", ...)
 
-bigram_net(bigram, rand_seed = 12, threshold = 100)
+bigram_net(bigram, rand_seed = 12, threshold = 100, ...)
 
 word_freq(df, bigram_net)
 
 bigram_network_plot(
   bigram_net,
+  ...,
   freq,
   arrow_size = 5,
   circle_size = 5,
