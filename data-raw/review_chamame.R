@@ -1,4 +1,4 @@
-## code to prepare `review_chasen` dataset goes here
+## code to prepare `review_chamame` dataset goes here
 
 library(tidyverse)
 library(moranajp)
@@ -17,9 +17,9 @@ review %>%
   # 
   #  #   #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  # 
 
-review_chasen <-
+review_chamame <-
   readr::read_csv("tools/review.csv") %>%
   dplyr::mutate_all(stringi::stri_escape_unicode) %>%
   magrittr::set_colnames(stringi::stri_escape_unicode(colnames(.)))
-usethis::use_data(review_chasen, overwrite = TRUE)
-  # usethis::use_data_raw("review_chasen")
+usethis::use_data(review_chamame, overwrite = TRUE)
+  # usethis::use_data_raw("review_chamame")

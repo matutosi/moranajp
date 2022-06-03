@@ -1,4 +1,4 @@
-## code to prepare `neko_chasen` dataset goes here
+## code to prepare `neko_chamame` dataset goes here
 
 library(tidyverse)
 library(moranajp)
@@ -17,10 +17,10 @@ neko %>%
   # 
   #  #   #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  # 
 
-neko_chasen <-
+neko_chamame <-
   readr::read_csv("tools/neko.csv") %>%
   dplyr::mutate_all(stringi::stri_escape_unicode) %>%
   magrittr::set_colnames(stringi::stri_escape_unicode(colnames(.)))
-usethis::use_data(neko_chasen, overwrite = TRUE)
-  # usethis::use_data_raw("neko_chasen")
+usethis::use_data(neko_chamame, overwrite = TRUE)
+  # usethis::use_data_raw("neko_chamame")
 
