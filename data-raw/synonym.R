@@ -1,5 +1,4 @@
 ## code to prepare `synonym` dataset goes here
-## code to prepare `replace_words` dataset goes here
 
 library(tidyverse)
 synonym <-
