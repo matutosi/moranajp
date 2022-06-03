@@ -30,7 +30,7 @@ draw_bigram_network <- function(df, ...){
 
 #' @rdname draw_bigram_network
 #' @export
-bigram <- function(df, text_id = "text_id"){
+bigram <- function(df, text_id = "text_id", ...){  # `...' will be omitted
   word_1 <- "word_1"
   word_2 <- "word_2"
   term <- "term"
@@ -51,7 +51,7 @@ bigram <- function(df, text_id = "text_id"){
 
 #' @rdname draw_bigram_network
 #' @export
-bigram_net <- function(bigram, rand_seed = 12, threshold = 100){
+bigram_net <- function(bigram, rand_seed = 12, threshold = 100, ...){  # `...' will be omitted
   set.seed(rand_seed)
   freq_thresh <- dplyr::slice(bigram, threshold)[["freq"]]
   bigram %>%
@@ -79,7 +79,7 @@ word_freq <- function(df, bigram_net){
 
 #' @rdname draw_bigram_network
 #' @export
-bigram_network_plot <- function(bigram_net, 
+bigram_network_plot <- function(bigram_net, ...,  # `...' will be omitted
                                 freq,
                                 arrow_size  = 5,
                                 circle_size = 5,
