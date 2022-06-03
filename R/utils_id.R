@@ -12,8 +12,8 @@
 #' @examples
 #' tmp <- c("a", "brk", "b", "brk", "c")
 #' brk <- "brk"
-#' id_with_break(tmp, brk)
-#' add_id_df(tibble::tibble(tmp), col = "tmp", "brk")
+#' text_id_with_break(tmp, brk)
+#' add_text_id_df(tibble::tibble(tmp), col = "tmp", "brk")
 #' 
 #' @export
 text_id_with_break <- function(x, brk, end_with_brk = TRUE){
@@ -21,6 +21,9 @@ text_id_with_break <- function(x, brk, end_with_brk = TRUE){
   if(end_with_brk) text_id <- c(1, text_id)[-length(text_id)]
   return(text_id)
 }
+
+#' @rdname text_id_with_break
+#' @export
 add_text_id_df <- function(df, col, brk, end_with_brk = TRUE){
   x <- df[[col]]
   text_id <- text_id_with_break(x, brk, end_with_brk)

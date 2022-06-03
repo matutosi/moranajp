@@ -1,6 +1,7 @@
 #' Draw bigram network using morphological analysis data.
 #' 
 #' @param df           A dataframe including result of morphological analysis.
+#' @param text_id      A dstring to specify text.
 #' @param bigram       A result of bigram().
 #' @param bigram_net   A result of bigram_net().
 #' @param rand_seed    A numeric.
@@ -18,6 +19,34 @@
 #' @param no_scale     A logical. FALSE: Not draw x and y axis.
 #' @param ...          Extra arguments to internal fuctions.
 #' @return  A gg object of bigram network plot.
+#' @examples
+#' data(neko_mecab)
+#' data(synonym)
+#' synonym <- 
+#'   synonym %>% dplyr::mutate_all(stringi::stri_unescape_unicode)
+#' 
+#' bigram_neko <- 
+#'   neko_mecab %>%
+#'   dplyr::select(-text_id) %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+#'   clean_mecab_local(
+#'     use_common_data = TRUE, 
+#'     synonym_df = synonym) %>%
+#'   draw_bigram_network()
+#' 
+#' add_stop_words <- 
+#'   c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
+#'     "\\u3044\\u308b","\\u306e", "\\u306a\\u308b", "\\u304a\\u308b", 
+#'     "\\u3093", "\\u308c\\u308b", "*") %>% 
+#'   stringi::stri_unescape_unicode()
+#' 
+#' bigram_review <- 
+#' review_chamame %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+#'   clean_chamame(add_stop_words = add_stop_words) %>%
+#'   draw_bigram_network()
 #' 
 #' @export
 draw_bigram_network <- function(df, ...){
@@ -25,7 +54,7 @@ draw_bigram_network <- function(df, ...){
     bigram(df, ...) %>%
     bigram_net(...)
   freq <- word_freq(df, bigram_net)
-  bigram_network_plot(bigram_net, freq, ...)
+  bigram_network_plot(bigram_net, freq = freq, ...)
 }
 
 #' @rdname draw_bigram_network
@@ -42,7 +71,7 @@ bigram <- function(df, text_id = "text_id", ...){  # `...' will be omitted
                      {{word_2}} := term, 
                      {{word_1}} := dplyr::lag(.data[[term]])) %>%
     dplyr::ungroup() %>%
-    na.omit() %>%
+    stats::na.omit() %>%
     dplyr::group_by(.data[[word_1]], .data[[word_2]]) %>%
     dplyr::tally(name = {{freq}}) %>%
     dplyr::ungroup() %>%
@@ -55,7 +84,7 @@ bigram_net <- function(bigram, rand_seed = 12, threshold = 100, ...){  # `...' w
   set.seed(rand_seed)
   freq_thresh <- dplyr::slice(bigram, threshold)[["freq"]]
   bigram %>%
-    dplyr::filter(freq > freq_thresh) %>%
+    dplyr::filter(.data[["freq"]] > freq_thresh) %>%
     igraph::graph_from_data_frame()
 }
 
@@ -79,8 +108,8 @@ word_freq <- function(df, bigram_net){
 
 #' @rdname draw_bigram_network
 #' @export
-bigram_network_plot <- function(bigram_net, ...,  # `...' will be omitted
-                                freq,
+bigram_network_plot <- function(bigram_net, freq,
+                                ...,  # `...' will be omitted
                                 arrow_size  = 5,
                                 circle_size = 5,
                                 text_size   = 5,
@@ -106,7 +135,7 @@ bigram_network_plot <- function(bigram_net, ...,  # `...' will be omitted
     ggraph::geom_node_point(color = circle_col, 
                             # default (5) means 5 * 0.2 = 1
                             size  = freq * circle_size * 0.2) +  
-    ggraph::geom_node_text(ggplot2::aes(label = name), 
+    ggraph::geom_node_text(ggplot2::aes(label = .data[["name"]]), 
                            vjust  = 1, 
                            hjust  = 1, 
                            size   = text_size, 

@@ -7,20 +7,19 @@
 \format{
 A data frame with  2965 rows and 14 variable:
 \describe{
-\item{\u8f9e\u66f8}{result of chamame}
-\item{\u6587\u5883\u754c}{result of chamame}
-\item{\u66f8\u5b57\u5f62\uff08\uff1d\u8868\u5c64\u5f62\uff09}
-{result of chamame}
-\item{\u8a9e\u5f59\u7d20}{result of chamame}
-\item{\u8a9e\u5f59\u7d20\u8aad\u307f}{result of chamame}
-\item{\u54c1\u8a5e}{result of chamame}
-\item{\u6d3b\u7528\u578b}{result of chamame}
-\item{\u6d3b\u7528\u5f62}{result of chamame}
-\item{\u767a\u97f3\u5f62\u51fa\u73fe\u5f62}{result of chamame}
-\item{\u4eee\u540d\u5f62\u51fa\u73fe\u5f62}{result of chamame}
-\item{\u8a9e\u7a2e}{result of chamame}
-\item{\u66f8\u5b57\u5f62(\u57fa\u672c\u5f62)}{result of chamame}
-\item{\u8a9e\u5f62(\u57fa\u672c\u5f62)}{result of chamame}
+\item{\\u8f9e\\u66f8}{result of chamame}
+\item{\\u6587\\u5883\\u754c}{result of chamame}
+\item{\\u66f8\\u5b57\\u5f62\\uff08\\uff1d\\u8868\\u5c64\\u5f62\\uff09}{result of chamame}
+\item{\\u8a9e\\u5f59\\u7d20}{result of chamame}
+\item{\\u8a9e\\u5f59\\u7d20\\u8aad\\u307f}{result of chamame}
+\item{\\u54c1\\u8a5e}{result of chamame}
+\item{\\u6d3b\\u7528\\u578b}{result of chamame}
+\item{\\u6d3b\\u7528\\u5f62}{result of chamame}
+\item{\\u767a\\u97f3\\u5f62\\u51fa\\u73fe\\u5f62}{result of chamame}
+\item{\\u4eee\\u540d\\u5f62\\u51fa\\u73fe\\u5f62}{result of chamame}
+\item{\\u8a9e\\u7a2e}{result of chamame}
+\item{\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)}{result of chamame}
+\item{\\u8a9e\\u5f62(\\u57fa\\u672c\\u5f62)}{result of chamame}
 \item{...14}{result of chamame}
 }
 }

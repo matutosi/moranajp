@@ -31,7 +31,7 @@ Add ids.
 \examples{
 tmp <- c("a", "brk", "b", "brk", "c")
 brk <- "brk"
-id_with_break(tmp, brk)
-add_id_df(tibble::tibble(tmp), col = "tmp", "brk")
+text_id_with_break(tmp, brk)
+add_text_id_df(tibble::tibble(tmp), col = "tmp", "brk")
 
 }

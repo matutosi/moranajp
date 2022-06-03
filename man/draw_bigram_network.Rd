@@ -18,8 +18,8 @@ word_freq(df, bigram_net)
 
 bigram_network_plot(
   bigram_net,
-  ...,
   freq,
+  ...,
   arrow_size = 5,
   circle_size = 5,
   text_size = 5,
@@ -67,14 +67,32 @@ A gg object of bigram network plot.
 Draw bigram network using morphological analysis data.
 }
 \examples{
-data(review_chamame)
+data(neko_mecab)
+data(synonym)
+synonym <- 
+  synonym \%>\% dplyr::mutate_all(stringi::stri_unescape_unicode)
 
+bigram_neko <- 
+  neko_mecab \%>\%
+  dplyr::select(-text_id) \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  clean_mecab_local(
+    use_common_data = TRUE, 
+    synonym_df = synonym) \%>\%
+  draw_bigram_network()
 
+add_stop_words <- 
+  c("\\\\u3042\\\\u308b", "\\\\u3059\\\\u308b", "\\\\u3066\\\\u308b", 
+    "\\\\u3044\\\\u308b","\\\\u306e", "\\\\u306a\\\\u308b", "\\\\u304a\\\\u308b", 
+    "\\\\u3093", "\\\\u308c\\\\u308b", "*") \%>\% 
+  stringi::stri_unescape_unicode()
 
-
-
-
-
-
+bigram_review <- 
+review_chamame \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  clean_chamame(add_stop_words = add_stop_words) \%>\%
+  draw_bigram_network()
 
 }
