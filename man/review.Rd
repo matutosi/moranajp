@@ -21,6 +21,9 @@ https://www.jstage.jst.go.jp/article/vegsci/31/2/31_193/_article/-char/en
 Dammy number of chapter.
 }
 }
+data(neko)
+review \%>\%
+dplyr::mutate_all(stringi::stri_unescape_unicode)
 }
 \usage{
 review

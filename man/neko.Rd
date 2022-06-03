@@ -16,4 +16,9 @@ neko
 \description{
 The first part of 'I Am a Cat' by Soseki Natsume
 }
+\examples{
+data(neko)
+neko \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode)
+}
 \keyword{datasets}

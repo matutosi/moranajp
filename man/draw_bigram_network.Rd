@@ -36,6 +36,8 @@ bigram_network_plot(
 
 \item{...}{Extra arguments to internal fuctions.}
 
+\item{text_id}{A dstring to specify text.}
+
 \item{bigram}{A result of bigram().}
 
 \item{rand_seed}{A numeric.}
@@ -63,4 +65,16 @@ A gg object of bigram network plot.
 }
 \description{
 Draw bigram network using morphological analysis data.
+}
+\examples{
+data(review_chamame)
+
+
+
+
+
+
+
+
+
 }

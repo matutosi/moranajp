@@ -53,3 +53,23 @@ A dataframe.
 \description{
 Clean up result of morphological analyzed data frame
 }
+\examples{
+data(review_chamame)
+review_chamame \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  dplyr::select(-text_id) \%>\%
+  clean_chamame()
+
+data(review_mecab)
+review_mecab \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  dplyr::select(-text_id) \%>\%
+  clean_mecab_local() \%>\%
+  print(n = 30)
+
+
+review_mecab \%>\%
+
+}

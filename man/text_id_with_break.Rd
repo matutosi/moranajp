@@ -2,9 +2,12 @@
 % Please edit documentation in R/utils_id.R
 \name{text_id_with_break}
 \alias{text_id_with_break}
+\alias{add_text_id_df}
 \title{Add ids.}
 \usage{
 text_id_with_break(x, brk, end_with_brk = TRUE)
+
+add_text_id_df(df, col, brk, end_with_brk = TRUE)
 }
 \arguments{
 \item{x}{A string vector.}
@@ -15,9 +18,9 @@ text_id_with_break(x, brk, end_with_brk = TRUE)
 TRUE: brk means the end of groups.
 FALSE: brk means the begining of groups.}
 
-\item{col}{A string to specify the column.}
-
 \item{df}{A dataframe.}
+
+\item{col}{A string to specify the column.}
 }
 \value{
 id_with_break() returns id vector, add_id_df() returns dataframe.
