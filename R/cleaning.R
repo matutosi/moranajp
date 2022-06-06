@@ -128,9 +128,10 @@ pos_filter_chamame <- function(df){
 
 #' @rdname clean_up
 #' @export
-delete_stop_words <- function(df, ..., # `...' will be omitted
+delete_stop_words <- function(df,
                               use_common_data = TRUE,
-                              add_stop_words = NULL){
+                              add_stop_words = NULL,
+                              ...){ # `...' will be omitted
   stop_words <- 
   if(use_common_data){
     utils::data(stop_words, envir = environment())
@@ -147,10 +148,11 @@ delete_stop_words <- function(df, ..., # `...' will be omitted
 
 #' @rdname clean_up
 #' @export
-replace_words <- function(df, ...,  # `...' will be omitted
+replace_words <- function(df, 
                           synonym_df = NULL,
                           synonym_from = NULL,
-                          synonym_to = NULL){
+                          synonym_to = NULL,
+                          ...){ # `...' will be omitted
   if(is.null(synonym_df) & is.null(synonym_from) & is.null(synonym_to))
       return(df)
   rep_words        <- synonym_to

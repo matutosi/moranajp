@@ -20,6 +20,7 @@
 #' @param ...          Extra arguments to internal fuctions.
 #' @return  A gg object of bigram network plot.
 #' @examples
+#' library(tidyverse)
 #' data(neko_mecab)
 #' data(synonym)
 #' synonym <- 
@@ -42,7 +43,7 @@
 #'   stringi::stri_unescape_unicode()
 #' 
 #' bigram_review <- 
-#' review_chamame %>%
+#'   review_chamame %>%
 #'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
 #'   clean_chamame(add_stop_words = add_stop_words) %>%
