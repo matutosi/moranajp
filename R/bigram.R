@@ -119,7 +119,7 @@ bigram_network_plot <- function(bigram_net, freq,
                                 circle_col  = "skyblue",
                                 x_limits    = NULL,
                                 y_limits    = NULL,
-                                no_scale    = TRUE){
+                                no_scale    = FALSE){
   # settings
   cap_size    <- ggraph::circle(arrow_size, 'mm')
   arrow_size  <- grid::unit(arrow_size, 'mm')
