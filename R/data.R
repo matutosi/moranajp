@@ -158,6 +158,10 @@
 #'     http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt
 #'   }
 #' }
+#' @examples
+#' data(stop_words)
+#' stop_words %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
 "stop_words"
 
 #' An example of synonym word pairs
@@ -172,4 +176,8 @@
 #'     Words to be replaced to.
 #'   }
 #' }
+#' @examples
+#' data(synonym)
+#' synonym %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
 "synonym"
