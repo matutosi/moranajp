@@ -141,7 +141,7 @@ bigram_network_plot <- function(bigram_net, freq,
                            hjust  = 1, 
                            size   = text_size, 
                            family = font_family) +
-    ggplot2::theme_bw() + 
+    ggplot2::theme_bw(base_family = font_family) + 
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank()) + 
     ggplot2::scale_x_continuous(limits = x_limits, breaks = breaks) + 
