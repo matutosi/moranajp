@@ -22,11 +22,12 @@
 #'       neko %>%
 #'       dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
 #'       dplyr::mutate(cols=1:nrow(.))
-#'   moranajp_all(neko, text_col = "text") %>%
+#'   bin_dir <- "d:/pf/mecab/bin"
+#'   moranajp_all(neko, text_col = "text", bin_dir = bin_dir) %>%
 #'       print(n=100)
 #' }
 #' @export
-moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "") {
+moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "CP932_UTF-8") {
     text_id <- "text_id"
     tbl <- dplyr::mutate(tbl, `:=`(text_id, 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
