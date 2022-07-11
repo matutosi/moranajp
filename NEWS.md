@@ -11,7 +11,7 @@
 
 # moranajp 0.9.5
 
-* 2022-06-00 ?
+* 2022-07-12
 * Fix Bugs: to apply illegal character
     * `moranajp()` add argument "iconv" to convert encoding of MeCab output
     * Remove illegal character ( &, |, <. > or ") for command in `moranajp_all()`
