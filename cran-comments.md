@@ -1,8 +1,8 @@
 ## Test environments
 
 * local
-    * Windows 10, R 4.2.0
-    * Mac OS 11 Big Sur, R 4.2.0
+    * Windows 10, R 4.2.1
+    * Mac OS 11 Big Sur, R 4.2.1
 * devtools::check_rhub()
     * Windows Server 2022, R-devel, 64 bit
     * Ubuntu Linux 20.04.1 LTS, R-release, GCC

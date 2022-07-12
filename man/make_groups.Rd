@@ -44,7 +44,8 @@ Keep other colnames in dataframe.
       neko \%>\%
       dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
       dplyr::mutate(cols=1:nrow(.))
-  moranajp_all(neko, text_col = "text") \%>\%
+  bin_dir <- "d:/pf/mecab/bin"
+  moranajp_all(neko, text_col = "text", bin_dir = bin_dir) \%>\%
       print(n=100)
 }
 }

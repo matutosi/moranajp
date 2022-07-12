@@ -9,7 +9,13 @@
 \alias{mecab}
 \title{Morphological analysis for a specific column in dataframe}
 \usage{
-moranajp_all(tbl, bin_dir, text_col = "text", option = "", iconv = "")
+moranajp_all(
+  tbl,
+  bin_dir,
+  text_col = "text",
+  option = "",
+  iconv = "CP932_UTF-8"
+)
 
 moranajp(tbl, bin_dir, option = "", iconv = "")
 
@@ -52,7 +58,8 @@ Keep other colnames in dataframe.
       neko \%>\%
       dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
       dplyr::mutate(cols=1:nrow(.))
-  moranajp_all(neko, text_col = "text") \%>\%
+  bin_dir <- "d:/pf/mecab/bin"
+  moranajp_all(neko, text_col = "text", bin_dir = bin_dir) \%>\%
       print(n=100)
 }
 }

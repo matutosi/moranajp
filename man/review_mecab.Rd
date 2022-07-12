@@ -6,6 +6,8 @@
 \title{Analyzed data of neko by MeCab}
 \format{
 A data frame with  20523 rows and 11 variable:
+(column names are escaped by stringi::stri_escape_unicode(),
+stringi::stri_unescape_unicode() will show Japanese)
 \describe{
 \item{text_id}{result of Mecab}
 \item{\\u8868\\u5c64\\u5f62}{result of Mecab}

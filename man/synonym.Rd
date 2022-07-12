@@ -22,4 +22,9 @@ synonym
 \description{
 An example of synonym word pairs
 }
+\examples{
+data(synonym)
+synonym \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode)
+}
 \keyword{datasets}

@@ -28,7 +28,7 @@ bigram_network_plot(
   circle_col = "skyblue",
   x_limits = NULL,
   y_limits = NULL,
-  no_scale = TRUE
+  no_scale = FALSE
 )
 }
 \arguments{
@@ -67,6 +67,7 @@ A gg object of bigram network plot.
 Draw bigram network using morphological analysis data.
 }
 \examples{
+library(tidyverse)
 data(neko_mecab)
 data(synonym)
 synonym <- 
@@ -89,7 +90,7 @@ add_stop_words <-
   stringi::stri_unescape_unicode()
 
 bigram_review <- 
-review_chamame \%>\%
+  review_chamame \%>\%
   dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
   clean_chamame(add_stop_words = add_stop_words) \%>\%

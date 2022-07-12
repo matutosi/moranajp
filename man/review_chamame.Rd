@@ -5,7 +5,9 @@
 \alias{review_chamame}
 \title{Analyzed data of review by chamame}
 \format{
-A data frame with  21013 rows and 14 variable:
+A data frame with  21013 rows and 14 variable
+(column names are escaped by stringi::stri_escape_unicode(),
+stringi::stri_unescape_unicode() will show Japanese)
 \describe{
 \item{\\u8f9e\\u66f8}{result of chamame}
 \item{\\u6587\\u5883\\u754c}{result of chamame}
