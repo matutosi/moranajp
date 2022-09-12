@@ -103,11 +103,10 @@ make_cmd_mecab <- function(tbl, bin_dir, option = "") {
     text <-
         tbl %>%
         unlist() %>%
-  #         stringi::stri_unescape_unicode() %>%
         stringr::str_c(collapse="EOS")
      # input-buffer size for mecab option
-    times_jp2en <- 2      # Most Japanese are 2byte.
-    times_reserve <- 2    # Reserve room
+    times_jp2en   <- 2    # Most Japanese are 2byte.
+    times_reserve <- 2    # For reserve
     len <- ceiling(stringr::str_length(text) * times_jp2en  * times_reserve)
       # NEEDS SPACES as separater
     if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
@@ -125,6 +124,21 @@ out_cols_mecab <- function(){
       "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3",
       "\u6d3b\u7528\u578b", "\u6d3b\u7528\u5f62",
       "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
+}
+
+#' @rdname moranajp_all
+out_cols_ginza <- function(){
+  # ID: 
+  # FORM: Word form or punctuation symbol.
+  # LEMMA: Lemma or stem of word form.
+  # UPOS: Universal part-of-speech tag.
+  # XPOS: Language-specific part-of-speech tag; underscore if not available.
+  # FEATS: List of morphological features from the universal feature inventory or from a defined language-specific extension; underscore if not available.
+  # HEAD: Head of the current word, which is either a value of ID or zero (0).
+  # DEPREL: Universal dependency relation to the HEAD (root iff HEAD = 0) or a defined language-specific subtype of one.
+  # DEPS: Enhanced dependency graph in the form of a list of head-deprel pairs.
+  # MISC: Any other annotation.
+    c("id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")
 }
 
 #' Add series no col according to match condition.
