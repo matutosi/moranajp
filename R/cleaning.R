@@ -37,6 +37,40 @@ clean_mecab_local <- function(df, ...){
     replace_words(...)
 }
 
+
+#' @rdname clean_up
+#' @export
+clean_ginza_local <- function(df, ...){
+  df %>%
+    pos_filter_ginza_local() %>%
+    delete_stop_words(...) %>%
+    replace_words(...)
+}
+
+#' @rdname clean_up
+#' @export
+pos_filter_ginza_local <- function(df, ...){
+filter_pos_1 <- c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
+                  "\\u5f62\\u72b6\\u8a5e", "\\u5f62\\u5bb9\\u8a5e")
+filter_pos_2 <- c("\\u666e\\u901a\\u540d\\u8a5e", 
+                  "\\u56fa\\u6709\\u540d\\u8a5e", "\\u4e00\\u822c")
+
+  #     dplyr::filter(pos_1 %in% c("名詞", "動詞", "形状詞", "形容詞")) %>%  # "連体詞"を選択しても
+  #     dplyr::filter(pos_2 %in% c("普通名詞", "固有名詞", "一般")) %>%      # pos_2がNAで除去される
+  #     dplyr::select(-c(upos, pos_0, pos_1, pos_2, deprel)) %>%
+  #     dplyr::mutate(head_id = stringr::str_c(sentence_no, "_", head))
+
+  #     dplyr::mutate(sentence_no = purrr::accumulate(stringr::str_detect(out, "^#"), `+`)) %>%
+  #     dplyr::filter(out != "") %>%
+  #     dplyr::filter(!stringr::str_detect(out, "^#")) %>%
+  #     tidyr::separate(xpos, into = stringr::str_c("pos_", 1:3), sep = "-", fill = "right") %>%
+  #     dplyr::select(-c(form, feats, deps, misc)) %>%
+  #     dplyr::mutate(word_no = id, id = stringr::str_c(sentence_no, "_", word_no))
+  #   out %>%
+  #     dplyr::left_join(dplyr::select(out, c(head_id = id, lemma_2 = lemma))) %>%
+  #     print(n=100)
+}
+
 #' @rdname clean_up
 #' @export
 clean_chamame <- function(df, ...){
