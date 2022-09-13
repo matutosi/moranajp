@@ -55,7 +55,7 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "
             group = group, str_length = str_length) %>%
         dplyr::group_split(.data[[group]]) %>%
         purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
-        purrr::map(moranajp, bin_dir = bin_dir, option = option, iconv = iconv) %>%
+        purrr::map(moranajp, bin_dir = bin_dir, text_col = text_col, option = option, iconv = iconv) %>%
         dplyr::bind_rows() %>%
         add_text_id() %>%
         dplyr::left_join(others, by = text_id) %>%
@@ -65,9 +65,9 @@ moranajp_all <- function(tbl, bin_dir, text_col = "text", option = "", iconv = "
 
 #' @rdname moranajp_all
 #' @export
-moranajp <- function(tbl, bin_dir, option = "", iconv = "") {
+moranajp <- function(tbl, bin_dir, text_col, option = "", iconv = "") {
       # Make command
-    cmd <- make_cmd_mecab(tbl, bin_dir, option = "")
+    cmd <- make_cmd_mecab(tbl, bin_dir, text_col, option = "")
       # Run
     if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
         output <- shell(cmd, intern=TRUE)
@@ -91,7 +91,7 @@ moranajp <- function(tbl, bin_dir, option = "", iconv = "") {
 }
 
 #' @rdname moranajp_all
-make_cmd_mecab <- function(tbl, bin_dir, option = "") {
+make_cmd_mecab <- function(tbl, bin_dir, text_col, option = "") {
       # check and modify directory name
     if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
         bin_dir <- stringr::str_replace_all(bin_dir, "/", "\\\\")
@@ -102,6 +102,7 @@ make_cmd_mecab <- function(tbl, bin_dir, option = "") {
       # make text string
     text <-
         tbl %>%
+        dplyr::select(.data[[text_col]]) %>%
         unlist() %>%
         stringr::str_c(collapse="EOS")
      # input-buffer size for mecab option
