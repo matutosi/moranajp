@@ -42,10 +42,14 @@ Keep other colnames in dataframe.
   data(neko)
   neko <-
       neko \%>\%
-      dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
-      dplyr::mutate(cols=1:nrow(.))
+      dplyr::mutate(text=stringi::stri_unescape_unicode(text))
   bin_dir <- "d:/pf/mecab/bin"
-  moranajp_all(neko, text_col = "text", bin_dir = bin_dir) \%>\%
+    # mecab
+  iconv <- "CP932_UTF-8"
+  moranajp_all(neko, text_col = "text", bin_dir = bin_dir, iconv = iconv) \%>\%
+      print(n=100)
+    # ginza
+  moranajp_all(neko, text_col = "text", method = "ginza") \%>\%
       print(n=100)
 }
 }

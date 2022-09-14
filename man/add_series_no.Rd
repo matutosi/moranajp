@@ -2,41 +2,31 @@
 % Please edit documentation in R/moranajp.R
 \name{add_series_no}
 \alias{add_series_no}
-\alias{add_text_id}
 \title{Add series no col according to match condition.}
 \usage{
-add_series_no(tbl, cond = "", end_sep = TRUE, new_col = "series_no")
-
-add_text_id(tbl)
+add_series_no(tbl, cond = "", new_col = "series_no", starts_with = 1)
 }
 \arguments{
 \item{tbl}{A tibble or data.frame.}
 
 \item{cond}{Condition to split series no.}
 
-\item{end_sep}{A logical. TRUE: condition indicate the end of separation.}
-
 \item{new_col}{A string name of new column.}
+
+\item{starts_with}{A integer.}
 }
 \value{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{   A tibble, which include new_col as series no.
 }\if{html}{\out{</div>}}
-
-A tibble.
 }
 \description{
-Internal function for moranajp_all().
-'EOS' means breaks of text in this package (and most of morphological analysis).
-add_text_id() add \code{text_id} column when there is 'EOS'.
+Add series no col according to match condition.
 }
 \examples{
 \dontrun{
   tbl <- tibble::tibble(col=c(rep("a", 2), "sep", rep("b", 3), "sep", rep("c", 4), "sep"))
   cond <- ".$col == 'sep'"   # Use ".$'colname'" to identify column
-    # when separator indicate the end
-  add_series_no(tbl, cond = cond, end_sep = TRUE,  new_col = "series_no")
-    # when separator indicate the begining
-  add_series_no(tbl, cond = cond, end_sep = FALSE, new_col = "series_no")
+  add_series_no(tbl, cond = cond, new_col = "series_no")
 }
 
 }

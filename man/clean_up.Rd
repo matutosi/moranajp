@@ -3,6 +3,8 @@
 \name{clean_up}
 \alias{clean_up}
 \alias{clean_mecab_local}
+\alias{clean_ginza_local}
+\alias{pos_filter_ginza_local}
 \alias{clean_chamame}
 \alias{pos_filter_mecab_local}
 \alias{pos_filter_chamame}
@@ -12,13 +14,23 @@
 \usage{
 clean_mecab_local(df, ...)
 
+clean_ginza_local(df, ...)
+
+pos_filter_ginza_local(df, ...)
+
 clean_chamame(df, ...)
 
 pos_filter_mecab_local(df)
 
 pos_filter_chamame(df)
 
-delete_stop_words(df, use_common_data = TRUE, add_stop_words = NULL, ...)
+delete_stop_words(
+  df,
+  term = "term",
+  use_common_data = TRUE,
+  add_stop_words = NULL,
+  ...
+)
 
 replace_words(
   df,
@@ -54,6 +66,7 @@ A dataframe.
 Clean up result of morphological analyzed data frame
 }
 \examples{
+library(tidyverse)
 data(neko_mecab)
 data(synonym)
 synonym <- 
@@ -66,5 +79,15 @@ neko_mecab \%>\%
   clean_mecab_local(
     use_common_data = TRUE, 
     synonym_df = synonym)
+
+library(tidyverse)
+data(neko)
+neko <-
+   neko \%>\%
+   dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+neko_ginza <- moranajp_all(neko, text_col = "text", method = "ginza")
+neko_ginza \%>\%
+   pos_filter_ginza_local()
+
 
 }

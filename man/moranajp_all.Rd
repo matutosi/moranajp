@@ -3,25 +3,35 @@
 \name{moranajp_all}
 \alias{moranajp_all}
 \alias{moranajp}
+\alias{make_input}
+\alias{make_cmd}
 \alias{make_cmd_mecab}
 \alias{out_cols_mecab}
+\alias{out_cols_ginza}
 \alias{mecab_all}
 \alias{mecab}
 \title{Morphological analysis for a specific column in dataframe}
 \usage{
 moranajp_all(
   tbl,
-  bin_dir,
+  bin_dir = "",
+  method = "mecab",
   text_col = "text",
   option = "",
-  iconv = "CP932_UTF-8"
+  iconv = ""
 )
 
-moranajp(tbl, bin_dir, option = "", iconv = "")
+moranajp(tbl, bin_dir, method, text_col, option = "", iconv = "")
 
-make_cmd_mecab(tbl, bin_dir, option = "")
+make_input(tbl, text_col, iconv)
+
+make_cmd(bin_dir, method, option = "")
+
+make_cmd_mecab(bin_dir, option = "")
 
 out_cols_mecab()
+
+out_cols_ginza()
 
 mecab_all(tbl, text_col = "text", bin_dir = "")
 
@@ -32,16 +42,20 @@ mecab(tbl, bin_dir)
 
 \item{bin_dir}{A text. Directory of mecab.}
 
+\item{method}{A text. Method to use: "mecab" or "ginza".}
+
 \item{text_col}{A text. Colnames for morphological analysis.}
 
 \item{option}{A text. Options for mecab.
 "-b" option is already set by moranajp.
-See by "mecab -h".}
+To see option, use "mecab -h" in command (win) or terminal (Mac).}
 
 \item{iconv}{A text. Convert encoding of MeCab output.
 Default (""): don't convert.
 "CP932_UTF-8": iconv(output, from = "Shift-JIS" to = "UTF-8")
-"EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")}
+"EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")
+iconv is also used to convert input text before running MeCab.
+"CP932_UTF-8": iconv(input, from =  "UTF-8", to = "Shift-JIS")}
 }
 \value{
 A tibble.   Output of 'MeCab' and added column "text_id".
@@ -56,10 +70,14 @@ Keep other colnames in dataframe.
   data(neko)
   neko <-
       neko \%>\%
-      dplyr::mutate(text=stringi::stri_unescape_unicode(text)) \%>\%
-      dplyr::mutate(cols=1:nrow(.))
+      dplyr::mutate(text=stringi::stri_unescape_unicode(text))
   bin_dir <- "d:/pf/mecab/bin"
-  moranajp_all(neko, text_col = "text", bin_dir = bin_dir) \%>\%
+    # mecab
+  iconv <- "CP932_UTF-8"
+  moranajp_all(neko, text_col = "text", bin_dir = bin_dir, iconv = iconv) \%>\%
+      print(n=100)
+    # ginza
+  moranajp_all(neko, text_col = "text", method = "ginza") \%>\%
       print(n=100)
 }
 }
