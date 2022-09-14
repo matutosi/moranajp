@@ -16,6 +16,7 @@
 #' @return A dataframe.
 #' @name clean_up
 #' @examples
+#' library(tidyverse)
 #' data(neko_mecab)
 #' data(synonym)
 #' synonym <- 
@@ -31,63 +32,101 @@
 #' 
 #' @export
 clean_mecab_local <- function(df, ...){
-  df %>%
+  df <- 
+    df %>%
     pos_filter_mecab_local() %>%
     delete_stop_words(...) %>%
     replace_words(...)
+  return(df)
 }
 
 
 #' @rdname clean_up
+#' @examples
+#' 
+#' text <- tibble::tibble(text = "親は科学の本を小学生の子どもに与えた．")
+#' ex_ginza <- moranajp_all(text, text_col = "text", method = "ginza")
+#' ex_ginza %>%
+#'    clean_ginza_local(
+#'      add_stop_words = "科学", 
+#'      synonym_from = "本",  synonym_to = "書籍")
 #' @export
 clean_ginza_local <- function(df, ...){
-  df %>%
+  term <- "lemma"
+  df <- 
+    df %>%
+    add_depend_ginza() %>%
     pos_filter_ginza_local() %>%
-    delete_stop_words(...) %>%
-    replace_words(...)
+    delete_stop_words(term = term, ...) %>%
+    replace_words(term = term, ...)
+  return(df)
 }
+
+add_depend_ginza <- function(df){
+  cond <- "stringr::str_detect(id, '^#')"
+  df <- 
+    df %>%
+    add_series_no(cond = cond, new_col = "sentence_no") %>%
+    dplyr::mutate(word_no = id, id = stringr::str_c(sentence_no, "_", word_no))
+  depend <- 
+    df %>%
+    dplyr::select(head_id = id, lemma_dep = lemma)
+  df <- 
+    df %>%
+    dplyr::mutate(head_id = stringr::str_c(sentence_no, "_", head)) %>%
+    dplyr::left_join(depend)
+  return(df)
+}
+
 
 #' @rdname clean_up
 #' @export
-pos_filter_ginza_local <- function(df, ...){
-filter_pos_1 <- c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
-                  "\\u5f62\\u72b6\\u8a5e", "\\u5f62\\u5bb9\\u8a5e")
-filter_pos_2 <- c("\\u666e\\u901a\\u540d\\u8a5e", 
-                  "\\u56fa\\u6709\\u540d\\u8a5e", "\\u4e00\\u822c")
-
-  #     dplyr::filter(pos_1 %in% c("名詞", "動詞", "形状詞", "形容詞")) %>%  # "連体詞"を選択しても
-  #     dplyr::filter(pos_2 %in% c("普通名詞", "固有名詞", "一般")) %>%      # pos_2がNAで除去される
-  #     dplyr::select(-c(upos, pos_0, pos_1, pos_2, deprel)) %>%
-  #     dplyr::mutate(head_id = stringr::str_c(sentence_no, "_", head))
-
-  #     dplyr::mutate(sentence_no = purrr::accumulate(stringr::str_detect(out, "^#"), `+`)) %>%
-  #     dplyr::filter(out != "") %>%
-  #     dplyr::filter(!stringr::str_detect(out, "^#")) %>%
-  #     tidyr::separate(xpos, into = stringr::str_c("pos_", 1:3), sep = "-", fill = "right") %>%
-  #     dplyr::select(-c(form, feats, deps, misc)) %>%
-  #     dplyr::mutate(word_no = id, id = stringr::str_c(sentence_no, "_", word_no))
-  #   out %>%
-  #     dplyr::left_join(dplyr::select(out, c(head_id = id, lemma_2 = lemma))) %>%
-  #     print(n=100)
+#' @examples
+#' library(tidyverse)
+#' data(neko)
+#' neko <-
+#'    neko %>%
+#'    dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+#' neko_ginza <- moranajp_all(neko, text_col = "text", method = "ginza")
+#' neko_ginza %>%
+#'    pos_filter_ginza_local()
+#' 
+#' 
+pos_filter_ginza_local <- function(df){
+    filter_pos_1 <- 
+        c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
+          "\\u5f62\\u72b6\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
+        stringi::stri_unescape_unicode()
+    filter_pos_2 <- 
+        c("\\u666e\\u901a\\u540d\\u8a5e", 
+          "\\u56fa\\u6709\\u540d\\u8a5e", "\\u4e00\\u822c") %>%
+        stringi::stri_unescape_unicode()
+    df <- 
+        df %>%
+        dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
+        dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) 
+    return(df)
 }
 
 #' @rdname clean_up
 #' @export
 clean_chamame <- function(df, ...){
-  df %>%
+  df <- 
+    df %>%
     pos_filter_chamame() %>%
     delete_stop_words(...) %>%
     replace_words(...)
+  return(df)
 }
 
 #' @rdname clean_up
 #' @export
 pos_filter_mecab_local <- function(df){
   # pos filter setting
-  filter_pos0 <- 
+  filter_pos_1 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
     stringi::stri_unescape_unicode()
-  filter_pos1 <- 
+  filter_pos_2 <- 
     c("\\u666e\\u901a\\u540d\\u8a5e", "\\u56fa\\u6709\\u540d\\u8a5e", 
       "\\u56fa\\u6709", "\\u4e00\\u822c", "\\u81ea\\u7acb", 
       "\\u30b5\\u5909\\u63a5\\u7d9a", 
@@ -102,21 +141,21 @@ pos_filter_mecab_local <- function(df){
     stringi::stri_unescape_unicode()
 
   df <- df %>%
-    dplyr::rename("term" := cols[1], "pos0" := cols[2], "pos1" := cols[3]) 
+    dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3]) 
 
   if(! "text_id" %in% colnames(df)){
     df <- 
       df %>%
-      add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+      add_text_id_df("pos_2", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
   }
 
   df <- 
     df %>% # filter by pos (parts of speech)
-    dplyr::filter(.data[["pos0"]] %in% filter_pos0) %>%
-    dplyr::filter(.data[["pos1"]] %in% filter_pos1) %>%
-    dplyr::mutate("pos0" := tidyr::replace_na(.data[["pos0"]], "-")) %>%
-    dplyr::mutate("pos1" := tidyr::replace_na(.data[["pos1"]], "-")) %>%
-    dplyr::relocate(dplyr::all_of(c("text_id", "term", "pos0", "pos1")))
+    dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
+    dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
+    dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
+    dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-")) %>%
+    dplyr::relocate(dplyr::all_of(c("text_id", "term", "pos_1", "pos_2")))
 
   return(df)
 }
@@ -133,29 +172,29 @@ pos_filter_chamame <- function(df){
 
   df <-
     df %>%
-    tidyr::separate(.data[["pos"]], into = c("pos0", "pos1"), sep="-", extra = "drop", fill = "right") %>%
-    dplyr::mutate("pos0" := tidyr::replace_na(.data[["pos0"]], "-")) %>%
-    dplyr::mutate("pos1" := tidyr::replace_na(.data[["pos1"]], "-"))
+    tidyr::separate(.data[["pos"]], into = c("pos_1", "pos_2"), sep="-", extra = "drop", fill = "right") %>%
+    dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
+    dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-"))
 
   if(! "text_id" %in% colnames(df)){
     df <- df %>%
-      add_text_id_df("pos1", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+      add_text_id_df("pos_2", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
   }
 
   # pos filter setting
-  filter_pos0 <- 
+  filter_pos_1 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
       "\\u5f62\\u5bb9\\u8a5e", "\\u526f\\u8a5e") %>%
     stringi::stri_unescape_unicode()
-  filter_pos1 <- 
+  filter_pos_2 <- 
     c("\\u666e\\u901a\\u540d\\u8a5e", 
       "\\u975e\\u81ea\\u7acb\\u53ef\\u80fd", "\\u4e00\\u822c") %>%
     stringi::stri_unescape_unicode()
   df <- 
     df %>% # filter by pos (parts of speech)
-    dplyr::filter(.data[["pos0"]] %in% filter_pos0) %>%
-    dplyr::filter(.data[["pos1"]] %in% filter_pos1) %>%
-    dplyr::relocate(dplyr::all_of(c("text_id", "term", "pos0", "pos1")))
+    dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
+    dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
+    dplyr::relocate(dplyr::all_of(c("text_id", "term", "pos_1", "pos_2")))
 
   return(df)
 }
@@ -163,26 +202,31 @@ pos_filter_chamame <- function(df){
 #' @rdname clean_up
 #' @export
 delete_stop_words <- function(df,
+                              term = "term",
                               use_common_data = TRUE,
                               add_stop_words = NULL,
                               ...){ # `...' will be omitted
   stop_words <- 
-  if(use_common_data){
-    utils::data(stop_words, envir = environment())
-    stop_words %>%
-      dplyr::transmute("term" := stringi::stri_unescape_unicode(.data[["stop_word"]]))
-  } else {
-    tibble::tibble()
-  }
+    if(use_common_data){
+        utils::data(stop_words, envir = environment())
+        stop_words %>%
+          purrr::map_dfr(stringi::stri_unescape_unicode) %>%
+          magrittr::set_colnames(term)
+    } else {
+        tibble::tibble()
+    }
   stop_words <- 
-    stop_words %>%
-      dplyr::add_row(term = add_stop_words)
-  return(dplyr::anti_join(df, stop_words))
+      tibble::tibble(add_stop_words) %>%
+          magrittr::set_colnames(term) %>%
+          dplyr::bind_rows(stop_words)
+  df <- dplyr::anti_join(df, stop_words)
+  return(df)
 }
 
 #' @rdname clean_up
 #' @export
 replace_words <- function(df, 
+                          term = "term",
                           synonym_df = NULL,
                           synonym_from = NULL,
                           synonym_to = NULL,
@@ -191,9 +235,14 @@ replace_words <- function(df,
       return(df)
   rep_words        <- synonym_to
   names(rep_words) <- synonym_from
-  replace_words <- if(!is.null(synonym_df)){
+  if(!is.null(synonym_df)){
     rep_words        <- c(synonym_to,   synonym_df[[2]]) # 2: TO
     names(rep_words) <- c(synonym_from, synonym_df[[1]]) # 1: FROM
   }
-  return(dplyr::mutate(df, "term" := stringr::str_replace_all(.data[["term"]], rep_words)))
+  # rep_words        <- "書籍"
+  # names(rep_words) <- "本"
+  df <- 
+    df %>%
+    dplyr::mutate(`:=`({{term}}, stringr::str_replace_all(.data[[term]], rep_words)))
+  return(df)
 }
