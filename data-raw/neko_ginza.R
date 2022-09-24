@@ -1,3 +1,4 @@
+  # usethis::use_data_raw("neko_ginza")
 ## code to prepare `neko_mecab` dataset goes here
 
 library(tidyverse)
@@ -12,4 +13,3 @@ neko_ginza <-
   dplyr::mutate_all(stringi::stri_escape_unicode) %>%
   magrittr::set_colnames(stringi::stri_escape_unicode(colnames(.)))
 usethis::use_data(neko_ginza, overwrite = TRUE)
-  # usethis::use_data_raw("neko_ginza")
