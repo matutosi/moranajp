@@ -9,8 +9,7 @@ readme in Japanese:
 ## Installation
 
 You can install the released version of moranajp from \[GitHub\] (
-<https://github.com/> ). moranajp will not be released in cran, because
-the main user is only Japanese speakers. You need install MeCab (
+<https://github.com/matutosi/moranajp> ). You need install MeCab (
 <https://taku910.github.io/mecab/> ).
 
 ``` r

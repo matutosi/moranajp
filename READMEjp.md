@@ -5,7 +5,7 @@ moranajpは，日本語形態素解析をするためのものです．
 
 ## Installation
 
-最新バージョンは，\[GitHub\] ( <https://github.com/> )
+最新バージョンは，\[GitHub\] ( <https://github.com/matutosi/moranajp> )
 でダウンロードできます．
 日本語話者のみを対象としていますので，cranでの公開は予定していません．
 MeCab ( <https://taku910.github.io/mecab/> )
