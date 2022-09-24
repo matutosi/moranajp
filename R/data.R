@@ -48,17 +48,17 @@
 #' (column names are escaped by stringi::stri_escape_unicode(), 
 #' stringi::stri_unescape_unicode() will show Japanese)
 #' \describe{
-#'   \item{text_id}{result of Mecab}
-#'   \item{\\u8868\\u5c64\\u5f62}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of Mecab}
-#'   \item{\\u6d3b\\u7528\\u578b}{result of Mecab}
-#'   \item{\\u6d3b\\u7528\\u5f62}{result of Mecab}
-#'   \item{\\u539f\\u5f62}{result of Mecab}
-#'   \item{\\u8aad\\u307f}{result of Mecab}
-#'   \item{\\u767a\\u97f3}{result of Mecab}
+#'   \item{text_id}{result of MeCab}
+#'   \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of MeCab}
+#'   \item{\\u6d3b\\u7528\\u578b}{result of MeCab}
+#'   \item{\\u6d3b\\u7528\\u5f62}{result of MeCab}
+#'   \item{\\u539f\\u5f62}{result of MeCab}
+#'   \item{\\u8aad\\u307f}{result of MeCab}
+#'   \item{\\u767a\\u97f3}{result of MeCab}
 #' }
 #' @examples
 #' data(neko_mecab)
@@ -66,6 +66,37 @@
 #'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
 "neko_mecab"
+
+#' Analyzed data of neko by GiNZA
+#'
+#' GiNZA: https://megagonlabs.github.io/ginza/
+#' 
+#' @format A data frame with 733 rows and 18 variable: 
+#' \describe{
+#'   \item{text_id    }{result of MeCab}
+#'   \item{id         }{result of GiNZA}
+#'   \item{form       }{result of GiNZA}
+#'   \item{lemma      }{result of GiNZA}
+#'   \item{upos       }{result of GiNZA}
+#'   \item{"xpos      }{result of GiNZA}
+#'   \item{pos_1      }{result of GiNZA}
+#'   \item{pos_2      }{result of GiNZA}
+#'   \item{pos_3      }{result of GiNZA}
+#'   \item{feats      }{result of GiNZA}
+#'   \item{"head      }{result of GiNZA}
+#'   \item{deprel     }{result of GiNZA}
+#'   \item{deps       }{result of GiNZA}
+#'   \item{misc       }{result of GiNZA}
+#'   \item{sentence_no}{result of GiNZA}
+#'   \item{word_no    }{result of GiNZA}
+#'   \item{head_id    }{result of GiNZA}
+#'   \item{lemma_dep  }{result of GiNZA}
+#' }
+#' @examples
+#' data(neko_ginza)
+#' neko_mecab %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+"neko_ginza"
 
 #' Full text of review article
 #'
@@ -128,17 +159,17 @@
 #' (column names are escaped by stringi::stri_escape_unicode(), 
 #' stringi::stri_unescape_unicode() will show Japanese)
 #' \describe{
-#'   \item{text_id}{result of Mecab}
-#'   \item{\\u8868\\u5c64\\u5f62}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of Mecab}
-#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of Mecab}
-#'   \item{\\u6d3b\\u7528\\u578b}{result of Mecab}
-#'   \item{\\u6d3b\\u7528\\u5f62}{result of Mecab}
-#'   \item{\\u539f\\u5f62}{result of Mecab}
-#'   \item{\\u8aad\\u307f}{result of Mecab}
-#'   \item{\\u767a\\u97f3}{result of Mecab}
+#'   \item{text_id}{result of MeCab}
+#'   \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of MeCab}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of MeCab}
+#'   \item{\\u6d3b\\u7528\\u578b}{result of MeCab}
+#'   \item{\\u6d3b\\u7528\\u5f62}{result of MeCab}
+#'   \item{\\u539f\\u5f62}{result of MeCab}
+#'   \item{\\u8aad\\u307f}{result of MeCab}
+#'   \item{\\u767a\\u97f3}{result of MeCab}
 #' }
 #' @examples
 #' data(review_mecab)
