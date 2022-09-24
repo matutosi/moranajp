@@ -37,7 +37,7 @@
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
                          text_col = "text", option = "", iconv = ""){
     text_id <- "text_id"
-    tbl <- dplyr::mutate(tbl, `:=`(text_id, 1:nrow(tbl)))
+    tbl <- dplyr::mutate(tbl, `:=`({{text_id}}, 1:nrow(tbl)))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(
             stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
@@ -55,13 +55,13 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
             stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
         dplyr::mutate(`:=`({{text_col}},
             stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
-    group      <- "tmp_group"  # Use temporary
+    tmp_group  <- "tmp_group"  # Use temporary
     str_length <- "str_length" # Use temporary
     tbl <-
         tbl %>%
         make_groups(text_col = text_col, length = 8000,   # if error decrease length
-            group = group, str_length = str_length) %>%
-        dplyr::group_split(.data[[group]]) %>%
+            tmp_group = tmp_group, str_length = str_length) %>%
+        dplyr::group_split(.data[[tmp_group]]) %>%
         purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
         purrr::map(moranajp, 
             bin_dir = bin_dir, method = method, 
@@ -92,7 +92,7 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = ""){
     if(method == "ginza"){
         tbl <- 
           tbl %>%
-          tidyr::separate(xpos, into = stringr::str_c("pos_", 1:3), sep = "-",
+          tidyr::separate(.data[["xpos"]], into = stringr::str_c("pos_", 1:3), sep = "-",
             fill = "right", extra = "drop", remove = FALSE)
     }
     return(tbl)
@@ -171,10 +171,11 @@ out_cols_ginza <- function(){
 #'
 #' @return        A tibble, which include new_col as series no.
 #' @export
-add_series_no <- function(tbl, cond = "", new_col = "series_no"){
+add_series_no <- function(tbl, cond = "", new_col = "series_no", starts_with = 1){
   tbl %>%
     dplyr::mutate(`:=`({{new_col}}, 
-      purrr::accumulate(eval(str2expression(cond)), `+`)))
+      purrr::accumulate(eval(str2expression(cond)), 
+      `+`, .init = starts_with) %>% utils::head(-1) )) # head(-1): remove last one
 }
 
 #' Add id column into result of morphological analysis

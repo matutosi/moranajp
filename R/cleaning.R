@@ -1,6 +1,7 @@
 #' Clean up result of morphological analyzed data frame
 #' 
 #' @param df               A dataframe including result of morphological analysis.
+#' @param term             A string to indicate the word term column.
 #' @param use_common_data  A logical. TRUE: use data(stop_words).
 #' @param add_stop_words   A string vector adding into stop words. 
 #'                         When use_common_data is TRUE and add_stop_words are given, 
@@ -40,10 +41,8 @@ clean_mecab_local <- function(df, ...){
   return(df)
 }
 
-
 #' @rdname clean_up
 #' @examples
-#' 
 #' text <- tibble::tibble(text = "親は科学の本を小学生の子どもに与えた．")
 #' ex_ginza <- moranajp_all(text, text_col = "text", method = "ginza")
 #' ex_ginza %>%
@@ -62,18 +61,23 @@ clean_ginza_local <- function(df, ...){
   return(df)
 }
 
+#' @rdname clean_up
+#' @export
 add_depend_ginza <- function(df){
   cond <- "stringr::str_detect(id, '^#')"
   df <- 
     df %>%
-    add_series_no(cond = cond, new_col = "sentence_no") %>%
-    dplyr::mutate(word_no = id, id = stringr::str_c(sentence_no, "_", word_no))
+    add_series_no(cond = cond, new_col = "sentence_no", starts_with = 0) %>%
+    dplyr::mutate(
+        "word_no" := .data[["id"]], 
+        "id" := stringr::str_c(.data[["sentence_no"]], "_", .data[["word_no"]]))
   depend <- 
     df %>%
-    dplyr::select(head_id = id, lemma_dep = lemma)
+    dplyr::select("head_id" := .data[["id"]], "lemma_dep" := .data[["lemma"]])
   df <- 
     df %>%
-    dplyr::mutate(head_id = stringr::str_c(sentence_no, "_", head)) %>%
+    dplyr::mutate("head_id" := 
+        stringr::str_c(.data[["sentence_no"]], "_", .data[["head"]])) %>%
     dplyr::left_join(depend)
   return(df)
 }

@@ -4,6 +4,7 @@
 \alias{clean_up}
 \alias{clean_mecab_local}
 \alias{clean_ginza_local}
+\alias{add_depend_ginza}
 \alias{pos_filter_ginza_local}
 \alias{clean_chamame}
 \alias{pos_filter_mecab_local}
@@ -16,7 +17,9 @@ clean_mecab_local(df, ...)
 
 clean_ginza_local(df, ...)
 
-pos_filter_ginza_local(df, ...)
+add_depend_ginza(df)
+
+pos_filter_ginza_local(df)
 
 clean_chamame(df, ...)
 
@@ -34,6 +37,7 @@ delete_stop_words(
 
 replace_words(
   df,
+  term = "term",
   synonym_df = NULL,
   synonym_from = NULL,
   synonym_to = NULL,
@@ -44,6 +48,8 @@ replace_words(
 \item{df}{A dataframe including result of morphological analysis.}
 
 \item{...}{Extra arguments to internal fuctions.}
+
+\item{term}{A string to indicate the word term column.}
 
 \item{use_common_data}{A logical. TRUE: use data(stop_words).}
 
@@ -80,6 +86,12 @@ neko_mecab \%>\%
     use_common_data = TRUE, 
     synonym_df = synonym)
 
+text <- tibble::tibble(text = "親は科学の本を小学生の子どもに与えた．")
+ex_ginza <- moranajp_all(text, text_col = "text", method = "ginza")
+ex_ginza \%>\%
+   clean_ginza_local(
+     add_stop_words = "科学", 
+     synonym_from = "本",  synonym_to = "書籍")
 library(tidyverse)
 data(neko)
 neko <-
