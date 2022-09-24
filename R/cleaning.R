@@ -42,13 +42,6 @@ clean_mecab_local <- function(df, ...){
 }
 
 #' @rdname clean_up
-#' @examples
-#' text <- tibble::tibble(text = "親は科学の本を小学生の子どもに与えた．")
-#' ex_ginza <- moranajp_all(text, text_col = "text", method = "ginza")
-#' ex_ginza %>%
-#'    clean_ginza_local(
-#'      add_stop_words = "科学", 
-#'      synonym_from = "本",  synonym_to = "書籍")
 #' @export
 clean_ginza_local <- function(df, ...){
   term <- "lemma"
