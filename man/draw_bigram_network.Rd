@@ -3,6 +3,7 @@
 \name{draw_bigram_network}
 \alias{draw_bigram_network}
 \alias{bigram}
+\alias{bigram_depend}
 \alias{bigram_net}
 \alias{word_freq}
 \alias{bigram_network_plot}
@@ -10,11 +11,25 @@
 \usage{
 draw_bigram_network(df, ...)
 
-bigram(df, text_id = "text_id", ...)
+bigram(
+  df,
+  sentence_id = "sentence_id",
+  term = "term",
+  depend = FALSE,
+  term_depend = NULL,
+  ...
+)
+
+bigram_depend(
+  df,
+  sentence_id = "sentence_id",
+  term = "term",
+  term_depend = NULL
+)
 
 bigram_net(bigram, rand_seed = 12, threshold = 100, ...)
 
-word_freq(df, bigram_net)
+word_freq(df, bigram_net, term = "term", ...)
 
 bigram_network_plot(
   bigram_net,
@@ -36,7 +51,12 @@ bigram_network_plot(
 
 \item{...}{Extra arguments to internal fuctions.}
 
-\item{text_id}{A dstring to specify text.}
+\item{sentence_id}{A dstring to specify sentence.}
+
+\item{term, term_depend}{A string of terms (words) or dependnt terms column
+to use bigram.}
+
+\item{depend}{A logical to}
 
 \item{bigram}{A result of bigram().}
 
@@ -68,20 +88,35 @@ Draw bigram network using morphological analysis data.
 }
 \examples{
 library(tidyverse)
-data(neko_mecab)
 data(synonym)
-synonym <- 
-  synonym \%>\% dplyr::mutate_all(stringi::stri_unescape_unicode)
+synonym <- dplyr::mutate_all(synonym, stringi::stri_unescape_unicode)
+
+data(neko_mecab)
+neko_mecab <- 
+  neko_mecab \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  clean_mecab_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
+  print()
 
 bigram_neko <- 
   neko_mecab \%>\%
-  dplyr::select(-text_id) \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
-  clean_mecab_local(
-    use_common_data = TRUE, 
-    synonym_df = synonym) \%>\%
   draw_bigram_network()
+
+data(neko_ginza)
+neko_ginza <- 
+  neko_ginza \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
+  print()
+
+bigram_neko_ginza_dep <- 
+  neko_ginza \%>\%
+  bigram(term = "lemma", depend = TRUE)
+
+bigram_neko_ginza <- 
+ neko_ginza \%>\%
+   bigram(term = "lemma")
 
 add_stop_words <- 
   c("\\\\u3042\\\\u308b", "\\\\u3059\\\\u308b", "\\\\u3066\\\\u308b", 
@@ -89,11 +124,30 @@ add_stop_words <-
     "\\\\u3093", "\\\\u308c\\\\u308b", "*") \%>\% 
   stringi::stri_unescape_unicode()
 
+data(review_chamame)
 bigram_review <- 
   review_chamame \%>\%
   dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
   clean_chamame(add_stop_words = add_stop_words) \%>\%
   draw_bigram_network()
+
+data(review_mecab)
+review_mecab \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  clean_mecab_local() \%>\%
+  draw_bigram_network()
+
+data(review_ginza)
+review_ginza \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  clean_ginza_local() \%>\%
+  draw_bigram_network(term = "lemma")
+
+review_ginza \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  clean_ginza_local() \%>\%
+  draw_bigram_network(term = "lemma", depend = TRUE)
 
 }

@@ -19,17 +19,25 @@
 #' @examples
 #' library(tidyverse)
 #' data(neko_mecab)
+#' data(neko_ginza)
 #' data(synonym)
 #' synonym <- 
 #'   synonym %>% dplyr::mutate_all(stringi::stri_unescape_unicode)
 #' 
-#' neko_mecab %>%
-#'   dplyr::select(-text_id) %>%
+#' neko_mecab <- 
+#'   neko_mecab %>%
 #'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
-#'   clean_mecab_local(
-#'     use_common_data = TRUE, 
-#'     synonym_df = synonym)
+#'   print()
+#' 
+#' neko_mecab %>%
+#'   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym)
+#' 
+#' neko_ginza <- 
+#'   neko_ginza %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) %>%
+#'   print()
 #' 
 #' @export
 clean_mecab_local <- function(df, ...){
@@ -60,17 +68,17 @@ add_depend_ginza <- function(df){
   cond <- "stringr::str_detect(id, '^#')"
   df <- 
     df %>%
-    add_series_no(cond = cond, new_col = "sentence_no", starts_with = 0) %>%
+    add_series_no(cond = cond, new_col = "sentence_id", starts_with = 1) %>%
     dplyr::mutate(
         "word_no" := .data[["id"]], 
-        "id" := stringr::str_c(.data[["sentence_no"]], "_", .data[["word_no"]]))
+        "id" := stringr::str_c(.data[["sentence_id"]], "_", .data[["word_no"]]))
   depend <- 
     df %>%
     dplyr::select("head_id" := .data[["id"]], "lemma_dep" := .data[["lemma"]])
   df <- 
     df %>%
     dplyr::mutate("head_id" := 
-        stringr::str_c(.data[["sentence_no"]], "_", .data[["head"]])) %>%
+        stringr::str_c(.data[["sentence_id"]], "_", .data[["head"]])) %>%
     dplyr::left_join(depend)
   return(df)
 }
@@ -137,13 +145,12 @@ pos_filter_mecab_local <- function(df){
       "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
     stringi::stri_unescape_unicode()
 
-  df <- df %>%
-    dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3]) 
+  df <- 
+    dplyr::rename(df, "term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
 
-  if(! "text_id" %in% colnames(df)){
-    df <- 
-      df %>%
-      add_text_id_df("pos_2", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+  if(! "sentence_id" %in% colnames(df)){
+    cond <- '.data[["pos_2"]] == stringi::stri_unescape_unicode("\\u53e5\\u70b9")'
+    df <- add_series_no(df, cond = cond, new_col = "sentence_id")
   }
 
   df <- 
@@ -152,8 +159,8 @@ pos_filter_mecab_local <- function(df){
     dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
     dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
     dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-")) %>%
-    dplyr::relocate(dplyr::all_of(c("text_id", "term", "pos_1", "pos_2")))
-
+    dplyr::relocate(
+      dplyr::any_of(c("text_id", "sentence_id", "term", "pos_1", "pos_2")))
   return(df)
 }
 
@@ -164,18 +171,16 @@ pos_filter_chamame <- function(df){
     c("\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)", "\\u54c1\\u8a5e") %>%
     stringi::stri_unescape_unicode()
 
-  df <- df %>%
-    dplyr::rename("term" := cols[1], "pos" := cols[2]) 
-
   df <-
     df %>%
+    dplyr::rename("term" := cols[1], "pos" := cols[2])  %>%
     tidyr::separate(.data[["pos"]], into = c("pos_1", "pos_2"), sep="-", extra = "drop", fill = "right") %>%
     dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
     dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-"))
 
-  if(! "text_id" %in% colnames(df)){
-    df <- df %>%
-      add_text_id_df("pos_2", stringi::stri_unescape_unicode("\\u53e5\\u70b9"))
+  if(! "sentence_id" %in% colnames(df)){
+    cond <- '.data[["pos_2"]] == stringi::stri_unescape_unicode("\\u53e5\\u70b9")'
+    df <- add_series_no(df, cond = cond, new_col = "sentence_id")
   }
 
   # pos filter setting
@@ -191,8 +196,8 @@ pos_filter_chamame <- function(df){
     df %>% # filter by pos (parts of speech)
     dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
     dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
-    dplyr::relocate(dplyr::all_of(c("text_id", "term", "pos_1", "pos_2")))
-
+    dplyr::relocate(
+      dplyr::any_of(c("text_id", "sentence_id", "term", "pos_1", "pos_2")))
   return(df)
 }
 
@@ -236,8 +241,6 @@ replace_words <- function(df,
     rep_words        <- c(synonym_to,   synonym_df[[2]]) # 2: TO
     names(rep_words) <- c(synonym_from, synonym_df[[1]]) # 1: FROM
   }
-  # rep_words        <- "書籍"
-  # names(rep_words) <- "本"
   df <- 
     df %>%
     dplyr::mutate(`:=`({{term}}, stringr::str_replace_all(.data[[term]], rep_words)))

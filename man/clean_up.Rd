@@ -74,24 +74,26 @@ Clean up result of morphological analyzed data frame
 \examples{
 library(tidyverse)
 data(neko_mecab)
+data(neko_ginza)
 data(synonym)
 synonym <- 
   synonym \%>\% dplyr::mutate_all(stringi::stri_unescape_unicode)
 
-neko_mecab \%>\%
-  dplyr::select(-text_id) \%>\%
+neko_mecab <- 
+  neko_mecab \%>\%
   dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
-  clean_mecab_local(
-    use_common_data = TRUE, 
-    synonym_df = synonym)
+  print()
 
-text <- tibble::tibble(text = "親は科学の本を小学生の子どもに与えた．")
-ex_ginza <- moranajp_all(text, text_col = "text", method = "ginza")
-ex_ginza \%>\%
-   clean_ginza_local(
-     add_stop_words = "科学", 
-     synonym_from = "本",  synonym_to = "書籍")
+neko_mecab \%>\%
+  clean_mecab_local(use_common_data = TRUE, synonym_df = synonym)
+
+neko_ginza <- 
+  neko_ginza \%>\%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
+  print()
+
 library(tidyverse)
 data(neko)
 neko <-

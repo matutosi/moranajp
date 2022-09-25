@@ -44,12 +44,16 @@ Keep other colnames in dataframe.
       neko \%>\%
       dplyr::mutate(text=stringi::stri_unescape_unicode(text))
   bin_dir <- "d:/pf/mecab/bin"
-    # mecab
   iconv <- "CP932_UTF-8"
-  moranajp_all(neko, text_col = "text", bin_dir = bin_dir, iconv = iconv) \%>\%
-      print(n=100)
-    # ginza
-  moranajp_all(neko, text_col = "text", method = "ginza") \%>\%
+
+  # mecab
+  neko \%>\%
+    moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) \%>\%
+        print(n=100)
+  
+  # ginza
+  neko \%>\%
+    moranajp_all(text_col = "text", method = "ginza") \%>\%
       print(n=100)
 }
 }

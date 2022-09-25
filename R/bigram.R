@@ -1,11 +1,15 @@
 #' Draw bigram network using morphological analysis data.
 #' 
 #' @param df           A dataframe including result of morphological analysis.
-#' @param text_id      A dstring to specify text.
+#' @param sentence_id  A dstring to specify sentence.
 #' @param bigram       A result of bigram().
 #' @param bigram_net   A result of bigram_net().
 #' @param rand_seed    A numeric.
 #' @param threshold    A numeric used as threshold for frequency of bigram.
+#' @param term,term_depend
+#'                     A string of terms (words) or dependnt terms column 
+#'                     to use bigram.
+#' @param depend       A logical to 
 #' @param freq         A numeric of word frequency in bigram_net.
 #'                     Can be got using word_freq().
 #' @param arrow_size,circle_size,text_size,
@@ -21,20 +25,35 @@
 #' @return  A gg object of bigram network plot.
 #' @examples
 #' library(tidyverse)
-#' data(neko_mecab)
 #' data(synonym)
-#' synonym <- 
-#'   synonym %>% dplyr::mutate_all(stringi::stri_unescape_unicode)
+#' synonym <- dplyr::mutate_all(synonym, stringi::stri_unescape_unicode)
+#' 
+#' data(neko_mecab)
+#' neko_mecab <- 
+#'   neko_mecab %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+#'   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym) %>%
+#'   print()
 #' 
 #' bigram_neko <- 
 #'   neko_mecab %>%
-#'   dplyr::select(-text_id) %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
-#'   clean_mecab_local(
-#'     use_common_data = TRUE, 
-#'     synonym_df = synonym) %>%
 #'   draw_bigram_network()
+#' 
+#' data(neko_ginza)
+#' neko_ginza <- 
+#'   neko_ginza %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) %>%
+#'   print()
+#' 
+#' bigram_neko_ginza_dep <- 
+#'   neko_ginza %>%
+#'   bigram(term = "lemma", depend = TRUE)
+#' 
+#' bigram_neko_ginza <- 
+#'  neko_ginza %>%
+#'    bigram(term = "lemma")
 #' 
 #' add_stop_words <- 
 #'   c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
@@ -42,6 +61,7 @@
 #'     "\\u3093", "\\u308c\\u308b", "*") %>% 
 #'   stringi::stri_unescape_unicode()
 #' 
+#' data(review_chamame)
 #' bigram_review <- 
 #'   review_chamame %>%
 #'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
@@ -49,34 +69,75 @@
 #'   clean_chamame(add_stop_words = add_stop_words) %>%
 #'   draw_bigram_network()
 #' 
+#' data(review_mecab)
+#' review_mecab %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+#'   clean_mecab_local() %>%
+#'   draw_bigram_network()
+#' 
+#' data(review_ginza)
+#' review_ginza %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   clean_ginza_local() %>%
+#'   draw_bigram_network(term = "lemma")
+#' 
+#' review_ginza %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   clean_ginza_local() %>%
+#'   draw_bigram_network(term = "lemma", depend = TRUE)
+#' 
 #' @export
 draw_bigram_network <- function(df, ...){
-  bigram_net <- 
-    bigram(df, ...) %>%
-    bigram_net(...)
-  freq <- word_freq(df, bigram_net)
-  bigram_network_plot(bigram_net, freq = freq, ...)
+  bigram <- bigram(df, ...)
+  bigram_net <- bigram_net(bigram, ...)
+  freq <- word_freq(df, bigram_net, ...)
+  print(bigram_network_plot(bigram_net, freq = freq, ...))
+  return(bigram)
 }
 
 #' @rdname draw_bigram_network
 #' @export
-bigram <- function(df, text_id = "text_id", ...){  # `...' will be omitted
+bigram <- function(df, sentence_id = "sentence_id", 
+                   term = "term", depend = FALSE, term_depend = NULL, 
+                   ...){ # `...' will be omitted
   word_1 <- "word_1"
   word_2 <- "word_2"
-  term <- "term"
   freq <- "freq"
-  df %>%
-    dplyr::group_by(.data[[text_id]]) %>%
+  bigram_dep <- 
+    if(depend) bigram_depend(df, sentence_id, term, term_depend) else NULL
+  bigram <- 
+    df %>%
+    dplyr::group_by(.data[[sentence_id]]) %>%
   # according to arrow direction in ggplot: "word_2-word_1"
-    dplyr::transmute(text_id, 
-                     {{word_2}} := term, 
+    dplyr::transmute(.data[[sentence_id]], 
+                     {{word_2}} := .data[[term]], 
                      {{word_1}} := dplyr::lag(.data[[term]])) %>%
     dplyr::ungroup() %>%
-    stats::na.omit() %>%
+    stats::na.omit()
+  bigram %>%
+    dplyr::bind_rows(bigram_dep) %>%
+    dplyr::filter(.data[[word_1]] != "EOS") %>%
+    dplyr::filter(.data[[word_2]] != "EOS") %>%
+    dplyr::filter(.data[[word_1]] != "*") %>%
+    dplyr::filter(.data[[word_2]] != "*") %>%
+    dplyr::distinct() %>%
     dplyr::group_by(.data[[word_1]], .data[[word_2]]) %>%
     dplyr::tally(name = {{freq}}) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(dplyr::desc(.data[[freq]]))
+}
+
+#' @rdname draw_bigram_network
+#' @export
+bigram_depend <- function(df, sentence_id = "sentence_id",
+                          term = "term", term_depend = NULL){
+  if(is.null(term_depend)) term_depend <- stringr::str_c(term, "_dep")
+  bigram_dep <- 
+    df %>%
+    dplyr::transmute(.data[[sentence_id]], 
+      "word_1" := .data[[term]], "word_2" := .data[[term_depend]])
+  return(bigram_dep)
 }
 
 #' @rdname draw_bigram_network
@@ -91,17 +152,17 @@ bigram_net <- function(bigram, rand_seed = 12, threshold = 100, ...){  # `...' w
 
 #' @rdname draw_bigram_network
 #' @export
-word_freq <- function(df, bigram_net){
+word_freq <- function(df, bigram_net, term = "term", ...){
   freq <- "freq"
-  term <- 
+  name <- 
     bigram_net %>%
     igraph::V() %>%
     attr("name")
   df <- 
     df %>%
-    dplyr::group_by(.data[["term"]]) %>%
-    dplyr::tally(name = freq )
-  dplyr::left_join(tibble::tibble("term" := term), df) %>%
+    dplyr::group_by(.data[[term]]) %>%
+    dplyr::tally(name = freq)
+  dplyr::left_join(tibble::tibble({{term}} := name), df) %>%
     `[[`(freq) %>%
     log() %>%
     round(0) * 2
