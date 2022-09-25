@@ -1,19 +1,18 @@
-  # usethis::use_data_raw("neko_ginza")
-## code to prepare `neko_mecab` dataset goes here
+## code to prepare `review_chamame` dataset goes here
 
 library(tidyverse)
 library(moranajp)
-data(neko)
+data(review)
 
-neko_ginza_tmp <- 
-  neko %>%
+review_ginza_tmp <- 
+  review  %>%
   dplyr::transmute(text = stringi::stri_unescape_unicode(text)) %>%
   moranajp_all(method = "ginza") %>%
   print()
 
-neko_ginza <- 
-  neko_ginza_tmp %>%
+review_ginza <- 
+  review_ginza_tmp %>%
   dplyr::mutate_all(stringi::stri_escape_unicode) %>%
   print()
 
-usethis::use_data(neko_ginza, overwrite = TRUE)
+usethis::use_data(review_ginza, overwrite = TRUE)
