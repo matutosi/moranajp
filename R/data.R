@@ -71,26 +71,22 @@
 #'
 #' GiNZA: https://megagonlabs.github.io/ginza/
 #' 
-#' @format A data frame with 733 rows and 18 variable: 
+#' @format A data frame with 733 rows and 14 variable: 
 #' \describe{
-#'   \item{text_id    }{result of MeCab}
+#'   \item{text_id    }{result of GiNZA}
 #'   \item{id         }{result of GiNZA}
 #'   \item{form       }{result of GiNZA}
 #'   \item{lemma      }{result of GiNZA}
 #'   \item{upos       }{result of GiNZA}
-#'   \item{"xpos      }{result of GiNZA}
+#'   \item{xpos       }{result of GiNZA}
 #'   \item{pos_1      }{result of GiNZA}
 #'   \item{pos_2      }{result of GiNZA}
 #'   \item{pos_3      }{result of GiNZA}
 #'   \item{feats      }{result of GiNZA}
-#'   \item{"head      }{result of GiNZA}
+#'   \item{head       }{result of GiNZA}
 #'   \item{deprel     }{result of GiNZA}
 #'   \item{deps       }{result of GiNZA}
 #'   \item{misc       }{result of GiNZA}
-#'   \item{sentence_no}{result of GiNZA}
-#'   \item{word_no    }{result of GiNZA}
-#'   \item{head_id    }{result of GiNZA}
-#'   \item{lemma_dep  }{result of GiNZA}
 #' }
 #' @examples
 #' data(neko_ginza)
@@ -151,7 +147,7 @@
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
 "review_chamame"
 
-#' Analyzed data of neko by MeCab
+#' Analyzed data of review by MeCab
 #'
 #' MeCab: https://taku910.github.io/mecab/
 #'
@@ -177,6 +173,33 @@
 #'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
 "review_mecab"
+
+#' Analyzed data of review by GiNZA
+#'
+#' GiNZA: https://megagonlabs.github.io/ginza/
+#' 
+#' @format A data frame with 21491 rows and 14 variable: 
+#' \describe{
+#'   \item{text_id    }{result of GiNZA}
+#'   \item{id         }{result of GiNZA}
+#'   \item{form       }{result of GiNZA}
+#'   \item{lemma      }{result of GiNZA}
+#'   \item{upos       }{result of GiNZA}
+#'   \item{xpos       }{result of GiNZA}
+#'   \item{pos_1      }{result of GiNZA}
+#'   \item{pos_2      }{result of GiNZA}
+#'   \item{pos_3      }{result of GiNZA}
+#'   \item{feats      }{result of GiNZA}
+#'   \item{head       }{result of GiNZA}
+#'   \item{deprel     }{result of GiNZA}
+#'   \item{deps       }{result of GiNZA}
+#'   \item{misc       }{result of GiNZA}
+#' }
+#' @examples
+#' data(review_ginza)
+#' review_ginza %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+"review_ginza"
 
 #' Stop words for morphological analysis
 #'
