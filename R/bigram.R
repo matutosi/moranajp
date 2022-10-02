@@ -22,7 +22,8 @@
 #'                     A Pair of numeric to specify range.
 #' @param no_scale     A logical. FALSE: Not draw x and y axis.
 #' @param ...          Extra arguments to internal fuctions.
-#' @return  A gg object of bigram network plot.
+#' @return  A list including df (input), bigram, freq (frequency) and 
+#'          gg (ggplot2 object of bigram network plot).
 #' @examples
 #' library(tidyverse)
 #' data(synonym)
@@ -92,8 +93,10 @@ draw_bigram_network <- function(df, ...){
   bigram <- bigram(df, ...)
   bigram_net <- bigram_net(bigram, ...)
   freq <- word_freq(df, bigram_net, ...)
-  print(bigram_network_plot(bigram_net, freq = freq, ...))
-  return(bigram)
+  gg <- bigram_network_plot(bigram_net, freq = freq, ...)
+  print(gg)
+  res <- list(df = df, bigram = bigram, freq = freq, gg = gg)
+  return(res)
 }
 
 #' @rdname draw_bigram_network
