@@ -112,7 +112,8 @@
 #'     Dammy number of chapter.
 #'   }
 #' }
-#' data(neko)
+#' @examples
+#' data(review)
 #' review %>%
 #'   dplyr::mutate_all(stringi::stri_unescape_unicode)
 "review"
