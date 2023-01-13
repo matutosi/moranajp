@@ -19,3 +19,21 @@ iconv_x <- function(x, iconv = "", reverse = FALSE){
         return(x)
     }
 }
+
+#' Generate "stringi::stri_unescape_unicode" code
+#' 
+#' @param x        A string or vector of Japanese
+#' @return         A string or vector 
+#' @example
+#' stringi::stri_unescape_unicode("\u8868\u5c64\u5f62") %>%
+#'   print() %>%
+#'   escape_jpanese()
+#' 
+#' @export
+escape_jpanese <- function(x){
+  escaped <- stringi::stri_escape_unicode(x)
+  codes <- paste0('stringi::stri_unescape_unicode("', escaped, '")')
+  for(code in codes){
+    cat(code, "\n")
+  }
+}
