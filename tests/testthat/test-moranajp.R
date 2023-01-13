@@ -1,6 +1,21 @@
+testthat::test_that("position_sentence() work", {
+  x <- letters[1:10]
+  y <- "a"
+  expect_equal(position_sentence(x, y), 1)
+
+  x <- letters[1:10]
+  y <- "z"
+  expect_equal(position_sentence(x, y), 0)
+
+  x <- letters[10:1]
+  y <- letters[c(19:10)]
+  expect_equal(position_sentence(x, y), 0.1)
+
+})
+
 test_that("add_series_no and add_text_id work", {
     times <- 2:4
-    tbl <- 
+    tbl <-
       tibble::tibble(col=c(rep("a", times[1]), "EOS", rep("b", times[2]), "EOS", rep("c", times[3]), "EOS"), col_na=NA)
     res <- c(rep(1, times[1] + 1), rep(2, times[2] + 1), rep(3, times[3] + 1))       # "+ 1": because of EOS
     res_false <- c(rep(0, times[1]), rep(1, times[2] + 1), rep(2, times[3] + 1), 3)  # when separator indicate start
@@ -15,7 +30,7 @@ test_that("text_id of moranajp matches text number", {
     bin_dir <- c("d:/pf/mecab/bin", "/opt/local/mecab/bin")
     bin_dir <- bin_dir[file.exists(bin_dir)]
     if(length(bin_dir) == 1){
-      res <- 
+      res <-
           neko %>%
           dplyr::mutate(text=stringi::stri_unescape_unicode(text)) %>%
           dplyr::mutate(cols=1:nrow(.)) %>%
