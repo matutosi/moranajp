@@ -95,16 +95,12 @@ delete_parenthesis <- function(df){
 #' @export
 align_sentence <- function(df, 
                            s_id = "sentence_id",
-                           w_id = "word_id",
                            term = "term",
                            x_pos = "x"){
   ids <- unique(df[[s_id]])
-  if(! w_id %in% colnames(df)){
-    df <- add_word_id(df, s_id, w_id)
-  }
   diff <- rep(0, nrow(dplyr::filter(df, .data[[s_id]] == 1)))
   for(i in head(seq_along(ids), -1)){
-    diff <- c(diff, calc_diff_x_pos(df, s_id, w_id, term, x_pos, i, i + 1))
+    diff <- c(diff, calc_diff_x_pos(df, s_id, term, x_pos, i, i + 1))
   }
   dplyr::mutate(df, `:=`({{x_pos}}, .data[[x_pos]] + diff))
 }
@@ -119,29 +115,35 @@ align_sentence <- function(df,
 #' term <- c(s1, s2)
 #' df <- tibble::tibble(
 #'         sentence_id = rep(1:2, c(length(s1), length(s2))), 
-#'         word_id = c(seq_along(s1), seq_along(s2)), 
 #'         term = term,
 #'         x = seq_along(term))
+#' s_id <- "sentence_id"
+#' term <- "term"
+#' x_pos <- "x"
+#' calc_diff_x_pos(df, s_id, term, x_pos, 1, 2)
 #' 
-#' calc_diff_x_pos(df, s_id = "sentence_id", w_id = "word_id")
 #' 
-#' 
-#' 
+#' intersect(1:3 ,4:6)
 #' 
 #' 
 #' 
 #' @export
 calc_diff_x_pos <- function(df, s_id, term, x_pos, i, j){
-    former <- dplyr::filter(df, .data[[s_id]] == i)
-    latter <- dplyr::filter(df, .data[[s_id]] == j)
-    former_w <- former$term
-    latter_w <- latter$term
-    matched_w  <- intersect(latter_w, former_w)[1]
-    former_pos <- match(matched_w, former_w)
-    latter_pos <- match(matched_w, latter_w)
-    x_former <- former[[x_pos]][former_pos]
-    x_latter <- latter[[x_pos]][latter_pos]
-    diff <- rep(x_former - x_latter, length(latter_w))
+  former <- dplyr::filter(df, .data[[s_id]] == i)
+  latter <- dplyr::filter(df, .data[[s_id]] == j)
+  former_w <- former$term
+  latter_w <- latter$term
+  matched_w  <- intersect(latter_w, former_w)[1]
+  if(is.na(matched_w)){
+    diff <- rep(0, length(latter_w))
+    return(diff)
+  }
+  former_pos <- match(matched_w, former_w)
+  latter_pos <- match(matched_w, latter_w)
+  x_former <- former[[x_pos]][former_pos]
+  x_latter <- latter[[x_pos]][latter_pos]
+  diff <- rep(x_former - x_latter, length(latter_w))
+  return(diff)
 }
 
 

@@ -19,12 +19,10 @@ testthat::test_that("aling_sentence() work", {
   term <- c(s1, s2)
   df <- tibble::tibble(
           sentence_id = rep(1:2, c(length(s1), length(s2))), 
-          word_id = c(seq_along(s1), seq_along(s2)), 
           term = term,
           x = seq_along(term))
   df_expect <- tibble::tibble(
           sentence_id = rep(1:2, c(length(s1), length(s2))), 
-          word_id = c(seq_along(s1), seq_along(s2)), 
           term = term,
           x = c(1:4, 3:6))
 
