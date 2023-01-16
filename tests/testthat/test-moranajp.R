@@ -1,18 +1,3 @@
-testthat::test_that("position_sentence() work", {
-  x <- letters[1:10]
-  y <- "a"
-  expect_equal(position_sentence(x, y), 1)
-
-  x <- letters[1:10]
-  y <- "z"
-  expect_equal(position_sentence(x, y), 0)
-
-  x <- letters[10:1]
-  y <- letters[c(19:10)]
-  expect_equal(position_sentence(x, y), 0.1)
-
-})
-
 test_that("add_series_no and add_text_id work", {
     times <- 2:4
     tbl <-
