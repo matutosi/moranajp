@@ -28,10 +28,10 @@ testthat::test_that("aling_sentence() work", {
           term = term,
           x = c(1:4, 3:6))
 
-  expect_equal(aling_sentence(df), df_expect)
+
+
+
+
+  expect_equal(align_sentence(df), df_expect)
 })
-
-
-
-
 

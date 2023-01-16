@@ -13,15 +13,12 @@
 #' y <- sample(letters, 3, FALSE)
 #' position_sentence(x, y)
 #' 
-#' 
-#' 
-#' 
 #' @export
 position_sentence <- function(x, y){
   len <- length(y)
   for(i in seq(len)){
-    no_word <- sum(stringr::str_detect(x, y[i]))
-    if( no_word ){ return( (len - i + 1) / len ) }
+    detected <- sum(stringr::str_detect(x, y[i]))
+    if( detected ){ return( (len - i + 1) / len ) }
   }
   return(0)
 }
@@ -77,4 +74,147 @@ delete_parenthesis <- function(df){
     )) %>%
     dplyr::filter(del == 0 & paren == 0) %>%
     dplyr::select(-all_of(c("paren", "del")))
+}
+
+
+#' Align x_position of words according to common words between two sentences
+#' 
+#' @param   df  A dataframe analysed by MeCab
+#' @param   s_id,w_id,term,x_pos
+#'            A String that specify sentence_id, word_id, term and x_position
+#' @return  A dataframe
+#' @examples
+#' 
+#' 
+#' 
+#' 
+#' 
+#' 
+#' 
+#' 
+#' @export
+align_sentence <- function(df, 
+                           s_id = "sentence_id",
+                           w_id = "word_id",
+                           term = "term",
+                           x_pos = "x"){
+  ids <- unique(df[[s_id]])
+  if(! w_id %in% colnames(df)){
+    df <- add_word_id(df, s_id, w_id)
+  }
+  diff <- rep(0, nrow(dplyr::filter(df, .data[[s_id]] == 1)))
+  for(i in head(seq_along(ids), -1)){
+    diff <- c(diff, calc_diff_x_pos(df, s_id, w_id, term, x_pos, i, i + 1))
+  }
+  dplyr::mutate(df, `:=`({{x_pos}}, .data[[x_pos]] + diff))
+}
+
+#' Calculate difference of x_position of commom word between two sentences
+#' 
+#' @inherit  align_sentence
+#' @param    i,j   A integer to specify sentence number
+#' @examples
+#' s1 <- letters[1:4]
+#' s2 <- letters[3:6]
+#' term <- c(s1, s2)
+#' df <- tibble::tibble(
+#'         sentence_id = rep(1:2, c(length(s1), length(s2))), 
+#'         word_id = c(seq_along(s1), seq_along(s2)), 
+#'         term = term,
+#'         x = seq_along(term))
+#' 
+#' calc_diff_x_pos(df, s_id = "sentence_id", w_id = "word_id")
+#' 
+#' 
+#' 
+#' 
+#' 
+#' 
+#' @export
+calc_diff_x_pos <- function(df, s_id, term, x_pos, i, j){
+    former <- dplyr::filter(df, .data[[s_id]] == i)
+    latter <- dplyr::filter(df, .data[[s_id]] == j)
+    former_w <- former$term
+    latter_w <- latter$term
+    matched_w  <- intersect(latter_w, former_w)[1]
+    former_pos <- match(matched_w, former_w)
+    latter_pos <- match(matched_w, latter_w)
+    x_former <- former[[x_pos]][former_pos]
+    x_latter <- latter[[x_pos]][latter_pos]
+    diff <- rep(x_former - x_latter, length(latter_w))
+}
+
+
+#' Add word ids in a sentence
+#' 
+#' @inherit  align_sentence
+#' @examples
+#' df <- tibble::tibble(s_id = rep(1:4, 4:1))
+#' add_word_id(df, s_id = "s_id", w_id = "w_id")
+#' 
+#' @export
+add_word_id <- function(df, s_id, w_id){
+  df %>%
+    dplyr::group_by(.data[[s_id]]) %>%
+    dplyr::mutate(`:=`({{w_id}}, dplyr::row_number())) %>%
+    dplyr::ungroup()
+}
+
+## 
+
+if(0){
+library(tidyverse)
+library(grid)
+library(moranajp)
+width <- function(x, unit = "mm"){
+  grid::stringWidth(x) %>%
+  grid::convertWidth(unit = unit)
+}
+one_jp_width <- function(unit = "mm"){
+  grid::stringWidth("　") %>%
+  grid::convertWidth(unit = unit)
+}
+data(review_mecab)
+cols <- c("text_id", "\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
+          "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62") %>%
+        stringi::stri_unescape_unicode()
+test_data <- 
+  review_mecab %>%
+  dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+  dplyr::mutate(`:=`(text_id, as.numeric(text_id))) %>%
+  dplyr::filter(text_id < 5) %>%
+  dplyr::select(tidyselect::all_of(cols)) %>%
+  delete_parenthesis() %>%
+  clean_mecab_local()
+
+surface_form  <- stringi::stri_unescape_unicode("\u8868\u5c64\u5f62")
+original_form <- stringi::stri_unescape_unicode("\u539f\u5f62")
+  # text <- 
+  #   test_data %>%
+  #   dplyr::mutate(`:=`(w, 
+  #     stringi::stri_width( .data[[surface_form]]) )) %>%
+  #   #   dplyr::mutate(`:=`(w, width(.data[[surface_form]]))) %>%
+  #   dplyr::mutate(`:=`(x, 
+  #   #     purrr::accumulate(w, `+`, .init = 0) %>% head(-1)
+  #     (purrr::accumulate(w, `+`, .init = 0) * one_jp_width() * 0.25)  %>%
+  #      utils::head(-1)
+  #     ))
+  #   #   dplyr::mutate(`:=`(x, x / max(x))) %>%
+  # grid::grid.newpage()
+  # vp <- viewport(width = max(text$x))
+  # grid::grid.text(text$表層形, text$x, just = c("left", "centre"), vp = vp)
+text <- 
+  test_data %>%
+  dplyr::mutate(`:=`(w, 
+    stringi::stri_width( .data[[surface_form]]) )) %>%
+  dplyr::mutate(`:=`(x, 
+    purrr::accumulate(w, `+`) * one_jp_width() * 0.28
+    ))
+
+
+grid::grid.newpage()
+vp <- viewport(width = max(text$x))
+grid::grid.text(text$表層形, text$x, just = c("right", "centre"), vp = vp)
+
 }
