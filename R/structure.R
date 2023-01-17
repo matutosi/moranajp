@@ -98,11 +98,21 @@ align_sentence <- function(df,
                            term = "term",
                            x_pos = "x"){
   ids <- unique(df[[s_id]])
-  diff <- rep(0, nrow(dplyr::filter(df, .data[[s_id]] == 1)))
-  for(i in head(seq_along(ids), -1)){
-    diff <- c(diff, calc_diff_x_pos(df, s_id, term, x_pos, i, i + 1))
+  for(j in utils::tail(seq_along(ids), -1)){
+    for(i in seq(from = j - 1, to = 1)){
+      diff <- calc_diff_x_pos(df, s_id, term, x_pos, i, j)
+      if( sum(diff) ){ break }
+    }
+    df_aligned <- 
+      df %>%
+      dplyr::filter(.data[[s_id]] == j) %>%
+      dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
+    df <- 
+      df %>%
+      dplyr::filter(.data[[s_id]] != j) %>%
+      dplyr::bind_rows(df_aligned)
   }
-  dplyr::mutate(df, `:=`({{x_pos}}, .data[[x_pos]] + diff))
+  return(df)
 }
 
 #' Calculate difference of x_position of commom word between two sentences
