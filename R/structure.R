@@ -25,11 +25,11 @@ position_sentence <- function(x, y){
 
 position_paragraph <- function(tbl){
   #   len_x <-
-  len_y <- max(tbl$s_id)
+  len_y <- max(tbl[[s_id]])
   for(i in 2:len_y){
-    y <- dplyr::filter(tbl, s_id == i)$word
+    y <- dplyr::filter(tbl, s_id == i)[[word]]
     for(j in 1:(i-1)){
-      x <- dplyr::filter(tbl, s_id == j)$word
+      x <- dplyr::filter(tbl, s_id == j)[[word]]
       pos <- position_sentence(x, y)
     }
   }
@@ -97,11 +97,21 @@ align_sentence <- function(df,
                            s_id = "sentence_id",
                            term = "term",
                            x_pos = "x"){
+  # s_id = "sentence_id"; term = "term"; x_pos = "x"
   ids <- unique(df[[s_id]])
+  need_adjust <- NULL
+  str_width <- NULL
+  df_original <- df
   for(j in utils::tail(seq_along(ids), -1)){
     for(i in seq(from = j - 1, to = 1)){
       diff <- calc_diff_x_pos(df, s_id, term, x_pos, i, j)
       if( sum(diff) ){ break }
+      if(i == 1){
+        need_adjust <- c(need_adjust, j)
+        last_x  <- max(dplyr::filter(df_original, .data[[s_id]] == j - 1)[[x_pos]])
+        first_x <- min(dplyr::filter(df_original, .data[[s_id]] == j    )[[x_pos]])
+        str_width <- c(str_width, first_x - last_x)
+      }
     }
     df_aligned <- 
       df %>%
@@ -112,8 +122,46 @@ align_sentence <- function(df,
       dplyr::filter(.data[[s_id]] != j) %>%
       dplyr::bind_rows(df_aligned)
   }
+  if(need_adjust){
+    df <- adjust_sentence(df, s_id, term, x_pos, need_adjust, str_width)
+  }
   return(df)
 }
+
+#' Adjust x position of sentences without common term
+#' 
+#' @inherit  align_sentence
+#' @param    need_adjust   A integer or vector to specify that need to adjust
+#' @param    adjust_x      A integer or vector to adjust x position
+#' @examples
+#' 
+#' 
+#' 
+#' @export
+adjust_sentence <- function(df, 
+                            s_id = "sentence_id",
+                            term = "term",
+                            x_pos = "x", 
+                            need_adjust, 
+                            str_width
+                            ){
+  for(j in need_adjust){
+    i <- j - 1
+    former_x <- max(dplyr::filter(df, .data[[s_id]] == i)[[x_pos]])
+    latter_x <- min(dplyr::filter(df, .data[[s_id]] == j)[[x_pos]])
+    diff <- former_x - latter_x + str_width
+    df_adjusted <- 
+      df %>%
+      dplyr::filter(.data[[s_id]] == j) %>%
+      dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
+    df <- 
+      df %>%
+      dplyr::filter(.data[[s_id]] != j) %>%
+      dplyr::bind_rows(df_adjusted)
+  }
+  return(df)
+}
+
 
 #' Calculate difference of x_position of commom word between two sentences
 #' 
@@ -141,8 +189,8 @@ align_sentence <- function(df,
 calc_diff_x_pos <- function(df, s_id, term, x_pos, i, j){
   former <- dplyr::filter(df, .data[[s_id]] == i)
   latter <- dplyr::filter(df, .data[[s_id]] == j)
-  former_w <- former$term
-  latter_w <- latter$term
+  former_w <- former[[term]]
+  latter_w <- latter[[term]]
   matched_w  <- intersect(latter_w, former_w)[1]
   if(is.na(matched_w)){
     diff <- rep(0, length(latter_w))
