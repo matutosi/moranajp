@@ -84,20 +84,35 @@ delete_parenthesis <- function(df){
 #'            A String that specify sentence_id, word_id, term and x_position
 #' @return  A dataframe
 #' @examples
-#' 
-#' 
-#' 
-#' 
-#' 
-#' 
-#' 
+#' library(tidyverse)
+#'   # settings
+#' s1 <- 1:4
+#' s2 <- 3:6
+#' s3 <- 3:6
+#' s4 <- 7:10
+#' s_order <- list(s1, s2, s3, s4)
+#' term <- map2(list(letters), s_order, `[`)
+#' df <- tibble::tibble(
+#'         sentence_id = rep(seq_along(term), purrr::map_int(term, length)),
+#'         term = unlist(term),
+#'         x = seq_along(term))
+#'   # show dataframe
+#' df
+#' align_sentence(df)
+#'   # plot
+#' df %>%
+#'   align_sentence() %>%
+#'   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) %>%
+#'   dplyr::bind_rows(df) %>%
+#'   ggplot(aes(x, .data[[s_id]], label = term)) + 
+#'     geom_text() + 
+#'     theme_bw()
 #' 
 #' @export
 align_sentence <- function(df, 
                            s_id = "sentence_id",
                            term = "term",
                            x_pos = "x"){
-  # s_id = "sentence_id"; term = "term"; x_pos = "x"
   ids <- unique(df[[s_id]])
   need_adjust <- NULL
   str_width <- NULL
@@ -122,7 +137,7 @@ align_sentence <- function(df,
       dplyr::filter(.data[[s_id]] != j) %>%
       dplyr::bind_rows(df_aligned)
   }
-  if(need_adjust){
+  if( length(need_adjust) ){
     df <- adjust_sentence(df, s_id, term, x_pos, need_adjust, str_width)
   }
   return(df)
@@ -218,63 +233,4 @@ add_word_id <- function(df, s_id, w_id){
     dplyr::group_by(.data[[s_id]]) %>%
     dplyr::mutate(`:=`({{w_id}}, dplyr::row_number())) %>%
     dplyr::ungroup()
-}
-
-## 
-
-if(0){
-library(tidyverse)
-library(grid)
-library(moranajp)
-width <- function(x, unit = "mm"){
-  grid::stringWidth(x) %>%
-  grid::convertWidth(unit = unit)
-}
-one_jp_width <- function(unit = "mm"){
-  grid::stringWidth("　") %>%
-  grid::convertWidth(unit = unit)
-}
-data(review_mecab)
-cols <- c("text_id", "\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
-          "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62") %>%
-        stringi::stri_unescape_unicode()
-test_data <- 
-  review_mecab %>%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
-  dplyr::mutate(`:=`(text_id, as.numeric(text_id))) %>%
-  dplyr::filter(text_id < 5) %>%
-  dplyr::select(tidyselect::all_of(cols)) %>%
-  delete_parenthesis() %>%
-  clean_mecab_local()
-
-surface_form  <- stringi::stri_unescape_unicode("\u8868\u5c64\u5f62")
-original_form <- stringi::stri_unescape_unicode("\u539f\u5f62")
-  # text <- 
-  #   test_data %>%
-  #   dplyr::mutate(`:=`(w, 
-  #     stringi::stri_width( .data[[surface_form]]) )) %>%
-  #   #   dplyr::mutate(`:=`(w, width(.data[[surface_form]]))) %>%
-  #   dplyr::mutate(`:=`(x, 
-  #   #     purrr::accumulate(w, `+`, .init = 0) %>% head(-1)
-  #     (purrr::accumulate(w, `+`, .init = 0) * one_jp_width() * 0.25)  %>%
-  #      utils::head(-1)
-  #     ))
-  #   #   dplyr::mutate(`:=`(x, x / max(x))) %>%
-  # grid::grid.newpage()
-  # vp <- viewport(width = max(text$x))
-  # grid::grid.text(text$表層形, text$x, just = c("left", "centre"), vp = vp)
-text <- 
-  test_data %>%
-  dplyr::mutate(`:=`(w, 
-    stringi::stri_width( .data[[surface_form]]) )) %>%
-  dplyr::mutate(`:=`(x, 
-    purrr::accumulate(w, `+`) * one_jp_width() * 0.28
-    ))
-
-
-grid::grid.newpage()
-vp <- viewport(width = max(text$x))
-grid::grid.text(text$表層形, text$x, just = c("right", "centre"), vp = vp)
-
 }
