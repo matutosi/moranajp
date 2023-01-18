@@ -40,6 +40,7 @@
 #'   print()
 #' 
 #'   data(review)
+#'   iconv <- "CP932_UTF-8"
 #'   review <-
 #'       review %>%
 #'       dplyr::mutate(text=stringi::stri_unescape_unicode(text))

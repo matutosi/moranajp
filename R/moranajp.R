@@ -53,8 +53,10 @@
 #' @export
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
                          text_col = "text", option = "", iconv = ""){
+  # text_col = "text"; option = ""; iconv = ""
     text_id <- "text_id"
-    tbl <- dplyr::mutate(tbl, {{text_id}} := row_number())
+    tbl <- tbl %>%
+      dplyr::mutate(`:=`({{text_id}}, dplyr::row_number()))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(
             stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
