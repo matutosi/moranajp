@@ -20,7 +20,7 @@ testthat::test_that("aling_sentence() work", {
   s3 <- 5:7
   s4 <- 6:10
   s_order <- list(s1, s2, s3, s4)
-  term <- map2(list(letters), s_order, `[`)
+  term <- purrr::map2(list(letters), s_order, `[`)
   df <- tibble::tibble(
           sentence_id = rep(seq_along(term), purrr::map_int(term, length)),
           term = unlist(term),
