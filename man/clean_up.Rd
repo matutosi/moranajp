@@ -4,10 +4,12 @@
 \alias{clean_up}
 \alias{clean_mecab_local}
 \alias{clean_ginza_local}
-\alias{add_depend_ginza}
-\alias{pos_filter_ginza_local}
+\alias{clean_sudachi_local}
 \alias{clean_chamame}
 \alias{pos_filter_mecab_local}
+\alias{add_depend_ginza}
+\alias{pos_filter_ginza_local}
+\alias{pos_filter_sudachi_local}
 \alias{pos_filter_chamame}
 \alias{delete_stop_words}
 \alias{replace_words}
@@ -17,13 +19,17 @@ clean_mecab_local(df, ...)
 
 clean_ginza_local(df, ...)
 
-add_depend_ginza(df)
-
-pos_filter_ginza_local(df)
+clean_sudachi_local(df, ...)
 
 clean_chamame(df, ...)
 
 pos_filter_mecab_local(df)
+
+add_depend_ginza(df)
+
+pos_filter_ginza_local(df)
+
+pos_filter_sudachi_local(df)
 
 pos_filter_chamame(df)
 
@@ -93,6 +99,19 @@ neko_ginza <-
   dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
   print()
+
+  data(review)
+  iconv <- "CP932_UTF-8"
+  review <-
+      review \%>\%
+      dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+  review_sudachi <- 
+    review \%>\%
+     moranajp_all(text_col = "text", bin_dir = bin_dir, 
+                  method = "sudachi_c", iconv = iconv) \%>\%
+         print(n=100)
+  review_sudachi \%>\%
+    clean_sudachi_local(use_common_data = TRUE, synonym_df = synonym)
 
 library(tidyverse)
 data(neko)

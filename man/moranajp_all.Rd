@@ -8,6 +8,7 @@
 \alias{make_cmd_mecab}
 \alias{out_cols_mecab}
 \alias{out_cols_ginza}
+\alias{out_cols_sudachi}
 \alias{mecab_all}
 \alias{mecab}
 \title{Morphological analysis for a specific column in dataframe}
@@ -25,13 +26,15 @@ moranajp(tbl, bin_dir, method, text_col, option = "", iconv = "")
 
 make_input(tbl, text_col, iconv)
 
-make_cmd(bin_dir, method, option = "")
+make_cmd(method, option = "")
 
-make_cmd_mecab(bin_dir, option = "")
+make_cmd_mecab(option = "")
 
 out_cols_mecab()
 
 out_cols_ginza()
+
+out_cols_sudachi()
 
 mecab_all(tbl, text_col = "text", bin_dir = "")
 
@@ -42,7 +45,11 @@ mecab(tbl, bin_dir)
 
 \item{bin_dir}{A text. Directory of mecab.}
 
-\item{method}{A text. Method to use: "mecab" or "ginza".}
+\item{method}{A text. Method to use: "mecab", "ginza",
+"sudachi_a", "sudachi_b", and "sudachi_c".
+"a", "b" and "c" specify the mode of splitting.
+"a" split shortest, "b" middle and "c" longest.
+See https://github.com/WorksApplications/Sudachi for detail.}
 
 \item{text_col}{A text. Colnames for morphological analysis.}
 
@@ -71,17 +78,26 @@ Keep other colnames in dataframe.
   neko <-
       neko \%>\%
       dplyr::mutate(text=stringi::stri_unescape_unicode(text))
-  bin_dir <- "d:/pf/mecab/bin"
-  iconv <- "CP932_UTF-8"
 
   # mecab
+  bin_dir <- "d:/pf/mecab/bin"
+  iconv <- "CP932_UTF-8"
   neko \%>\%
     moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) \%>\%
         print(n=100)
-  
+
   # ginza
   neko \%>\%
     moranajp_all(text_col = "text", method = "ginza") \%>\%
       print(n=100)
+
+  # sudachi
+  bin_dir <- "d:/pf/sudachi"
+  iconv <- "CP932_UTF-8"
+  neko \%>\%
+    moranajp_all(text_col = "text", bin_dir = bin_dir, 
+                 method = "sudachi_a", iconv = iconv) \%>\%
+        print(n=100)
+
 }
 }

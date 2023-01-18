@@ -81,7 +81,8 @@ in bigram network.}
 \item{no_scale}{A logical. FALSE: Not draw x and y axis.}
 }
 \value{
-A gg object of bigram network plot.
+A list including df (input), bigram, freq (frequency) and
+gg (ggplot2 object of bigram network plot).
 }
 \description{
 Draw bigram network using morphological analysis data.
