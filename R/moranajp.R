@@ -6,7 +6,11 @@
 #' @param tbl          A tibble or data.frame.
 #' @param text_col     A text. Colnames for morphological analysis.
 #' @param bin_dir      A text. Directory of mecab.
-#' @param method       A text. Method to use: "mecab" or "ginza".
+#' @param method       A text. Method to use: "mecab", "ginza", 
+#'                     "sudachi_a", "sudachi_b", and "sudachi_c".
+#'                     "a", "b" and "c" specify the mode of splitting.
+#'                     "a" split shortest, "b" middle and "c" longest.
+#'                     See https://github.com/WorksApplications/Sudachi for detail.
 #' @param option       A text. Options for mecab.
 #'                     "-b" option is already set by moranajp.
 #'                     To see option, use "mecab -h" in command (win) or terminal (Mac).
@@ -24,24 +28,33 @@
 #'   neko <-
 #'       neko %>%
 #'       dplyr::mutate(text=stringi::stri_unescape_unicode(text))
-#'   bin_dir <- "d:/pf/mecab/bin"
-#'   iconv <- "CP932_UTF-8"
 #' 
 #'   # mecab
+#'   bin_dir <- "d:/pf/mecab/bin"
+#'   iconv <- "CP932_UTF-8"
 #'   neko %>%
 #'     moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) %>%
 #'         print(n=100)
-#'   
+#' 
 #'   # ginza
 #'   neko %>%
 #'     moranajp_all(text_col = "text", method = "ginza") %>%
 #'       print(n=100)
+#' 
+#'   # sudachi
+#'   bin_dir <- "d:/pf/sudachi"
+#'   iconv <- "CP932_UTF-8"
+#'   neko %>%
+#'     moranajp_all(text_col = "text", bin_dir = bin_dir, 
+#'                  method = "sudachi_a", iconv = iconv) %>%
+#'         print(n=100)
+#' 
 #' }
 #' @export
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
                          text_col = "text", option = "", iconv = ""){
     text_id <- "text_id"
-    tbl <- dplyr::mutate(tbl, `:=`({{text_id}}, 1:nrow(tbl)))
+    tbl <- dplyr::mutate(tbl, {{text_id}} := row_number())
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
     if (stringr::str_detect(
             stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
@@ -80,13 +93,21 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
 #' @rdname moranajp_all
 #' @export
 moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = ""){
+    if(bin_dir != ""){
+        wd <- getwd()
+        on.exit(setwd(wd))
+        setwd(bin_dir)
+    }
     input <- make_input(tbl, text_col, iconv)
-    command <- make_cmd(bin_dir, method, option = "")
+    command <- make_cmd(method, option = "")
     output <- system(command, intern=TRUE, input = input)
     output <- iconv_x(output, iconv) # Convert Encoding
     out_cols <- switch(method, 
-        "mecab" = out_cols_mecab(),
-        "ginza" = out_cols_ginza()
+        "mecab"     = out_cols_mecab(),
+        "ginza"     = out_cols_ginza(),
+        "sudachi_a" = out_cols_sudachi(),
+        "sudachi_b" = out_cols_sudachi(),
+        "sudachi_c" = out_cols_sudachi()
     )
     tbl <-
         output %>%
@@ -115,24 +136,20 @@ make_input <- function(tbl, text_col, iconv){
 }
 
 #' @rdname moranajp_all
-make_cmd <- function(bin_dir, method, option = ""){
+make_cmd <- function(method, option = ""){
     cmd <- switch(method, 
-        "mecab" = make_cmd_mecab(bin_dir, option = ""),
-        "ginza" = "ginza",
+        "mecab"     = make_cmd_mecab(option = ""),
+        "ginza"     = "ginza",
+        "sudachi_a" = "java -jar sudachi.jar -m A",
+        "sudachi_b" = "java -jar sudachi.jar -m B",
+        "sudachi_c" = "java -jar sudachi.jar -m C",
     )
     return(cmd)
 }
 
 #' @rdname moranajp_all
-make_cmd_mecab <- function(bin_dir, option = ""){
-      # check and modify directory name
-    if(stringr::str_detect(Sys.getenv(c("OS")), "Windows")){
-        bin_dir <- stringr::str_replace_all(bin_dir, "/", "\\\\")
-        if(stringr::str_sub(bin_dir, start=-1) != "\\") bin_dir <- stringr::str_c(bin_dir, "\\")
-    } else {
-        if(stringr::str_sub(bin_dir, start=-1) != "/") bin_dir <- stringr::str_c(bin_dir, "/")
-    }
-    cmd <- stringr::str_c(bin_dir, "mecab -b 17000", option)
+make_cmd_mecab <- function(option = ""){
+    cmd <- stringr::str_c("mecab -b 17000", option)
     return(cmd)
 }
 
@@ -158,6 +175,13 @@ out_cols_ginza <- function(){
   # DEPS: Enhanced dependency graph in the form of a list of head-deprel pairs.
   # MISC: Any other annotation.
     c("id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")
+}
+
+#' @rdname moranajp_all
+out_cols_sudachi <- function(){
+    c("\u8868\u5c64\u5f62", "\u54c1\u8a5e",
+      paste0("\u54c1\u8a5e\u7d30\u5206\u985e", 1:5),
+      "\u539f\u5f62")
 }
 
 #' Add series no col according to match condition.
