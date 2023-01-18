@@ -23,7 +23,7 @@ position_sentence <- function(x, y){
   return(0)
 }
 
-position_paragraph <- function(tbl){
+position_paragraph <- function(tbl, s_id, word){
   #   len_x <-
   len_y <- max(tbl[[s_id]])
   for(i in 2:len_y){
@@ -61,19 +61,21 @@ delete_parenthesis <- function(df){
   pos <- stringi::stri_unescape_unicode("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1")
   pare_begin <- stringi::stri_unescape_unicode("\\u62ec\\u5f27\\u958b")
   pare_end   <- stringi::stri_unescape_unicode("\\u62ec\\u5f27\\u9589")
+  paren <- "parenthesis"
+  del <- "delete"
   df %>%
-    dplyr::mutate(`:=`(paren, 
-      case_when(
+    dplyr::mutate(`:=`({{paren}}, 
+      dplyr::case_when(
         .data[[pos]] == pare_begin ~ -1,
         .data[[pos]] == pare_end   ~  1,
         TRUE ~ 0
       )
     )) %>%
-    dplyr::mutate(`:=`(del, 
-      purrr::accumulate(paren, `+`)
+    dplyr::mutate(`:=`({{del}}, 
+      purrr::accumulate(.data[[paren]], `+`)
     )) %>%
-    dplyr::filter(del == 0 & paren == 0) %>%
-    dplyr::select(-all_of(c("paren", "del")))
+    dplyr::filter(.data[[del]] == 0 & .data[[paren]] == 0) %>%
+    dplyr::select(-.data[[paren]], -.data[[del]])
 }
 
 
@@ -104,9 +106,9 @@ delete_parenthesis <- function(df){
 #'   align_sentence() %>%
 #'   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) %>%
 #'   dplyr::bind_rows(df) %>%
-#'   ggplot(aes(x, .data[[s_id]], label = term)) + 
-#'     geom_text() + 
-#'     theme_bw()
+#'   ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
+#'     ggplot2::geom_text() + 
+#'     ggplot2::theme_bw()
 #' 
 #' @export
 align_sentence <- function(df, 
@@ -145,12 +147,10 @@ align_sentence <- function(df,
 
 #' Adjust x position of sentences without common term
 #' 
-#' @inherit  align_sentence
+#' @inherit        align_sentence
+#' @inheritParams  align_sentence
 #' @param    need_adjust   A integer or vector to specify that need to adjust
-#' @param    adjust_x      A integer or vector to adjust x position
-#' @examples
-#' 
-#' 
+#' @param    str_width     A integer or vector to adjust x position
 #' 
 #' @export
 adjust_sentence <- function(df, 
@@ -180,7 +180,8 @@ adjust_sentence <- function(df,
 
 #' Calculate difference of x_position of commom word between two sentences
 #' 
-#' @inherit  align_sentence
+#' @inherit        align_sentence
+#' @inheritParams  align_sentence
 #' @param    i,j   A integer to specify sentence number
 #' @examples
 #' s1 <- letters[1:4]
@@ -195,10 +196,7 @@ adjust_sentence <- function(df,
 #' x_pos <- "x"
 #' calc_diff_x_pos(df, s_id, term, x_pos, 1, 2)
 #' 
-#' 
 #' intersect(1:3 ,4:6)
-#' 
-#' 
 #' 
 #' @export
 calc_diff_x_pos <- function(df, s_id, term, x_pos, i, j){
@@ -222,7 +220,8 @@ calc_diff_x_pos <- function(df, s_id, term, x_pos, i, j){
 
 #' Add word ids in a sentence
 #' 
-#' @inherit  align_sentence
+#' @inherit        align_sentence
+#' @inheritParams  align_sentence
 #' @examples
 #' df <- tibble::tibble(s_id = rep(1:4, 4:1))
 #' add_word_id(df, s_id = "s_id", w_id = "w_id")

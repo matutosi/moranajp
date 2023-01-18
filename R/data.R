@@ -103,12 +103,12 @@
 #'   \item{text_id}{result of Sudachi}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of Sudachi}
 #'   \item{\\u54c1\\u8a5e}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e1}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e2}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e3}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e4}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e5}{result of Sudachi}
-#'   \item{\u539f\u5f62}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e4}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e5}{result of Sudachi}
+#'   \item{\\u539f\\u5f62}{result of Sudachi}
 #' }
 #' @examples
 #' data(neko_sudachi_a)
@@ -117,11 +117,11 @@
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
 "neko_sudachi_a"
 
-#' @describeIn neko_sudachi_a
+#' @rdname neko_sudachi_a
 #' @format A data frame with 3095 rows and 9 variable: 
 "neko_sudachi_b"
 
-#' @describeIn neko_sudachi_a
+#' @rdname neko_sudachi_a
 #' @format A data frame with 3087 rows and 9 variable: 
 "neko_sudachi_c"
 
@@ -242,12 +242,12 @@
 #'   \item{text_id}{result of Sudachi}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of Sudachi}
 #'   \item{\\u54c1\\u8a5e}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e1}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e2}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e3}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e4}{result of Sudachi}
-#'   \item{\u54c1\u8a5e\u7d30\u5206\u985e5}{result of Sudachi}
-#'   \item{\u539f\u5f62}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e4}{result of Sudachi}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e5}{result of Sudachi}
+#'   \item{\\u539f\\u5f62}{result of Sudachi}
 #' }
 #' @examples
 #' data(review_sudachi_a)
@@ -256,11 +256,11 @@
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
 "review_sudachi_a"
 
-#' @describeIn review_sudachi_a
+#' @rdname review_sudachi_a
 #' @format A data frame with 20096 rows and 9 variable: 
 "review_sudachi_b"
 
-#' @describeIn review_sudachi_a
+#' @rdname review_sudachi_a
 #' @format A data frame with 20056 rows and 9 variable: 
 "review_sudachi_c"
 
