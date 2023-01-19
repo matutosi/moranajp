@@ -90,12 +90,12 @@
 #' 
 #' @export
 draw_bigram_network <- function(df, ...){
-  bigram <- bigram(df, ...)
-  bigram_net <- bigram_net(bigram, ...)
-  freq <- word_freq(df, bigram_net, ...)
-  gg <- bigram_network_plot(bigram_net, freq = freq, ...)
+  big <- bigram(df, ...)
+  big_net <- bigram_net(big, ...)
+  freq <- word_freq(df, big_net, ...)
+  gg <- bigram_network_plot(big_net, freq = freq, ...)
   print(gg)
-  res <- list(df = df, bigram = bigram, freq = freq, gg = gg)
+  res <- list(df = df, bigram = big, freq = freq, gg = gg)
   return(res)
 }
 
