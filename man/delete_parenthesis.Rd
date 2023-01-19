@@ -26,7 +26,7 @@ review_mecab \%>\%
   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
   dplyr::mutate(`:=`(text_id, as.numeric(text_id))) \%>\%
   dplyr::filter(text_id < 5) \%>\%
-  dplyr::select(tidyselect::all_of(cols)) \%>\%
+  dplyr::select(dplyr::all_of(cols)) \%>\%
   print(n=120) \%>\%
   delete_parenthesis() \%>\%
   print(n=120)

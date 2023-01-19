@@ -20,6 +20,7 @@
 #' library(tidyverse)
 #' data(neko_mecab)
 #' data(neko_ginza)
+#' data(review_sudachi_c)
 #' data(synonym)
 #' synonym <- 
 #'   synonym %>% dplyr::mutate_all(stringi::stri_unescape_unicode)
@@ -33,24 +34,14 @@
 #' neko_mecab %>%
 #'   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym)
 #' 
-#' neko_ginza <- 
-#'   neko_ginza %>%
+#' neko_ginza %>%
 #'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) %>%
-#'   print()
+#'   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym)
 #' 
-#'   data(review)
-#'   iconv <- "CP932_UTF-8"
-#'   review <-
-#'       review %>%
-#'       dplyr::mutate(text=stringi::stri_unescape_unicode(text))
-#'   review_sudachi <- 
-#'     review %>%
-#'      moranajp_all(text_col = "text", bin_dir = bin_dir, 
-#'                   method = "sudachi_c", iconv = iconv) %>%
-#'          print(n=100)
-#'   review_sudachi %>%
-#'     clean_sudachi_local(use_common_data = TRUE, synonym_df = synonym)
+#' review_sudachi_c %>%
+#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+#'   clean_sudachi_local(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' @export
 clean_mecab_local <- function(df, ...){

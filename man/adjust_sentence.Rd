@@ -16,39 +16,17 @@ adjust_sentence(
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
 
+\item{s_id}{A String to specify sentence_id}
+
+\item{term, x_pos}{A String to specify term and x_position}
+
 \item{need_adjust}{A integer or vector to specify that need to adjust}
 
-\item{adjust_x}{A integer or vector to adjust x position}
+\item{str_width}{A integer or vector to adjust x position}
 }
 \value{
 A dataframe
 }
 \description{
 Adjust x position of sentences without common term
-}
-\examples{
-library(tidyverse)
-  # settings
-s1 <- 1:4
-s2 <- 3:6
-s3 <- 3:6
-s4 <- 7:10
-s_order <- list(s1, s2, s3, s4)
-term <- map2(list(letters), s_order, `[`)
-df <- tibble::tibble(
-        sentence_id = rep(seq_along(term), purrr::map_int(term, length)),
-        term = unlist(term),
-        x = seq_along(term))
-  # show dataframe
-df
-align_sentence(df)
-  # plot
-df \%>\%
-  align_sentence() \%>\%
-  dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) \%>\%
-  dplyr::bind_rows(df) \%>\%
-  ggplot(aes(x, .data[[s_id]], label = term)) + 
-    geom_text() + 
-    theme_bw()
-
 }

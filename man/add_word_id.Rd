@@ -8,6 +8,10 @@ add_word_id(df, s_id, w_id)
 }
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
+
+\item{s_id}{A String to specify sentence_id}
+
+\item{w_id}{A string to specify word id}
 }
 \value{
 A dataframe

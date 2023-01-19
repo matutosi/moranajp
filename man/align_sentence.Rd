@@ -9,7 +9,9 @@ align_sentence(df, s_id = "sentence_id", term = "term", x_pos = "x")
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
 
-\item{s_id, w_id, term, x_pos}{A String that specify sentence_id, word_id, term and x_position}
+\item{s_id}{A String to specify sentence_id}
+
+\item{term, x_pos}{A String to specify term and x_position}
 }
 \value{
 A dataframe
@@ -34,12 +36,13 @@ df <- tibble::tibble(
 df
 align_sentence(df)
   # plot
+s_id <- "sentence_id"
 df \%>\%
   align_sentence() \%>\%
   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) \%>\%
   dplyr::bind_rows(df) \%>\%
-  ggplot(aes(x, .data[[s_id]], label = term)) + 
-    geom_text() + 
-    theme_bw()
+  ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
+    ggplot2::geom_text() + 
+    ggplot2::theme_bw()
 
 }

@@ -9,10 +9,14 @@ calc_diff_x_pos(df, s_id, term, x_pos, i, j)
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
 
+\item{s_id}{A String to specify sentence_id}
+
+\item{term, x_pos}{A String to specify term and x_position}
+
 \item{i, j}{A integer to specify sentence number}
 }
 \value{
-A dataframe
+A numeric
 }
 \description{
 Calculate difference of x_position of commom word between two sentences
@@ -30,9 +34,6 @@ term <- "term"
 x_pos <- "x"
 calc_diff_x_pos(df, s_id, term, x_pos, 1, 2)
 
-
 intersect(1:3 ,4:6)
-
-
 
 }

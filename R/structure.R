@@ -23,18 +23,22 @@ position_sentence <- function(x, y){
   return(0)
 }
 
-position_paragraph <- function(tbl, s_id, word){
-  #   len_x <-
-  len_y <- max(tbl[[s_id]])
+#' Find relateve position of a common word in a paragraph
+#' 
+#' @inheritParams  align_sentence
+#' @param   word   A string
+#' 
+#' @export
+position_paragraph <- function(df, s_id, word){
+  len_y <- max(df[[s_id]])
   for(i in 2:len_y){
-    y <- dplyr::filter(tbl, s_id == i)[[word]]
+    y <- dplyr::filter(df, s_id == i)[[word]]
     for(j in 1:(i-1)){
-      x <- dplyr::filter(tbl, s_id == j)[[word]]
+      x <- dplyr::filter(df, s_id == j)[[word]]
       pos <- position_sentence(x, y)
     }
   }
 }
-
 
 #' Delete parenthesis and its internals
 #'
@@ -51,7 +55,7 @@ position_paragraph <- function(tbl, s_id, word){
 #'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
 #'   dplyr::mutate(`:=`(text_id, as.numeric(text_id))) %>%
 #'   dplyr::filter(text_id < 5) %>%
-#'   dplyr::select(tidyselect::all_of(cols)) %>%
+#'   dplyr::select(dplyr::all_of(cols)) %>%
 #'   print(n=120) %>%
 #'   delete_parenthesis() %>%
 #'   print(n=120)
@@ -81,9 +85,10 @@ delete_parenthesis <- function(df){
 
 #' Align x_position of words according to common words between two sentences
 #' 
-#' @param   df  A dataframe analysed by MeCab
-#' @param   s_id,w_id,term,x_pos
-#'            A String that specify sentence_id, word_id, term and x_position
+#' @name align_sentence
+#' @param  df    A dataframe analysed by MeCab
+#' @param  s_id  A String to specify sentence_id
+#' @param  term,x_pos A String to specify term and x_position
 #' @return  A dataframe
 #' @examples
 #' library(tidyverse)
@@ -102,6 +107,7 @@ delete_parenthesis <- function(df){
 #' df
 #' align_sentence(df)
 #'   # plot
+#' s_id <- "sentence_id"
 #' df %>%
 #'   align_sentence() %>%
 #'   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) %>%
@@ -147,10 +153,10 @@ align_sentence <- function(df,
 
 #' Adjust x position of sentences without common term
 #' 
-#' @inherit        align_sentence
 #' @inheritParams  align_sentence
 #' @param    need_adjust   A integer or vector to specify that need to adjust
 #' @param    str_width     A integer or vector to adjust x position
+#' @return  A dataframe
 #' 
 #' @export
 adjust_sentence <- function(df, 
@@ -180,9 +186,9 @@ adjust_sentence <- function(df,
 
 #' Calculate difference of x_position of commom word between two sentences
 #' 
-#' @inherit        align_sentence
 #' @inheritParams  align_sentence
 #' @param    i,j   A integer to specify sentence number
+#' @return  A numeric
 #' @examples
 #' s1 <- letters[1:4]
 #' s2 <- letters[3:6]
@@ -220,8 +226,9 @@ calc_diff_x_pos <- function(df, s_id, term, x_pos, i, j){
 
 #' Add word ids in a sentence
 #' 
-#' @inherit        align_sentence
 #' @inheritParams  align_sentence
+#' @param   w_id   A string to specify word id
+#' @return  A dataframe
 #' @examples
 #' df <- tibble::tibble(s_id = rep(1:4, 4:1))
 #' add_word_id(df, s_id = "s_id", w_id = "w_id")

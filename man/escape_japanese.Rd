@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_iconv.R
 \name{escape_japanese}
 \alias{escape_japanese}
-\title{Generate "stringi::stri_unescape_unicode" code}
+\title{Generate code like "stringi::stri_unescape_unicode(...)"}
 \usage{
 escape_japanese(x)
 }
@@ -14,11 +14,11 @@ escape_japanese(x)
 }\if{html}{\out{</div>}}
 }
 \description{
-Generate "stringi::stri_unescape_unicode" code
+Generate code like "stringi::stri_unescape_unicode(...)"
 }
 \examples{
 stringi::stri_unescape_unicode("\u8868\u5c64\u5f62") \%>\%
   print() \%>\%
-  escape_jpanese()
+  escape_japanese()
 
 }
