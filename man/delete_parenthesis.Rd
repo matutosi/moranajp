@@ -4,10 +4,12 @@
 \alias{delete_parenthesis}
 \title{Delete parenthesis and its internals}
 \usage{
-delete_parenthesis(df)
+delete_parenthesis(df, pos = "pos_1")
 }
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
+
+\item{pos}{A string to specify (pos) position of sentence}
 }
 \value{
 A dataframe
