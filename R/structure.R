@@ -42,7 +42,8 @@ position_paragraph <- function(df, s_id, word){
 
 #' Delete parenthesis and its internals
 #'
-#' @param   df A dataframe analysed by MeCab
+#' @param   df  A dataframe analysed by MeCab
+#' @param   pos A string to specify (pos) position of sentence
 #' @return  A dataframe
 #' @examples
 #' library(tidyverse)
@@ -61,8 +62,7 @@ position_paragraph <- function(df, s_id, word){
 #'   print(n=120)
 #' 
 #' @export
-delete_parenthesis <- function(df){
-  pos <- stringi::stri_unescape_unicode("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1")
+delete_parenthesis <- function(df, pos = "pos_1"){
   pare_begin <- stringi::stri_unescape_unicode("\\u62ec\\u5f27\\u958b")
   pare_end   <- stringi::stri_unescape_unicode("\\u62ec\\u5f27\\u9589")
   paren <- "parenthesis"
@@ -121,28 +121,31 @@ align_sentence <- function(df,
                            s_id = "sentence_id",
                            term = "term",
                            x_pos = "x"){
+  # s_id = "sentence_id"; term = "term"; x_pos = "x"  # for debug
   ids <- unique(df[[s_id]])
   need_adjust <- NULL
-  str_width <- NULL
+  str_width <- list()
   df_original <- df
   for(j in utils::tail(seq_along(ids), -1)){
     for(i in seq(from = j - 1, to = 1)){
-      diff <- calc_diff_x_pos(df, s_id, term, x_pos, i, j)
-      if( sum(diff) ){ break }
-      if(i == 1){
-        need_adjust <- c(need_adjust, j)
-        last_x  <- max(dplyr::filter(df_original, .data[[s_id]] == j - 1)[[x_pos]])
-        first_x <- min(dplyr::filter(df_original, .data[[s_id]] == j    )[[x_pos]])
-        str_width <- c(str_width, first_x - last_x)
+  # print(paste0("j: ", ids[j], ", i: ", ids[i]))  # for debug
+      diff <- calc_diff_x_pos(df, s_id, term, x_pos, ids[i], ids[j])
+      if( sum(diff) != 0 ){ break }
+      if(ids[i] == ids[1]){  # no common word: need_adjust
+  # print("no match")  # for debug
+        need_adjust <- c(need_adjust, ids[j])
+        last_x  <- max(dplyr::filter(df_original, .data[[s_id]] == ids[j-1])[[x_pos]])
+        first_x <- min(dplyr::filter(df_original, .data[[s_id]] == ids[j  ])[[x_pos]])
+        str_width[[ ids[j] ]] <- first_x - last_x
       }
     }
     df_aligned <- 
       df %>%
-      dplyr::filter(.data[[s_id]] == j) %>%
+      dplyr::filter(.data[[s_id]] == ids[j]) %>%
       dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
     df <- 
       df %>%
-      dplyr::filter(.data[[s_id]] != j) %>%
+      dplyr::filter(.data[[s_id]] != ids[j]) %>%
       dplyr::bind_rows(df_aligned)
   }
   if( length(need_adjust) ){
@@ -166,18 +169,20 @@ adjust_sentence <- function(df,
                             need_adjust, 
                             str_width
                             ){
+  # df <- review_sudachi_c; s_id = "sentence_id"; term = "term"; x_pos = "x"  # for debug
+  ids <- unique(df[[s_id]])
   for(j in need_adjust){
-    i <- j - 1
+    i <- ids[match(j, ids) - 1]
     former_x <- max(dplyr::filter(df, .data[[s_id]] == i)[[x_pos]])
     latter_x <- min(dplyr::filter(df, .data[[s_id]] == j)[[x_pos]])
-    diff <- former_x - latter_x + str_width
+    diff <- former_x - latter_x + str_width[[j]]
     df_adjusted <- 
       df %>%
-      dplyr::filter(.data[[s_id]] == j) %>%
+      dplyr::filter(.data[[s_id]] >= j) %>%
       dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
     df <- 
       df %>%
-      dplyr::filter(.data[[s_id]] != j) %>%
+      dplyr::filter(.data[[s_id]] < j) %>%
       dplyr::bind_rows(df_adjusted)
   }
   return(df)
@@ -212,14 +217,15 @@ calc_diff_x_pos <- function(df, s_id, term, x_pos, i, j){
   latter_w <- latter[[term]]
   matched_w  <- intersect(latter_w, former_w)[1]
   if(is.na(matched_w)){
-    diff <- rep(0, length(latter_w))
+    diff <- 0
     return(diff)
   }
   former_pos <- match(matched_w, former_w)
   latter_pos <- match(matched_w, latter_w)
   x_former <- former[[x_pos]][former_pos]
   x_latter <- latter[[x_pos]][latter_pos]
-  diff <- rep(x_former - x_latter, length(latter_w))
+  diff <- x_former - x_latter
+print(paste0(j, "-", i, ": ", matched_w, diff))
   return(diff)
 }
 
