@@ -29,3 +29,54 @@ add_text_id_df <- function(df, col, brk, end_with_brk = TRUE){
   text_id <- text_id_with_break(x, brk, end_with_brk)
   dplyr::bind_cols(df, text_id = text_id)
 }
+
+#' Add group id column into result of morphological analysis
+#' 
+#' @param tbl           A dataframe
+#' @param col           A string to specify the column including breaks
+#' @param brk           A string to specify breaks
+#' @param end_with_brk  A logical
+#' @return   A dataframe
+#' @examples
+#' brk <- "EOS"
+#' tbl <- tibble::tibble(col=c(rep("a", 2), brk, rep("b", 3), brk, rep("c", 4), brk))
+#' add_group(tbl, col = "col")
+#' add_group(tbl, col = "col", end_with_brk = FALSE)
+#' 
+#' @export
+add_group <- function(tbl, col, brk = "EOS", end_with_brk = TRUE){
+  grp <- "group"
+  adj <- "adjust"
+  tbl <- 
+    tbl %>%
+    dplyr::mutate(`:=`({{grp}}, (.data[[col]] == brk) + 0 )) %>%  # "+ 0": convert boolean to numeric
+    dplyr::mutate(`:=`({{grp}}, purrr::accumulate(.data[[grp]], `+`))) %>%
+    dplyr::mutate(`:=`({{grp}}, .data[[grp]] + 1))
+  if(end_with_brk){
+    tbl <- 
+      tbl %>%
+      dplyr::mutate(`:=`({{adj}}, -(.data[[col]] == brk) + 0 )) %>%
+      dplyr::mutate(`:=`({{grp}}, .data[[grp]] + .data[[adj]])) %>%
+      dplyr::select(-all_of(adj))
+  }
+  return(tbl)
+}
+
+#' Add id in each group
+#' 
+#' @param tbl           A dataframe
+#' @param grp,id        A string to specify the column of group and id
+#' @return   A dataframe
+#' @examples
+#' brk <- "EOS"
+#' tbl <- tibble::tibble(col=c(rep("a", 2), brk, rep("b", 3), brk, rep("c", 4), brk))
+#' add_group(tbl, col = "col") %>%
+#'   add_id(id = "id_in_group")
+#' 
+#' @export
+add_id <- function(tbl, grp = "group", id = "id"){
+  tbl %>%
+    dplyr::group_by(.data[[grp]]) %>%
+    dplyr::mutate(`:=`({{id}}, dplyr::row_number())) %>%
+    dplyr::ungroup()
+}
