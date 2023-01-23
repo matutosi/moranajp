@@ -2,6 +2,8 @@
 
 export("%>%")
 export(add_depend_ginza)
+export(add_group)
+export(add_id)
 export(add_series_no)
 export(add_text_id)
 export(add_text_id_df)

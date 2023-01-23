@@ -57,7 +57,7 @@ add_group <- function(tbl, col, brk = "EOS", end_with_brk = TRUE){
       tbl %>%
       dplyr::mutate(`:=`({{adj}}, -(.data[[col]] == brk) + 0 )) %>%
       dplyr::mutate(`:=`({{grp}}, .data[[grp]] + .data[[adj]])) %>%
-      dplyr::select(-all_of(adj))
+      dplyr::select(-dplyr::all_of(adj))
   }
   return(tbl)
 }
