@@ -4,5 +4,5 @@
 library(tidyverse)
 review <-
   readr::read_tsv("tools/review.txt") %>%
-  dplyr::mutate(text = stringi::stri_escape_unicode(text))
+  dplyr::mutate_if(is.character, stringi::stri_escape_unicode)
 usethis::use_data(review, overwrite = TRUE)

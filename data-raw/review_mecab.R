@@ -1,7 +1,7 @@
 ## code to prepare `review_mecab` dataset goes here
 
 library(tidyverse)
-library(moranajp)
+devtools::load_all(".")
 data(review)
 
 bin_dir <- "d:/pf/mecab/bin/"

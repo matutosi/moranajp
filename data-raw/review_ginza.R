@@ -1,7 +1,7 @@
 ## code to prepare `review_chamame` dataset goes here
 
 library(tidyverse)
-library(moranajp)
+devtools::load_all(".")
 data(review)
 
 review_ginza_tmp <- 
