@@ -44,8 +44,7 @@ add_text_id_df <- function(df, col, brk, end_with_brk = TRUE){
 #' add_group(tbl, col = "col", end_with_brk = FALSE)
 #' 
 #' @export
-add_group <- function(tbl, col, brk = "EOS", end_with_brk = TRUE){
-  grp <- "group"
+add_group <- function(tbl, col, brk = "EOS", grp = "group", end_with_brk = TRUE){
   adj <- "adjust"
   tbl <- 
     tbl %>%

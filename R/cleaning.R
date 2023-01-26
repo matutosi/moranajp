@@ -56,11 +56,12 @@ clean_mecab_local <- function(df, ...){
 #' @rdname clean_up
 #' @export
 clean_ginza_local <- function(df, ...){
+  if(!exists("s_id")){ s_id <- "sentence_id" }
   term <- "lemma"
   df <- 
     df %>%
-    add_depend_ginza() %>%
-    pos_filter_ginza_local() %>%
+    add_depend_ginza(s_id = s_id) %>%
+    pos_filter_ginza_local(s_id = s_id) %>%
     delete_stop_words(term = term, ...) %>%
     replace_words(term = term, ...)
   return(df)
@@ -69,9 +70,10 @@ clean_ginza_local <- function(df, ...){
 #' @rdname clean_up
 #' @export
 clean_sudachi_local <- function(df, ...){
+  if(!exists("s_id")){ s_id <- "sentence_id" }
   df <- 
     df %>%
-    pos_filter_sudachi_local() %>%
+    pos_filter_sudachi_local(s_id = s_id) %>%
     delete_stop_words(...) %>%
     replace_words(...)
   return(df)
@@ -80,9 +82,10 @@ clean_sudachi_local <- function(df, ...){
 #' @rdname clean_up
 #' @export
 clean_chamame <- function(df, ...){
+  if(!exists("s_id")){ s_id <- "sentence_id" }
   df <- 
     df %>%
-    pos_filter_chamame() %>%
+    pos_filter_chamame(s_id = s_id) %>%
     delete_stop_words(...) %>%
     replace_words(...)
   return(df)
@@ -90,7 +93,7 @@ clean_chamame <- function(df, ...){
 
 #' @rdname clean_up
 #' @export
-pos_filter_mecab_local <- function(df){
+pos_filter_mecab_local <- function(df, s_id = "sentence_id"){
   # pos filter setting
   filter_pos_1 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
@@ -114,9 +117,9 @@ pos_filter_mecab_local <- function(df){
     na.omit() %>%
     dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
 
-  if(! "sentence_id" %in% colnames(df)){
-    cond <- '.data[["pos_2"]] == stringi::stri_unescape_unicode("\\u53e5\\u70b9")'
-    df <- add_series_no(df, cond = cond, new_col = "sentence_id")
+  if(! s_id %in% colnames(df)){
+    cond <- '.data[["term"]] == "EOS"'
+    df <- add_series_no(df, cond = cond, new_col = s_id)
   }
 
   df <- 
@@ -126,27 +129,27 @@ pos_filter_mecab_local <- function(df){
     dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
     dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-")) %>%
     dplyr::relocate(
-      dplyr::any_of(c("text_id", "sentence_id", "term", "pos_1", "pos_2")))
+      dplyr::any_of(c("text_id", s_id, "term", "pos_1", "pos_2")))
   return(df)
 }
 
 #' @rdname clean_up
 #' @export
-add_depend_ginza <- function(df){
+add_depend_ginza <- function(df, s_id = "sentence_id"){
   cond <- "stringr::str_detect(id, '^#')"
   df <- 
     df %>%
-    add_series_no(cond = cond, new_col = "sentence_id", starts_with = 1) %>%
+    add_series_no(cond = cond, new_col = s_id, starts_with = 1) %>%
     dplyr::mutate(
         "word_no" := .data[["id"]], 
-        "id" := stringr::str_c(.data[["sentence_id"]], "_", .data[["word_no"]]))
+        "id" := stringr::str_c(.data[[s_id]], "_", .data[["word_no"]]))
   depend <- 
     df %>%
     dplyr::select("head_id" := .data[["id"]], "lemma_dep" := .data[["lemma"]])
   df <- 
     df %>%
     dplyr::mutate("head_id" := 
-        stringr::str_c(.data[["sentence_id"]], "_", .data[["head"]])) %>%
+        stringr::str_c(.data[[s_id]], "_", .data[["head"]])) %>%
     dplyr::left_join(depend)
   return(df)
 }
@@ -164,7 +167,7 @@ add_depend_ginza <- function(df){
 #'    pos_filter_ginza_local()
 #' 
 #' 
-pos_filter_ginza_local <- function(df){
+pos_filter_ginza_local <- function(df, s_id = "sentence_id"){
     filter_pos_1 <- 
         c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
           "\\u5f62\\u72b6\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
@@ -182,7 +185,7 @@ pos_filter_ginza_local <- function(df){
 
 #' @rdname clean_up
 #' @export
-pos_filter_sudachi_local <- function(df){
+pos_filter_sudachi_local <- function(df, s_id = "sentence_id"){
   # pos filter setting
   filter_pos_1 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
@@ -197,9 +200,9 @@ pos_filter_sudachi_local <- function(df){
     na.omit() %>%
     dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
 
-  if(! "sentence_id" %in% colnames(df)){
-    cond <- '.data[["pos_2"]] == stringi::stri_unescape_unicode("\\u53e5\\u70b9")'
-    df <- add_series_no(df, cond = cond, new_col = "sentence_id")
+  if(! s_id %in% colnames(df)){
+    cond <- '.data[["term"]] == "EOS"'
+    df <- add_series_no(df, cond = cond, new_col = s_id)
   }
 
   df <- 
@@ -215,7 +218,7 @@ pos_filter_sudachi_local <- function(df){
 
 #' @rdname clean_up
 #' @export
-pos_filter_chamame <- function(df){
+pos_filter_chamame <- function(df, s_id = "sentence_id"){
   cols <- 
     c("\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)", "\\u54c1\\u8a5e") %>%
     stringi::stri_unescape_unicode()
@@ -227,9 +230,9 @@ pos_filter_chamame <- function(df){
     dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
     dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-"))
 
-  if(! "sentence_id" %in% colnames(df)){
-    cond <- '.data[["pos_2"]] == stringi::stri_unescape_unicode("\\u53e5\\u70b9")'
-    df <- add_series_no(df, cond = cond, new_col = "sentence_id")
+  if(! s_id %in% colnames(df)){
+    cond <- '.data[["term"]] == "EOS"'
+    df <- add_series_no(df, cond = cond, new_col = s_id)
   }
 
   # pos filter setting
@@ -246,7 +249,7 @@ pos_filter_chamame <- function(df){
     dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
     dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
     dplyr::relocate(
-      dplyr::any_of(c("text_id", "sentence_id", "term", "pos_1", "pos_2")))
+      dplyr::any_of(c("text_id", s_id, "term", "pos_1", "pos_2")))
   return(df)
 }
 
