@@ -89,6 +89,7 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
     tbl <-
         tbl %>%
         add_text_id(method = method) %>%
+        remove_brk(method = method) %>%
         dplyr::left_join(others, by = text_id) %>%
         dplyr::relocate(.data[[text_id]], colnames(others))
     return(dplyr::slice(tbl, -nrow(tbl)))
@@ -128,16 +129,16 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = ""){
 }
 
 #' @rdname moranajp_all
+#' @param  brk A string of break point
 #' @export
-make_input <- function(tbl, text_col, iconv){
-  #     bp <- "EOS"  # End Of Sentence
-    bp <- "BPOMORANAJP "  # Break Point Of MORANAJP: need space
+make_input <- function(tbl, text_col, iconv, 
+    brk = "BPOMORANAJP "){ # Break Point Of MORANAJP: need space to split with English words
     input <- 
         tbl %>%
         dplyr::select(.data[[text_col]]) %>%
         unlist() %>%
-        stringr::str_c(collapse = bp) %>%
-        stringr::str_c(bp) %>%  # NEED bp at the end of input
+        stringr::str_c(collapse = brk) %>%
+        stringr::str_c(brk) %>%  # NEED bp at the end of input
         iconv_x(iconv, reverse = TRUE)
     return(input)
 }
@@ -198,21 +199,44 @@ out_cols_sudachi <- function(){
 #'    "BPOMORANAJP": Break Point Of MORANAJP
 #'
 #' @inheritParams moranajp_all
+#' @inheritParams make_input
 #' @export
-add_text_id <- function(tbl, method){
-    text_id <- "text_id"
-    cnames  <- colnames(tbl)
-    if (any(text_id %in% cnames)){
-      stop("colnames must NOT have a colname 'text_id'")
-    }
-    if(method == "ginza"){
-      tbl <- dplyr::filter(tbl, !is.na(.data[[cnames[3]]]))
-    }
-    brk <- "BPOMORANAJP"
-    col_no <- ifelse(method == "ginza", 2, 1)
-    col <- cnames[col_no]
-    tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
-    return(tbl)
+add_text_id <- function(tbl, method, brk = "BPOMORANAJP"){
+  text_id <- "text_id"
+  cnames  <- colnames(tbl)
+  if (any(text_id %in% cnames)){
+    stop("colnames must NOT have a colname 'text_id'")
+  }
+  if(method == "ginza"){
+    tbl <- dplyr::filter(tbl, !is.na(.data[[cnames[3]]]))
+  }
+  col_no <- ifelse(method == "ginza", 2, 1)
+  col <- cnames[col_no]
+  tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
+  return(tbl)
+}
+
+#' Remove break point and other unused rows from the result of 
+#' morphological analysis
+#'
+#' Internal function for moranajp_all().
+#'
+#' @inheritParams moranajp_all
+#' @inheritParams make_input
+#' @export
+remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
+  cnames  <- colnames(tbl)
+  col_no <- ifelse(method == "ginza", 2, 1)
+  col <- cnames[col_no]
+  tbl <-
+    tbl %>%
+    dplyr::filter(.data[[col]] != brk) %>%
+    dplyr::filter(.data[[col]] != " ")
+  if(method == "ginza"){
+    input_col <- "^# text = "
+    tbl <- dplyr::filter(tbl, !stringr::str_detect(.data[["id"]], input_col))
+  }
+  return(tbl)
 }
 
 #' @rdname moranajp_all
