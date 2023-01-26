@@ -24,20 +24,34 @@ library(grid)
 
 ```{r}
 cols <- c("text_id", "\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
-          "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62") %>%
+          "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62", "chap") %>%
         stringi::stri_unescape_unicode()
 surface_form  <- stringi::stri_unescape_unicode("\u8868\u5c64\u5f62")
 original_form <- stringi::stri_unescape_unicode("\u539f\u5f62")
 s_id <- "sentence_id"
 data(review_sudachi_c)
-review_sudachi_c <- 
+tail(review_sudachi_c)
+  # review_sudachi_c <- 
   review_sudachi_c %>%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+  dplyr::mutate_if(is.character, stringi::stri_unescape_unicode) %>%
   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
   dplyr::mutate(`:=`(text_id, as.numeric(text_id))) %>%
   dplyr::select(dplyr::all_of(cols)) %>%
+filter(原形 == "EOS") %>%
+print %>%
+na.omit() %>%
+dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3]) %>%
+filter(term == "EOS")
+
+
   clean_sudachi_local() %>%
   delete_parenthesis()
+
+
+tail(review_sudachi_c)
+review_sudachi_c %>%
+  filter(text_id != s_id)
+
 
 review <- 
   review_sudachi_c %>%
