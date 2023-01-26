@@ -54,10 +54,11 @@
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
                          text_col = "text", option = "", iconv = ""){
   # text_col = "text"; option = ""; iconv = ""
+  # text_col = "text"; option = ""; bin_dir <- "d:/pf/mecab/bin/"; iconv   <- "CP932_UTF-8"; method  <- "mecab"; tbl <- review %>% mu
     text_id <- "text_id"
-    tbl <- tbl %>%
-      dplyr::mutate(`:=`({{text_id}}, dplyr::row_number()))
+    tbl <-    dplyr::mutate(tbl, `:=`({{text_id}}, dplyr::row_number()))
     others <- dplyr::select(tbl, !dplyr::all_of(text_col))
+      # remove line breaks and '&||<>"'
     if (stringr::str_detect(
             stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
         message("Removed line breaks !")
@@ -65,7 +66,6 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
         message("Removed line breaks !")
     if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), '&|\\||<|>|"'))
         message('Removed &, |, <. > or " !')
-      # remove line breaks and '&||<>"'
     tbl <-
         tbl %>%
         dplyr::mutate(`:=`({{text_col}},
@@ -85,8 +85,10 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
         purrr::map(moranajp, 
             bin_dir = bin_dir, method = method, 
             text_col = text_col, option = option, iconv = iconv) %>%
-        dplyr::bind_rows() %>%
-        add_text_id() %>%
+        dplyr::bind_rows()
+    tbl <-
+        tbl %>%
+        add_text_id(method = method) %>%
         dplyr::left_join(others, by = text_id) %>%
         dplyr::relocate(.data[[text_id]], colnames(others))
     return(dplyr::slice(tbl, -nrow(tbl)))
@@ -128,11 +130,14 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = ""){
 #' @rdname moranajp_all
 #' @export
 make_input <- function(tbl, text_col, iconv){
+  #     bp <- "EOS"  # End Of Sentence
+    bp <- "BPOMORANAJP "  # Break Point Of MORANAJP: need space
     input <- 
         tbl %>%
         dplyr::select(.data[[text_col]]) %>%
         unlist() %>%
-        stringr::str_c(collapse="EOS") %>%
+        stringr::str_c(collapse = bp) %>%
+        stringr::str_c(bp) %>%  # NEED bp at the end of input
         iconv_x(iconv, reverse = TRUE)
     return(input)
 }
@@ -186,44 +191,27 @@ out_cols_sudachi <- function(){
       "\u539f\u5f62")
 }
 
-#' Add series no col according to match condition.
-#'
-#' @param tbl     A tibble or data.frame.
-#' @param cond    Condition to split series no.
-#' @param new_col A string name of new column.
-#' @param starts_with   A integer.
-#' @examples
-#' \dontrun{
-#'   tbl <- tibble::tibble(col=c(rep("a", 2), "sep", rep("b", 3), "sep", rep("c", 4), "sep"))
-#'   cond <- ".$col == 'sep'"   # Use ".$'colname'" to identify column
-#'   add_series_no(tbl, cond = cond, new_col = "series_no")
-#' }
-#'
-#' @return        A tibble, which include new_col as series no.
-#' @export
-add_series_no <- function(tbl, cond = "", new_col = "series_no", starts_with = 1){
-  tbl %>%
-    dplyr::mutate(`:=`({{new_col}}, 
-      purrr::accumulate(eval(str2expression(cond)), 
-      `+`, .init = starts_with) %>% utils::head(-1) )) # head(-1): remove last one
-}
-
 #' Add id column into result of morphological analysis
 #'
 #' Internal function for moranajp_all().
-#' In mecab: add_text_id() add `text_id` column when there is 'EOS'.
-#'    'EOS' means breaks of text in this package (and most of morphological analysis).
-#' In ginza: add_text_id() add `text_id` column when starts with '#'
+#' Add `text_id` column when there is brk ("BPOMORANAJP").
+#'    "BPOMORANAJP": Break Point Of MORANAJP
 #'
 #' @inheritParams moranajp_all
 #' @export
-add_text_id <- function(tbl){
+add_text_id <- function(tbl, method){
     text_id <- "text_id"
-    cnames <- colnames(tbl)
-    if (any(text_id %in% cnames))
-        stop("colnames must NOT have a colname 'text_id'")
-    cond <- "stringr::str_detect(tbl[[1]], 'EOS')"
-    tbl <- add_series_no(tbl, cond = cond, new_col = text_id)
+    cnames  <- colnames(tbl)
+    if (any(text_id %in% cnames)){
+      stop("colnames must NOT have a colname 'text_id'")
+    }
+    if(method == "ginza"){
+      tbl <- dplyr::filter(tbl, !is.na(.data[[cnames[3]]]))
+    }
+    brk <- "BPOMORANAJP"
+    col_no <- ifelse(method == "ginza", 2, 1)
+    col <- cnames[col_no]
+    tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
     return(tbl)
 }
 

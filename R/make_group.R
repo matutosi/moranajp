@@ -12,6 +12,7 @@ make_groups <- function(tbl, text_col = "text", length = 8000,
   for(i in seq_along(ratio)){
     len_split <- round(length * ratio[i], 0)
     n_group <- ceiling(len_total / len_split)
+  # print(n_group)  # for debug
     res <- make_groups_sub(tbl, text_col, n_group, tmp_group, str_length)
     len_max <- max(res$str_length)
     if(len_max > length){
