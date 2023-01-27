@@ -24,7 +24,7 @@ moranajp_all(
 
 moranajp(tbl, bin_dir, method, text_col, option = "", iconv = "")
 
-make_input(tbl, text_col, iconv)
+make_input(tbl, text_col, iconv, brk = "BPOMORANAJP ")
 
 make_cmd(method, option = "")
 
@@ -63,6 +63,8 @@ Default (""): don't convert.
 "EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")
 iconv is also used to convert input text before running MeCab.
 "CP932_UTF-8": iconv(input, from =  "UTF-8", to = "Shift-JIS")}
+
+\item{brk}{A string of break point}
 }
 \value{
 A tibble.   Output of 'MeCab' and added column "text_id".

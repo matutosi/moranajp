@@ -23,15 +23,15 @@ clean_sudachi_local(df, ...)
 
 clean_chamame(df, ...)
 
-pos_filter_mecab_local(df)
+pos_filter_mecab_local(df, s_id = "sentence_id")
 
-add_depend_ginza(df)
+add_depend_ginza(df, s_id = "sentence_id")
 
-pos_filter_ginza_local(df)
+pos_filter_ginza_local(df, s_id = "sentence_id")
 
-pos_filter_sudachi_local(df)
+pos_filter_sudachi_local(df, s_id = "sentence_id")
 
-pos_filter_chamame(df)
+pos_filter_chamame(df, s_id = "sentence_id")
 
 delete_stop_words(
   df,
