@@ -114,12 +114,6 @@ pos_filter_mecab_local <- function(df){
     na.omit() %>%
     dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
 
-  #   if(! s_id %in% colnames(df)){
-  #     cond <- '.data[["term"]] == "EOS"'
-  #     df <- add_series_no(df, cond = cond, new_col = s_id)
-  #     df <- add_group(df, col = "term", brk = "EOS", grp = s_id, end_with_brk = TRUE)
-  #   }
-
   df <- 
     df %>% # filter by pos (parts of speech)
     dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
@@ -197,12 +191,6 @@ pos_filter_sudachi_local <- function(df){
     na.omit() %>%
     dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
 
-  #   if(! s_id %in% colnames(df)){
-  #     cond <- '.data[["term"]] == "EOS"'
-  #     df <- add_series_no(df, cond = cond, new_col = s_id)
-  #     df <- add_group(df, col = "term", brk = "EOS", grp = s_id, end_with_brk = TRUE)
-  #   }
-
   df <- 
     df %>% # filter by pos (parts of speech)
     dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
@@ -227,12 +215,6 @@ pos_filter_chamame <- function(df){
     tidyr::separate(.data[["pos"]], into = c("pos_1", "pos_2"), sep="-", extra = "drop", fill = "right") %>%
     dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
     dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-"))
-
-  #   if(! s_id %in% colnames(df)){
-  #     cond <- '.data[["term"]] == "EOS"'
-  #     df <- add_series_no(df, cond = cond, new_col = s_id)
-  #     df <- add_group(df, col = "term", brk = "EOS", grp = s_id, end_with_brk = TRUE)
-  #   }
 
   # pos filter setting
   filter_pos_1 <- 
