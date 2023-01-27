@@ -51,6 +51,7 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group", end_with_brk = TRUE)
     dplyr::mutate(`:=`({{grp}}, (.data[[col]] == brk) + 0 )) %>%  # "+ 0": convert boolean to numeric
     dplyr::mutate(`:=`({{grp}}, purrr::accumulate(.data[[grp]], `+`))) %>%
     dplyr::mutate(`:=`({{grp}}, .data[[grp]] + 1))
+
   if(end_with_brk){
     tbl <- 
       tbl %>%

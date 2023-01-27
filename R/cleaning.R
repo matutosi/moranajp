@@ -23,24 +23,22 @@
 #' data(review_sudachi_c)
 #' data(synonym)
 #' synonym <- 
-#'   synonym %>% dplyr::mutate_all(stringi::stri_unescape_unicode)
+#'   synonym %>% unescape_utf()
 #' 
 #' neko_mecab <- 
 #'   neko_mecab %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+#'   unescape_utf() %>%
 #'   print()
 #' 
 #' neko_mecab %>%
 #'   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' neko_ginza %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
+#'   unescape_utf() %>%
 #'   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' review_sudachi_c %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) %>%
+#'   unescape_utf() %>%
 #'   clean_sudachi_local(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' @export
@@ -61,7 +59,7 @@ clean_ginza_local <- function(df, ...){
   df <- 
     df %>%
     add_depend_ginza(s_id = s_id) %>%
-    pos_filter_ginza_local(s_id = s_id) %>%
+    pos_filter_ginza_local() %>%
     delete_stop_words(term = term, ...) %>%
     replace_words(term = term, ...)
   return(df)
@@ -70,10 +68,9 @@ clean_ginza_local <- function(df, ...){
 #' @rdname clean_up
 #' @export
 clean_sudachi_local <- function(df, ...){
-  if(!exists("s_id")){ s_id <- "sentence_id" }
   df <- 
     df %>%
-    pos_filter_sudachi_local(s_id = s_id) %>%
+    pos_filter_sudachi_local() %>%
     delete_stop_words(...) %>%
     replace_words(...)
   return(df)
@@ -82,10 +79,9 @@ clean_sudachi_local <- function(df, ...){
 #' @rdname clean_up
 #' @export
 clean_chamame <- function(df, ...){
-  if(!exists("s_id")){ s_id <- "sentence_id" }
   df <- 
     df %>%
-    pos_filter_chamame(s_id = s_id) %>%
+    pos_filter_chamame() %>%
     delete_stop_words(...) %>%
     replace_words(...)
   return(df)
@@ -93,11 +89,12 @@ clean_chamame <- function(df, ...){
 
 #' @rdname clean_up
 #' @export
-pos_filter_mecab_local <- function(df, s_id = "sentence_id"){
+pos_filter_mecab_local <- function(df){
   # pos filter setting
   filter_pos_1 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
+
   filter_pos_2 <- 
     c("\\u666e\\u901a\\u540d\\u8a5e", "\\u56fa\\u6709\\u540d\\u8a5e", 
       "\\u56fa\\u6709", "\\u4e00\\u822c", "\\u81ea\\u7acb", 
@@ -105,22 +102,23 @@ pos_filter_mecab_local <- function(df, s_id = "sentence_id"){
       "\\u5f62\\u5bb9\\u52d5\\u8a5e\\u8a9e\\u5e79", 
       "\\u30ca\\u30a4\\u5f62\\u5bb9\\u8a5e\\u8a9e\\u5e79", 
       "\\u526f\\u8a5e\\u53ef\\u80fd") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
 
   cols <- 
     c("\\u539f\\u5f62", "\\u54c1\\u8a5e", 
       "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
 
   df <- 
     df %>%
     na.omit() %>%
     dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
 
-  if(! s_id %in% colnames(df)){
-    cond <- '.data[["term"]] == "EOS"'
-    df <- add_series_no(df, cond = cond, new_col = s_id)
-  }
+  #   if(! s_id %in% colnames(df)){
+  #     cond <- '.data[["term"]] == "EOS"'
+  #     df <- add_series_no(df, cond = cond, new_col = s_id)
+  #     df <- add_group(df, col = "term", brk = "EOS", grp = s_id, end_with_brk = TRUE)
+  #   }
 
   df <- 
     df %>% # filter by pos (parts of speech)
@@ -129,17 +127,18 @@ pos_filter_mecab_local <- function(df, s_id = "sentence_id"){
     dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
     dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-")) %>%
     dplyr::relocate(
-      dplyr::any_of(c("text_id", s_id, "term", "pos_1", "pos_2")))
+      dplyr::any_of(c("text_id", "term", "pos_1", "pos_2")))
   return(df)
 }
 
 #' @rdname clean_up
 #' @export
 add_depend_ginza <- function(df, s_id = "sentence_id"){
-  cond <- "stringr::str_detect(id, '^#')"
+  #   cond <- "stringr::str_detect(id, '^#')"
   df <- 
     df %>%
-    add_series_no(cond = cond, new_col = s_id, starts_with = 1) %>%
+  #     add_group() %>%
+  #     add_series_no(cond = cond, new_col = s_id, starts_with = 1) %>%
     dplyr::mutate(
         "word_no" := .data[["id"]], 
         "id" := stringr::str_c(.data[[s_id]], "_", .data[["word_no"]]))
@@ -159,23 +158,21 @@ add_depend_ginza <- function(df, s_id = "sentence_id"){
 #' @examples
 #' library(tidyverse)
 #' data(neko)
-#' neko <-
-#'    neko %>%
-#'    dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+#' neko <- unescape_utf(neko)
 #' neko_ginza <- moranajp_all(neko, text_col = "text", method = "ginza")
 #' neko_ginza %>%
 #'    pos_filter_ginza_local()
 #' 
 #' 
-pos_filter_ginza_local <- function(df, s_id = "sentence_id"){
+pos_filter_ginza_local <- function(df){
     filter_pos_1 <- 
         c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
           "\\u5f62\\u72b6\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
-        stringi::stri_unescape_unicode()
+        unescape_utf()
     filter_pos_2 <- 
         c("\\u666e\\u901a\\u540d\\u8a5e", 
           "\\u56fa\\u6709\\u540d\\u8a5e", "\\u4e00\\u822c") %>%
-        stringi::stri_unescape_unicode()
+        unescape_utf()
     df <- 
         df %>%
         dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
@@ -185,25 +182,26 @@ pos_filter_ginza_local <- function(df, s_id = "sentence_id"){
 
 #' @rdname clean_up
 #' @export
-pos_filter_sudachi_local <- function(df, s_id = "sentence_id"){
+pos_filter_sudachi_local <- function(df){
   # pos filter setting
   filter_pos_1 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
   cols <- 
     c("\\u539f\\u5f62", "\\u54c1\\u8a5e", 
       "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
 
   df <- 
     df %>%
     na.omit() %>%
     dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
 
-  if(! s_id %in% colnames(df)){
-    cond <- '.data[["term"]] == "EOS"'
-    df <- add_series_no(df, cond = cond, new_col = s_id)
-  }
+  #   if(! s_id %in% colnames(df)){
+  #     cond <- '.data[["term"]] == "EOS"'
+  #     df <- add_series_no(df, cond = cond, new_col = s_id)
+  #     df <- add_group(df, col = "term", brk = "EOS", grp = s_id, end_with_brk = TRUE)
+  #   }
 
   df <- 
     df %>% # filter by pos (parts of speech)
@@ -218,10 +216,10 @@ pos_filter_sudachi_local <- function(df, s_id = "sentence_id"){
 
 #' @rdname clean_up
 #' @export
-pos_filter_chamame <- function(df, s_id = "sentence_id"){
+pos_filter_chamame <- function(df){
   cols <- 
     c("\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)", "\\u54c1\\u8a5e") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
 
   df <-
     df %>%
@@ -230,26 +228,27 @@ pos_filter_chamame <- function(df, s_id = "sentence_id"){
     dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
     dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-"))
 
-  if(! s_id %in% colnames(df)){
-    cond <- '.data[["term"]] == "EOS"'
-    df <- add_series_no(df, cond = cond, new_col = s_id)
-  }
+  #   if(! s_id %in% colnames(df)){
+  #     cond <- '.data[["term"]] == "EOS"'
+  #     df <- add_series_no(df, cond = cond, new_col = s_id)
+  #     df <- add_group(df, col = "term", brk = "EOS", grp = s_id, end_with_brk = TRUE)
+  #   }
 
   # pos filter setting
   filter_pos_1 <- 
     c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
       "\\u5f62\\u5bb9\\u8a5e", "\\u526f\\u8a5e") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
   filter_pos_2 <- 
     c("\\u666e\\u901a\\u540d\\u8a5e", 
       "\\u975e\\u81ea\\u7acb\\u53ef\\u80fd", "\\u4e00\\u822c") %>%
-    stringi::stri_unescape_unicode()
+    unescape_utf()
   df <- 
     df %>% # filter by pos (parts of speech)
     dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
     dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
     dplyr::relocate(
-      dplyr::any_of(c("text_id", s_id, "term", "pos_1", "pos_2")))
+      dplyr::any_of(c("text_id", "term", "pos_1", "pos_2")))
   return(df)
 }
 
@@ -264,7 +263,7 @@ delete_stop_words <- function(df,
     if(use_common_data){
         utils::data(stop_words, envir = environment())
         stop_words %>%
-          purrr::map_dfr(stringi::stri_unescape_unicode) %>%
+          purrr::map_dfr(unescape_utf) %>%
           magrittr::set_colnames(term)
     } else {
         tibble::tibble()

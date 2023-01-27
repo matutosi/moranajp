@@ -14,17 +14,16 @@ neko <-
   dplyr::filter(text!="") %>%
   dplyr::mutate(text=stringr::str_replace_all(text, "　| |\\r", "")) %>%
   dplyr::mutate(text=stringr::str_replace_all(text, "（[^（）]*）", "")) %>%
-  dplyr::mutate(text=stringi::stri_escape_unicode(text))
+  escape_utf()
 
 usethis::use_data(neko, overwrite = TRUE)
 
 
 gen_morana_data <- function(df, bin_dir, iconv, method){
   df %>%
-    dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
+    unescape_utf() %>%
     moranajp_all(bin_dir = bin_dir, iconv = iconv, method = method) %>%
-    dplyr::mutate_if(is.character, stringi::stri_escape_unicode) %>%
-    magrittr::set_colnames(stringi::stri_escape_unicode(colnames(.)))
+    escape_utf()
 }
 
   # sudachi
@@ -53,7 +52,7 @@ usethis::use_data(neko_mecab, overwrite = TRUE)
 
 ## code to prepare `neko_chamame` dataset goes here
 neko %>%
-  dplyr::transmute(text = stringi::stri_unescape_unicode(text)) %>%
+  unescape_utf() %>%
   readr::write_tsv("tools/pre_chamame_neko.txt", col_names = FALSE)
 
   #  #   #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  # 
@@ -66,6 +65,5 @@ neko %>%
 
 neko_chamame <-
   readr::read_csv("tools/pre_chamame_neko.csv") %>%
-  dplyr::mutate_all(stringi::stri_escape_unicode) %>%
-  magrittr::set_colnames(stringi::stri_escape_unicode(colnames(.)))
+  escape_utf()
 usethis::use_data(neko_chamame, overwrite = TRUE)

@@ -5,20 +5,34 @@ devtools::load_all(".")
 
 review <-
   readr::read_tsv("data-raw/review.txt") %>%
-  dplyr::mutate_if(is.character, stringi::stri_escape_unicode) %>%
+  escape_utf() %>%
   add_group(col = "text", brk = "EOCHAP", grp = "chap") %>%
   add_group(col = "text", brk = "EOSECT", grp = "sect") %>%
   add_group(col = "text", brk = "EOPARA", grp = "para") %>%
   dplyr::filter(!(text %in% c("EOCHAP", "EOSECT", "EOPARA")))
 usethis::use_data(review, overwrite = TRUE)
 
-gen_morana_data <- function(df, bin_dir, iconv, method){
+gen_morana_data <- function(df, bin_dir, iconv, method, head = FALSE){
+  df <- unescape_utf(df)
+  if(head){ df <- head(df) }
   df %>%
-    dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
     moranajp_all(bin_dir = bin_dir, iconv = iconv, method = method) %>%
-    dplyr::mutate_if(is.character, stringi::stri_escape_unicode) %>%
-    magrittr::set_colnames(stringi::stri_escape_unicode(colnames(.)))
+    escape_utf()
 }
+
+  # ginza
+bin_dir <- ""
+iconv   <- ""
+method  <- "ginza"
+review_ginza <- gen_morana_data(review, bin_dir = bin_dir, iconv = iconv, method = method)
+usethis::use_data(review_ginza, overwrite = TRUE)
+
+  # mecab
+bin_dir <- "d:/pf/mecab/bin/"
+iconv   <- "CP932_UTF-8"
+method  <- "mecab"
+review_mecab <- gen_morana_data(review, bin_dir = bin_dir, iconv = iconv, method = method)
+usethis::use_data(review_mecab, overwrite = TRUE)
 
   # sudachi
 bin_dir <- "d:/pf/sudachi/"
@@ -30,26 +44,12 @@ usethis::use_data(review_sudachi_a, overwrite = TRUE)
 usethis::use_data(review_sudachi_b, overwrite = TRUE)
 usethis::use_data(review_sudachi_c, overwrite = TRUE)
 
-  # ginza
-bin_dir <- ""
-iconv   <- ""
-method  <- "ginza"
-review_ginza <- gen_morana_data(review, bin_dir = bin_dir, iconv = iconv, method = method)
-usethis::use_data(review_ginza, overwrite = TRUE)
-
   # review_ginza
-  # tail(review_ginza) %>%  mutate_if(is.character, stringi::stri_unescape_unicode)
-
-  # mecab
-bin_dir <- "d:/pf/mecab/bin/"
-iconv   <- "CP932_UTF-8"
-method  <- "mecab"
-review_mecab <- gen_morana_data(review, bin_dir = bin_dir, iconv = iconv, method = method)
-usethis::use_data(review_mecab, overwrite = TRUE)
+  # tail(review_ginza) %>% unescape_utf()
 
 ## code to prepare `review_chamame` dataset goes here
 review %>%
-  dplyr::transmute(text = stringi::stri_unescape_unicode(text)) %>%
+  unescape_utf() %>%
   readr::write_tsv("tools/pre_chamame_review.txt", col_names = FALSE)
 
   #  #   #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  # 
@@ -62,19 +62,17 @@ review %>%
 
 review_chamame <-
   readr::read_csv("tools/pre_chamame_review.csv") %>%
-  dplyr::mutate_all(stringi::stri_escape_unicode) %>%
-  magrittr::set_colnames(stringi::stri_escape_unicode(colnames(.)))
+  escape_utf() %>%
 usethis::use_data(review_chamame, overwrite = TRUE)
 
 
-
 ## for check
-  # tail(review_mecab)
+  # tail(review_mecab    )
   # tail(review_sudachi_a)
   # tail(review_sudachi_b)
   # tail(review_sudachi_c)
-  # tail(review_ginza)
+  # tail(review_ginza    )
   # 
-  # review_mecab     %>% mutate_all(stringi::stri_unescape_unicode) %>% print(n=200)
-  # review_sudachi_a %>% mutate_all(stringi::stri_unescape_unicode) %>% print(n=200)
-  # review_ginza     %>% mutate_all(stringi::stri_unescape_unicode) %>% print(n=200)
+  # review_mecab     %>% unescape_utf() %>% print(n=200)
+  # review_sudachi_a %>% unescape_utf() %>% print(n=200)
+  # review_ginza     %>% unescape_utf() %>% print(n=200)

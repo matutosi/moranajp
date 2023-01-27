@@ -20,6 +20,7 @@
 #'                     "EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")
 #'                     iconv is also used to convert input text before running MeCab.
 #'                     "CP932_UTF-8": iconv(input, from =  "UTF-8", to = "Shift-JIS")
+#' @param col_lang     A text. "jp" or "en"
 #' @return A tibble.   Output of 'MeCab' and added column "text_id".
 #' @examples
 #' \dontrun{
@@ -27,7 +28,7 @@
 #'   data(neko)
 #'   neko <-
 #'       neko %>%
-#'       dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+#'       unescape_utf()
 #' 
 #'   # mecab
 #'   bin_dir <- "d:/pf/mecab/bin"
@@ -52,144 +53,237 @@
 #' }
 #' @export
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
-                         text_col = "text", option = "", iconv = ""){
+             text_col = "text", option = "", iconv = "",
+             col_lang = "jp"){
   # text_col = "text"; option = ""; iconv = ""
   # text_col = "text"; option = ""; bin_dir <- "d:/pf/mecab/bin/"; iconv   <- "CP932_UTF-8"; method  <- "mecab"; tbl <- review %>% mu
-    text_id <- "text_id"
-    tbl <-    dplyr::mutate(tbl, `:=`({{text_id}}, dplyr::row_number()))
-    others <- dplyr::select(tbl, !dplyr::all_of(text_col))
-      # remove line breaks and '&||<>"'
-    if (stringr::str_detect(
-            stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
-        message("Removed line breaks !")
-    if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
-        message("Removed line breaks !")
-    if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), '&|\\||<|>|"'))
-        message('Removed &, |, <. > or " !')
-    tbl <-
-        tbl %>%
-        dplyr::mutate(`:=`({{text_col}},
-            stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
-        dplyr::mutate(`:=`({{text_col}},
-            stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
-        dplyr::mutate(`:=`({{text_col}},
-            stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
-    tmp_group  <- "tmp_group"  # Use temporary
-    str_length <- "str_length" # Use temporary
-    tbl <-
-        tbl %>%
-        make_groups(text_col = text_col, length = 8000,   # if error decrease length
-            tmp_group = tmp_group, str_length = str_length) %>%
-        dplyr::group_split(.data[[tmp_group]]) %>%
-        purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
-        purrr::map(moranajp, 
-            bin_dir = bin_dir, method = method, 
-            text_col = text_col, option = option, iconv = iconv) %>%
-        dplyr::bind_rows()
-    tbl <-
-        tbl %>%
-        add_text_id(method = method) %>%
-        remove_brk(method = method) %>%
-        dplyr::left_join(others, by = text_id) %>%
-        dplyr::relocate(.data[[text_id]], colnames(others))
-    return(dplyr::slice(tbl, -nrow(tbl)))
+  text_id <- "text_id"
+  tbl <-  dplyr::mutate(tbl, `:=`({{text_id}}, dplyr::row_number()))
+  others <- dplyr::select(tbl, !dplyr::all_of(text_col))
+    # remove line breaks and '&||<>"'
+  if (stringr::str_detect(
+      stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
+    message("Removed line breaks !")
+  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
+    message("Removed line breaks !")
+  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), '&|\\||<|>|"'))
+    message('Removed &, |, <. > or " !')
+  tbl <-
+    tbl %>%
+    dplyr::mutate(`:=`({{text_col}},
+      stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
+    dplyr::mutate(`:=`({{text_col}},
+      stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
+    dplyr::mutate(`:=`({{text_col}},
+      stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
+  tmp_group  <- "tmp_group"  # Use temporary
+  str_length <- "str_length" # Use temporary
+  tbl <-
+    tbl %>%
+    make_groups(text_col = text_col, length = 8000,   # if error decrease length
+      tmp_group = tmp_group, str_length = str_length) %>%
+    dplyr::group_split(.data[[tmp_group]]) %>%
+    purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
+    purrr::map(moranajp, 
+      bin_dir = bin_dir, method = method, 
+      text_col = text_col, option = option, iconv = iconv, col_lang = col_lang) %>%
+    dplyr::bind_rows()
+  tbl <-
+    tbl %>%
+    add_text_id(method = method) %>%
+    remove_brk(method = method) %>%
+    dplyr::left_join(others, by = text_id) %>%
+    dplyr::relocate(.data[[text_id]], colnames(others))
+  return(dplyr::slice(tbl, -nrow(tbl)))
 }
 
 #' @rdname moranajp_all
 #' @export
-moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = ""){
-    if(bin_dir != ""){
-        wd <- getwd()
-        on.exit(setwd(wd))
-        setwd(bin_dir)
-    }
-    input <- make_input(tbl, text_col, iconv)
-    command <- make_cmd(method, option = "")
-    output <- system(command, intern=TRUE, input = input)
-    output <- iconv_x(output, iconv) # Convert Encoding
-    out_cols <- switch(method, 
-        "mecab"     = out_cols_mecab(),
-        "ginza"     = out_cols_ginza(),
-        "sudachi_a" = out_cols_sudachi(),
-        "sudachi_b" = out_cols_sudachi(),
-        "sudachi_c" = out_cols_sudachi()
-    )
-    tbl <-
-        output %>%
-        tibble::tibble() %>%
-        tidyr::separate(1, into = out_cols, sep = "\t|,",
-            fill = "right", extra = "drop")
-    if(method == "ginza"){
-        tbl <- 
-          tbl %>%
-          tidyr::separate(.data[["xpos"]], into = stringr::str_c("pos_", 1:3), sep = "-",
-            fill = "right", extra = "drop", remove = FALSE)
-    }
-    return(tbl)
+moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", col_lang){
+  if(bin_dir != ""){
+    wd <- getwd()
+    on.exit(setwd(wd))
+    setwd(bin_dir)
+  }
+  input <- make_input(tbl, text_col, iconv)
+  command <- make_cmd(method, option = "")
+  output <- system(command, intern=TRUE, input = input)
+  output <- iconv_x(output, iconv) # Convert Encoding
+  out_cols <- switch(method, 
+    "mecab"     = out_cols_mecab(col_lang),
+    "ginza"     = out_cols_ginza(col_lang),
+    "sudachi_a" = out_cols_sudachi(col_lang),
+    "sudachi_b" = out_cols_sudachi(col_lang),
+    "sudachi_c" = out_cols_sudachi(col_lang)
+  )
+  tbl <-
+    output %>%
+    tibble::tibble() %>%
+    tidyr::separate(1, into = out_cols, 
+      sep = "\t|,", fill = "right", extra = "drop")
+  if(method == "ginza"){
+    tbl <- separate_cols_ginza(tbl, col_lang)
+  }
+  return(tbl)
 }
+
+#' @rdname moranajp_all
+separate_cols_ginza <- function(tbl, col_lang){
+  into <- 
+    c("\\u54c1\\u8a5e", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", 
+      "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2") %>%
+    unescape_utf()
+  if(col_lang == "en"){
+    into <- 
+      tibble::tibble(jp = into) %>%
+      dplyr::left_join(out_cols()) %>%
+      `[[`("en")
+  }
+  xpos <- out_cols_ginza(col_lang)[5]
+  tbl <- 
+    tbl %>%
+    tidyr::separate(.data[[xpos]], into = into, 
+      sep = "-", fill = "right", extra = "drop", remove = TRUE)
+  return(tbl)
+}
+
+  # review_mecab %>%
+  #   unescape_utf() %>%
+  #   dplyr::filter(stringr::str_detect(.$表層形, "-"))
+  # 
+  # review_sudachi_a %>%
+  #   unescape_utf() %>%
+  #   dplyr::filter(stringr::str_detect(.$表層形, "-"))
+  # 
+  # review_ginza %>%
+  #   unescape_utf() %>%
+  #   dplyr::filter(stringr::str_detect(lemma, "-"))
 
 #' @rdname moranajp_all
 #' @param  brk A string of break point
+#' @return A string
 #' @export
 make_input <- function(tbl, text_col, iconv, 
-    brk = "BPOMORANAJP "){ # Break Point Of MORANAJP: need space to split with English words
-    input <- 
-        tbl %>%
-        dplyr::select(.data[[text_col]]) %>%
-        unlist() %>%
-        stringr::str_c(collapse = brk) %>%
-        stringr::str_c(brk) %>%  # NEED bp at the end of input
-        iconv_x(iconv, reverse = TRUE)
-    return(input)
+  brk = "BPOMORANAJP "){ # Break Point Of MORANAJP: need space to split with English words
+  input <- 
+    tbl %>%
+    dplyr::select(.data[[text_col]]) %>%
+    unlist() %>%
+    stringr::str_c(collapse = brk) %>%
+    stringr::str_c(brk) %>%  # NEED brk at the end of input
+    iconv_x(iconv, reverse = TRUE)
+  return(input)
 }
 
 #' @rdname moranajp_all
+#' @return A string
 make_cmd <- function(method, option = ""){
-    cmd <- switch(method, 
-        "mecab"     = make_cmd_mecab(option = ""),
-        "ginza"     = "ginza",
-        "sudachi_a" = "java -jar sudachi.jar -m A",
-        "sudachi_b" = "java -jar sudachi.jar -m B",
-        "sudachi_c" = "java -jar sudachi.jar -m C",
-    )
-    return(cmd)
+  cmd <- switch(method, 
+    "mecab"   = make_cmd_mecab(option = ""),
+    "ginza"   = "ginza",
+    "sudachi_a" = "java -jar sudachi.jar -m A",
+    "sudachi_b" = "java -jar sudachi.jar -m B",
+    "sudachi_c" = "java -jar sudachi.jar -m C",
+  )
+  return(cmd)
 }
 
 #' @rdname moranajp_all
+#' @return A string
 make_cmd_mecab <- function(option = ""){
-    cmd <- stringr::str_c("mecab -b 17000", option)
-    return(cmd)
+  cmd <- stringr::str_c("mecab -b 17000", option)
+  return(cmd)
 }
 
 #' @rdname moranajp_all
-out_cols_mecab <- function(){
-    # ref: stringi::stri_escape_unicode(), stringi::stri_unescape_unicode()
-    c("\u8868\u5c64\u5f62", "\u54c1\u8a5e", "\u54c1\u8a5e\u7d30\u5206\u985e1",
-      "\u54c1\u8a5e\u7d30\u5206\u985e2", "\u54c1\u8a5e\u7d30\u5206\u985e3",
-      "\u6d3b\u7528\u578b", "\u6d3b\u7528\u5f62",
-      "\u539f\u5f62", "\u8aad\u307f", "\u767a\u97f3")
+#' @return A character vector
+out_cols_mecab <- function(col_lang = "jp"){
+  jp <- 
+    c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1",
+      "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3",
+      "\\u6d3b\\u7528\\u578b", "\\u6d3b\\u7528\\u5f62",
+      "\\u539f\\u5f62", "\\u8aad\\u307f", "\\u767a\\u97f3") %>%
+    unescape_utf()
+  if(col_lang == "jp"){
+    return(jp)
+  }else{
+    tibble::tibble(jp = jp) %>%
+      dplyr::left_join(out_cols()) %>%
+      `[[`("en")
+  }
 }
 
 #' @rdname moranajp_all
-out_cols_ginza <- function(){
+#' @return A character vector
+out_cols_ginza <- function(col_lang = "jp"){
   # ID: 
-  # FORM: Word form or punctuation symbol.
-  # LEMMA: Lemma or stem of word form.
-  # UPOS: Universal part-of-speech tag.
-  # XPOS: Language-specific part-of-speech tag; underscore if not available.
-  # FEATS: List of morphological features from the universal feature inventory or from a defined language-specific extension; underscore if not available.
-  # HEAD: Head of the current word, which is either a value of ID or zero (0).
-  # DEPREL: Universal dependency relation to the HEAD (root iff HEAD = 0) or a defined language-specific subtype of one.
-  # DEPS: Enhanced dependency graph in the form of a list of head-deprel pairs.
-  # MISC: Any other annotation.
-    c("id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")
+  # FORM:   Word form or punctuation symbol.
+  # LEMMA:  Lemma or stem of word form.
+  # UPOS:   Universal part-of-speech tag.
+  # XPOS:   Language-specific part-of-speech tag; underscore if not available.
+  # FEATS:  List of morphological features from the universal feature inventory or from a defined language-specific extension; underscore if not available.
+  # HEAD:   Head of the current word, which is either a value of ID or zero (0).
+  # DEPREL: Universal dependency relation to the HEAD (root if HEAD = 0) or a defined language-specific subtype of one.
+  # DEPS:   Enhanced dependency graph in the form of a list of head-deprel pairs.
+  # MISC:   Any other annotation.
+  #   c("id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")
+  jp <- 
+    c("id"                                  , "\\u8868\\u5c64\\u5f62"               , "\\u539f\\u5f62"                      , # ginza
+       "UD\\u54c1\\u8a5e\\u30bf\\u30b0"     , "\\u54c1\\u8a5e\\u30bf\\u30b0"        , "\\u5c5e\\u6027"                      ,
+       "\\u4fc2\\u53d7\\u5143"              , "\\u4fc2\\u53d7\\u30bf\\u30b0"        , "\\u4fc2\\u53d7\\u30da\\u30a2"        ,
+       "\\u305d\\u306e\\u4ed6")  %>%
+    unescape_utf()
+  if(col_lang == "jp"){
+    return(jp)
+  }else{
+    tibble::tibble(jp = jp) %>%
+      dplyr::left_join(out_cols()) %>%
+      `[[`("en")
+  }
 }
 
 #' @rdname moranajp_all
-out_cols_sudachi <- function(){
-    c("\u8868\u5c64\u5f62", "\u54c1\u8a5e",
-      paste0("\u54c1\u8a5e\u7d30\u5206\u985e", 1:5),
-      "\u539f\u5f62")
+#' @return A character vector
+out_cols_sudachi <- function(col_lang = "jp"){
+  jp <- 
+    c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e",
+      paste0("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 1:5),
+      "\\u539f\\u5f62") %>%
+    unescape_utf()
+  if(col_lang == "jp"){
+    return(jp)
+  }else{
+    tibble::tibble(jp = jp) %>%
+      dplyr::left_join(out_cols()) %>%
+      `[[`("en")
+  }
+}
+
+#' @rdname moranajp_all
+#' @return A character vector
+out_cols_jp <- function(){
+  c(out_cols_mecab(),
+    out_cols_sudachi(),
+    out_cols_ginza())
+}
+
+#' @rdname moranajp_all
+#' @return A character vector
+out_cols_en <- function(){
+  c("form", "pos", "pos_1", "pos_2", "pos_3", "conjugation_type", "conjugation_form", "lemma", "reading", "soud", # mecab
+    "form", "pos", "pos_1", "pos_2", "pos_3", "pos_4", "pos_5", "lemma",                                          # sudachi
+    "id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")                             # ginza
+}
+
+#' @rdname moranajp_all
+#' @return A data.frame
+out_cols <- function(){
+  order <- c(10, 99, 99, 99, 99, 12, 13, 11, 2, 99, 99, 99, 1, 3, 9, 4, 5, 6, 7, 8)
+  tibble::tibble(jp = out_cols_jp(), en = out_cols_en()) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(jp) %>%
+  dplyr::bind_cols(order = order) %>%
+  dplyr::arrange(order, jp)
 }
 
 #' Add id column into result of morphological analysis

@@ -7,7 +7,7 @@
 #' @examples
 #' data(neko)
 #' neko %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+#'   unescape_utf()
 "neko"
 
 #' Analyzed data of neko by chamame
@@ -16,7 +16,7 @@
 #'
 #' @format A data frame with  2965 rows and 14 variable: 
 #' (column names are escaped by stringi::stri_escape_unicode(), 
-#' stringi::stri_unescape_unicode() will show Japanese)
+#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 #' \describe{
 #'   \item{\\u8f9e\\u66f8}{result of chamame}
 #'   \item{\\u6587\\u5883\\u754c}{result of chamame}
@@ -36,8 +36,7 @@
 #' @examples
 #' data(neko_chamame)
 #' neko_chamame %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+#'   unescape_utf()
 "neko_chamame"
 
 #' Analyzed data of neko by MeCab
@@ -46,7 +45,7 @@
 #'
 #' @format A data frame with  2893 rows and 11 variable: 
 #' (column names are escaped by stringi::stri_escape_unicode(), 
-#' stringi::stri_unescape_unicode() will show Japanese)
+#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 #' \describe{
 #'   \item{text_id}{result of MeCab}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
@@ -63,8 +62,7 @@
 #' @examples
 #' data(neko_mecab)
 #' neko_mecab %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+#'   unescape_utf()
 "neko_mecab"
 
 #' Analyzed data of neko by GiNZA
@@ -91,7 +89,7 @@
 #' @examples
 #' data(neko_ginza)
 #' neko_ginza %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+#'   unescape_utf()
 "neko_ginza"
 
 #' Analyzed data of neko by Sudachi
@@ -113,8 +111,7 @@
 #' @examples
 #' data(neko_sudachi_a)
 #' neko_sudachi_a %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+#'   unescape_utf()
 "neko_sudachi_a"
 
 #' @rdname neko_sudachi_a
@@ -146,7 +143,7 @@
 #' @examples
 #' data(review)
 #' review %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+#'   unescape_utf()
 "review"
 
 #' Analyzed data of review by chamame
@@ -155,7 +152,7 @@
 #'
 #' @format A data frame with  21013 rows and 14 variable 
 #' (column names are escaped by stringi::stri_escape_unicode(), 
-#' stringi::stri_unescape_unicode() will show Japanese)
+#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 #' \describe{
 #'   \item{\\u8f9e\\u66f8}{result of chamame}
 #'   \item{\\u6587\\u5883\\u754c}{result of chamame}
@@ -175,8 +172,7 @@
 #' @examples
 #' data(review_chamame)
 #' review_chamame %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+#'   unescape_utf()
 "review_chamame"
 
 #' Analyzed data of review by MeCab
@@ -185,7 +181,7 @@
 #'
 #' @format A data frame with  20523 rows and 11 variable: 
 #' (column names are escaped by stringi::stri_escape_unicode(), 
-#' stringi::stri_unescape_unicode() will show Japanese)
+#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 #' \describe{
 #'   \item{text_id}{result of MeCab}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
@@ -202,8 +198,7 @@
 #' @examples
 #' data(review_mecab)
 #' review_mecab %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+#'   unescape_utf()
 "review_mecab"
 
 #' Analyzed data of review by GiNZA
@@ -230,7 +225,7 @@
 #' @examples
 #' data(review_ginza)
 #' review_ginza %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+#'   unescape_utf()
 "review_ginza"
 
 #' Analyzed data of review by Sudachi
@@ -252,8 +247,7 @@
 #' @examples
 #' data(review_sudachi_a)
 #' review_sudachi_a %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode) %>%
-#'   magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+#'   unescape_utf()
 "review_sudachi_a"
 
 #' @rdname review_sudachi_a
@@ -278,7 +272,7 @@
 #' @examples
 #' data(stop_words)
 #' stop_words %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+#'   unescape_utf()
 "stop_words"
 
 #' An example of synonym word pairs
@@ -296,5 +290,5 @@
 #' @examples
 #' data(synonym)
 #' synonym %>%
-#'   dplyr::mutate_all(stringi::stri_unescape_unicode)
+#'   unescape_utf()
 "synonym"

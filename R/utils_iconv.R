@@ -37,3 +37,42 @@ escape_japanese <- function(x){
     cat(code, "\n")
   }
 }
+
+#' Wrapper functions for escape and unescape unicode
+#' 
+#' @param x    A dataframe or character vector
+#' @return     A dataframe or character vector
+#' @examples
+#' data(review_mecab)
+#' review_mecab %>%
+#'   print() %>%
+#'   unescape_utf() %>%
+#'   print() %>%
+#'   escape_utf()
+#' 
+#' @export
+unescape_utf <- function(x){
+  if(is.character(x)){
+    x <- stringi::stri_unescape_unicode(x)
+    return(x)
+  }
+  if(is.data.frame(x)){
+    colnames(x) <- stringi::stri_unescape_unicode(colnames(x))
+    x <- dplyr::mutate_if(x, is.character, stringi::stri_unescape_unicode)
+    return(x)
+  }
+}
+
+#' @rdname unescape_utf
+#' @export
+escape_utf <- function(x){
+  if(is.character(x)){
+    x <- stringi::stri_escape_unicode(x)
+    return(x)
+  }
+  if(is.data.frame(x)){
+    colnames(x) <- stringi::stri_escape_unicode(colnames(x))
+    x <- dplyr::mutate_if(x, is.character, stringi::stri_escape_unicode)
+    return(x)
+  }
+}
