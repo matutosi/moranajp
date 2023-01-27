@@ -4,7 +4,7 @@
 \alias{add_group}
 \title{Add group id column into result of morphological analysis}
 \usage{
-add_group(tbl, col, brk = "EOS", end_with_brk = TRUE)
+add_group(tbl, col, brk = "EOS", grp = "group", end_with_brk = TRUE)
 }
 \arguments{
 \item{tbl}{A dataframe}
