@@ -7,10 +7,11 @@
 #' @param text_col     A text. Colnames for morphological analysis.
 #' @param bin_dir      A text. Directory of mecab.
 #' @param method       A text. Method to use: "mecab", "ginza", 
-#'                     "sudachi_a", "sudachi_b", and "sudachi_c".
+#'                     "sudachi_a", "sudachi_b", "sudachi_c", or "chamame".
 #'                     "a", "b" and "c" specify the mode of splitting.
 #'                     "a" split shortest, "b" middle and "c" longest.
 #'                     See https://github.com/WorksApplications/Sudachi for detail.
+#'                     "chamame" use https://chamame.ninjal.ac.jp/ and rvest.
 #' @param option       A text. Options for mecab.
 #'                     "-b" option is already set by moranajp.
 #'                     To see option, use "mecab -h" in command (win) or terminal (Mac).
@@ -57,37 +58,30 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
              col_lang = "jp"){
   # text_col = "text"; option = ""; iconv = ""
   # text_col = "text"; option = ""; bin_dir <- "d:/pf/mecab/bin/"; iconv   <- "CP932_UTF-8"; method  <- "mecab"; tbl <- review %>% mu
-  text_id <- "text_id"
-  tbl <-  dplyr::mutate(tbl, `:=`({{text_id}}, dplyr::row_number()))
-  others <- dplyr::select(tbl, !dplyr::all_of(text_col))
-    # remove line breaks and '&||<>"'
-  if (stringr::str_detect(
-      stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
-    message("Removed line breaks !")
-  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
-    message("Removed line breaks !")
-  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), '&|\\||<|>|"'))
-    message('Removed &, |, <. > or " !')
-  tbl <-
-    tbl %>%
-    dplyr::mutate(`:=`({{text_col}},
-      stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
-    dplyr::mutate(`:=`({{text_col}},
-      stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
-    dplyr::mutate(`:=`({{text_col}},
-      stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
+  print(paste0("Analaysing by ", method, " Please wait."))
+  text_id    <- "text_id"
   tmp_group  <- "tmp_group"  # Use temporary
   str_length <- "str_length" # Use temporary
-  tbl <-
-    tbl %>%
-    make_groups(text_col = text_col, length = 8000,   # if error decrease length
-      tmp_group = tmp_group, str_length = str_length) %>%
-    dplyr::group_split(.data[[tmp_group]]) %>%
-    purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
-    purrr::map(moranajp, 
-      bin_dir = bin_dir, method = method, 
-      text_col = text_col, option = option, iconv = iconv, col_lang = col_lang) %>%
-    dplyr::bind_rows()
+  tbl    <- dplyr::mutate(tbl, `:=`({{text_id}}, dplyr::row_number()))
+  others <- dplyr::select(tbl, !dplyr::all_of(text_col))
+  tbl    <- remove_linebreaks(tbl, text_col)
+  if(method == "chamame"){
+    tbl <- 
+      tbl %>%
+        make_input(text_col = text_col, iconv = iconv) %>%
+        web_chamame(col_lang = col_lang)
+  }else{
+    tbl <-
+      tbl %>%
+      make_groups(text_col = text_col, length = 8000,   # if error decrease length
+        tmp_group = tmp_group, str_length = str_length) %>%
+      dplyr::group_split(.data[[tmp_group]]) %>%
+      purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
+      purrr::map(moranajp, 
+        bin_dir = bin_dir, method = method, 
+        text_col = text_col, option = option, iconv = iconv, col_lang = col_lang) %>%
+      dplyr::bind_rows()
+  }
   tbl <-
     tbl %>%
     add_text_id(method = method) %>%
@@ -125,6 +119,24 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", co
     tbl <- separate_cols_ginza(tbl, col_lang)
   }
   return(tbl)
+}
+
+#' @rdname moranajp_all
+remove_linebreaks <- function(tbl, text_col){
+  if (stringr::str_detect(
+      stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
+    message("Removed line breaks !")
+  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
+    message("Removed line breaks !")
+  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), '&|\\||<|>|"'))
+    message('Removed &, |, <. > or " !')
+  tbl %>%
+    dplyr::mutate(`:=`({{text_col}},
+      stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
+    dplyr::mutate(`:=`({{text_col}},
+      stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
+    dplyr::mutate(`:=`({{text_col}},
+      stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
 }
 
 #' @rdname moranajp_all
@@ -259,12 +271,30 @@ out_cols_sudachi <- function(col_lang = "jp"){
   }
 }
 
+#' @rdname web_chamame
+#' @return A character vector
+out_cols_chamame <- function(col_lang = "jp"){
+  jp <- 
+    c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e",
+      paste0("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 1:3),
+      "\\u539f\\u5f62") %>%
+    unescape_utf()
+  if(col_lang == "jp"){
+    return(jp)
+  }else{
+    tibble::tibble(jp = jp) %>%
+      dplyr::left_join(out_cols()) %>%
+      `[[`("en")
+  }
+}
+
 #' @rdname moranajp_all
 #' @return A character vector
 out_cols_jp <- function(){
   c(out_cols_mecab(),
     out_cols_sudachi(),
-    out_cols_ginza())
+    out_cols_ginza(),
+    out_cols_chamame())
 }
 
 #' @rdname moranajp_all
@@ -272,7 +302,8 @@ out_cols_jp <- function(){
 out_cols_en <- function(){
   c("form", "pos", "pos_1", "pos_2", "pos_3", "conjugation_type", "conjugation_form", "lemma", "reading", "soud", # mecab
     "form", "pos", "pos_1", "pos_2", "pos_3", "pos_4", "pos_5", "lemma",                                          # sudachi
-    "id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")                             # ginza
+    "id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc",                             # ginza
+    "form", "pos", "pos_1", "pos_2", "pos_3", "lemma")                                                            # chamame
 }
 
 #' @rdname moranajp_all
@@ -331,6 +362,44 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
     tbl <- dplyr::filter(tbl, !stringr::str_detect(.data[["id"]], input_col))
   }
   return(tbl)
+}
+
+#' Morphological analysis for Japanese text by web chamame
+#' 
+#' Using https://chamame.ninjal.ac.jp/ and rvest.
+#' 
+#' @param text        A text. "jp" or "en"
+#' @param col_lang    A text. "jp" or "en"
+#' @return A dataframe
+#' @examples
+#' 
+#' text <- 
+#'   paste0("\\u3059", 
+#'          paste0(rep("\\u3082",8),collapse=""), 
+#'          "\\u306e\\u3046\\u3061") %>%
+#'   unescape_utf()
+#' web_chamame(text)
+#' 
+#' @export
+web_chamame <- function(text, col_lang = "jp"){
+  html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
+  search <- 
+    rvest::html_form(html)[[1]] %>%
+    rvest::html_form_set(st = text)
+  for(i in 1: 5){ search$fields[[48]] <- NULL}  # "out-e: csv"          - "c-code: sjis"
+  for(i in 1:12){ search$fields[[35]] <- NULL}  # "f13: 1"              - "f24: 1"
+  for(i in 1: 5){ search$fields[[29]] <- NULL}  # "f4: 1"               - "f11: 1"
+  for(i in 1: 3){ search$fields[[22]] <- NULL}  # "f1: 1"               - "f3: 1"
+  for(i in 1:12){ search$fields[[10]] <- NULL}  # "dic2: unidic-spoken" - "dic10: ipadic"
+  for(i in 1: 6){ search$fields[[ 3]] <- NULL}  # "file[]: "            - "suuji: 1"
+  resp <- rvest::html_form_submit(search)
+  chamame <- 
+    rvest::read_html(resp) %>%
+    rvest::html_table() %>%
+    `[[`(1) %>%
+    dplyr::select(3:8)
+  colnames(chamame) <- out_cols_chamame(col_lang = col_lang)
+  return(chamame)
 }
 
 #' @rdname moranajp_all
