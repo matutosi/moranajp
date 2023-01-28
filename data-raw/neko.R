@@ -18,13 +18,19 @@ neko <-
 
 usethis::use_data(neko, overwrite = TRUE)
 
-
 gen_morana_data <- function(df, bin_dir, iconv, method){
   df %>%
     unescape_utf() %>%
     moranajp_all(bin_dir = bin_dir, iconv = iconv, method = method) %>%
     escape_utf()
 }
+
+  # mecab
+bin_dir <- "d:/pf/mecab/bin/"
+iconv   <- "CP932_UTF-8"
+method  <- "mecab"
+neko_mecab <- gen_morana_data(neko, bin_dir = bin_dir, iconv = iconv, method = method)
+usethis::use_data(neko_mecab, overwrite = TRUE)
 
   # sudachi
 bin_dir <- "d:/pf/sudachi/"
@@ -44,26 +50,8 @@ neko_ginza <- gen_morana_data(neko, bin_dir = bin_dir, iconv = iconv, method = m
 usethis::use_data(neko_ginza, overwrite = TRUE)
 
   # mecab
-bin_dir <- "d:/pf/mecab/bin/"
-iconv   <- "CP932_UTF-8"
-method  <- "mecab"
-neko_mecab <- gen_morana_data(neko, bin_dir = bin_dir, iconv = iconv, method = method)
-usethis::use_data(neko_mecab, overwrite = TRUE)
-
-## code to prepare `neko_chamame` dataset goes here
-neko %>%
-  unescape_utf() %>%
-  readr::write_tsv("tools/pre_chamame_neko.txt", col_names = FALSE)
-
-  #  #   #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  # 
-  # 
-  # WORK with hands
-  #   ANALYZE in https://chamame.ninjal.ac.jp/index.html
-  #   RENAME downloaded data (csv with UTF-8 encoding) into "pre_chamame_neko.csv"
-  # 
-  #  #   #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  # 
-
-neko_chamame <-
-  readr::read_csv("tools/pre_chamame_neko.csv") %>%
-  escape_utf()
+bin_dir <- ""
+iconv   <- ""
+method  <- "chamame"
+review_chamame <- gen_morana_data(neko, bin_dir = bin_dir, iconv = iconv, method = method)
 usethis::use_data(neko_chamame, overwrite = TRUE)
