@@ -58,7 +58,7 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
              col_lang = "jp"){
   # text_col = "text"; option = ""; iconv = ""
   # text_col = "text"; option = ""; bin_dir <- "d:/pf/mecab/bin/"; iconv   <- "CP932_UTF-8"; method  <- "mecab"; tbl <- review %>% mu
-  print(paste0("Analaysing by ", method, " Please wait."))
+  print(paste0("Analaysing by ", method, ". Please wait."))
   text_id    <- "text_id"
   tmp_group  <- "tmp_group"  # Use temporary
   str_length <- "str_length" # Use temporary
