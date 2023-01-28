@@ -53,5 +53,18 @@ usethis::use_data(neko_ginza, overwrite = TRUE)
 bin_dir <- ""
 iconv   <- ""
 method  <- "chamame"
-review_chamame <- gen_morana_data(neko, bin_dir = bin_dir, iconv = iconv, method = method)
+neko_chamame <- gen_morana_data(neko, bin_dir = bin_dir, iconv = iconv, method = method)
 usethis::use_data(neko_chamame, overwrite = TRUE)
+
+## for check
+  # tail(neko_mecab    ) %>% unescape_utf()
+  # tail(neko_sudachi_a) %>% unescape_utf()
+  # tail(neko_sudachi_b) %>% unescape_utf()
+  # tail(neko_sudachi_c) %>% unescape_utf()
+  # tail(neko_ginza    ) %>% unescape_utf()
+  # tail(neko_chamame  ) %>% unescape_utf()
+  # 
+  # neko_mecab     %>% unescape_utf() %>% print(n=200)
+  # neko_sudachi_a %>% unescape_utf() %>% print(n=200)
+  # neko_ginza     %>% unescape_utf() %>% print(n=200)
+  # neko_chamame   %>% unescape_utf() %>% print(n=200)
