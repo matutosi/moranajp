@@ -142,8 +142,8 @@ remove_linebreaks <- function(tbl, text_col){
 #' @rdname moranajp_all
 separate_cols_ginza <- function(tbl, col_lang){
   into <- 
-    c("\\u54c1\\u8a5e", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", 
-      "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2") %>%
+    c("\\u54c1\\u8a5e", 
+      paste0(rep("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 2), 1:2)) %>%
     unescape_utf()
   if(col_lang == "en"){
     into <- 
@@ -211,8 +211,8 @@ make_cmd_mecab <- function(option = ""){
 #' @return A character vector
 out_cols_mecab <- function(col_lang = "jp"){
   jp <- 
-    c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1",
-      "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2", "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3",
+    c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
+      paste0(rep("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 3), 1:3),
       "\\u6d3b\\u7528\\u578b", "\\u6d3b\\u7528\\u5f62",
       "\\u539f\\u5f62", "\\u8aad\\u307f", "\\u767a\\u97f3") %>%
     unescape_utf()
@@ -368,7 +368,7 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
 #' 
 #' Using https://chamame.ninjal.ac.jp/ and rvest.
 #' 
-#' @param text        A text. "jp" or "en"
+#' @param text        A text. 
 #' @param col_lang    A text. "jp" or "en"
 #' @return A dataframe
 #' @examples

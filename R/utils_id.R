@@ -44,11 +44,13 @@ add_text_id_df <- function(df, col, brk, end_with_brk = TRUE){
 #' add_group(tbl, col = "col", end_with_brk = FALSE)
 #' 
 #' @export
-add_group <- function(tbl, col, brk = "EOS", grp = "group", end_with_brk = TRUE){
+add_group <- function(tbl, col, brk = "EOS", grp = "group", cond = NULL, end_with_brk = TRUE){
   adj <- "adjust"
+  if(is.null(cond)){cond <- paste0(".$", col, " == '", brk, "'")}  # cond: .$col == 'brk'
   tbl <- 
     tbl %>%
-    dplyr::mutate(`:=`({{grp}}, (.data[[col]] == brk) + 0 )) %>%  # "+ 0": convert boolean to numeric
+  #     dplyr::mutate(`:=`({{grp}}, (.data[[col]] == brk) + 0 )) %>%  # "+ 0": convert boolean to numeric
+    dplyr::mutate(`:=`({{grp}}, (eval(str2expression(cond))) + 0 )) %>%  # "+ 0": convert boolean to numeric
     dplyr::mutate(`:=`({{grp}}, purrr::accumulate(.data[[grp]], `+`))) %>%
     dplyr::mutate(`:=`({{grp}}, .data[[grp]] + 1))
 
@@ -60,6 +62,37 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group", end_with_brk = TRUE)
       dplyr::select(-dplyr::all_of(adj))
   }
   return(tbl)
+}
+
+#' Add sentence id
+#' 
+#' @param   df    A dataframe
+#' @param   snt   A string for sentence colame
+#' @return  A dataframe
+#' @examples
+#' review_mecab %>%
+#'   unescape_utf() %>%
+#'   add_sentence_no()
+#' 
+#' @export
+add_sentence_no <- function(df, snt = "sentence"){
+  cnames <- colnames(df)
+  if(sum(cnames %in% "lemma") + sum(cnames %in% "pos_1") == 2){
+    cond_1 <- ".$lemma %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
+    cond_2 <- ".$pos_1 == \\'\\u53e5\\u70b9\\'"
+  }else{
+    cond_1 <- ".$\\u8868\\u5c64\\u5f62 %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
+    cond_2 <- ".$\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1 == \\'\\u53e5\\u70b9\\'"
+  }
+  cond <- paste0(cond_1, " & ", cond_2) %>% unescape_utf()
+  df <- add_group(df, cond = cond)
+  #   df <- 
+  #     df %>%
+  #     dplyr::mutate(`:=`({{snt}}, 
+  #       eval(str2expression(cond)) + 0 )) %>% # "+ 0": convert boolean to numeric
+  #     dplyr::mutate(`:=`({{snt}}, purrr::accumulate(.data[[snt]], `+`))) %>%
+  #     dplyr::mutate(`:=`({{snt}}, .data[[snt]] + 1))
+  return(df)
 }
 
 #' Add id in each group
