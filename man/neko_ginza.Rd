@@ -32,6 +32,6 @@ GiNZA: https://megagonlabs.github.io/ginza/
 \examples{
 data(neko_ginza)
 neko_ginza \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode)
+  unescape_utf()
 }
 \keyword{datasets}

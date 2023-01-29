@@ -25,6 +25,6 @@ An example of synonym word pairs
 \examples{
 data(synonym)
 synonym \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode)
+  unescape_utf()
 }
 \keyword{datasets}

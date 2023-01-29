@@ -37,7 +37,6 @@ Sudachi: https://github.com/WorksApplications/Sudachi
 \examples{
 data(neko_sudachi_a)
 neko_sudachi_a \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+  unescape_utf()
 }
 \keyword{datasets}

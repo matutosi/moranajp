@@ -31,6 +31,6 @@ Full text of review article
 \examples{
 data(review)
 review \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode)
+  unescape_utf()
 }
 \keyword{datasets}

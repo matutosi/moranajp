@@ -7,7 +7,7 @@
 \format{
 A data frame with  2893 rows and 11 variable:
 (column names are escaped by stringi::stri_escape_unicode(),
-stringi::stri_unescape_unicode() will show Japanese)
+stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 \describe{
 \item{text_id}{result of MeCab}
 \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
@@ -31,7 +31,6 @@ MeCab: https://taku910.github.io/mecab/
 \examples{
 data(neko_mecab)
 neko_mecab \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+  unescape_utf()
 }
 \keyword{datasets}

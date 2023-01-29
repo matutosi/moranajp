@@ -31,6 +31,24 @@ max_sum_str_length(tbl, tmp_group, str_length)
 }
 \value{
 A tibble.   Output of 'MeCab' and added column "text_id".
+
+A string
+
+A string
+
+A string
+
+A character vector
+
+A character vector
+
+A character vector
+
+A character vector
+
+A character vector
+
+A data.frame
 }
 \description{
 Using 'MeCab' for morphological analysis.
@@ -42,7 +60,7 @@ Keep other colnames in dataframe.
   data(neko)
   neko <-
       neko \%>\%
-      dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+      unescape_utf()
 
   # mecab
   bin_dir <- "d:/pf/mecab/bin"

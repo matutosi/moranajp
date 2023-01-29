@@ -7,7 +7,7 @@
 \format{
 A data frame with  2965 rows and 14 variable:
 (column names are escaped by stringi::stri_escape_unicode(),
-stringi::stri_unescape_unicode() will show Japanese)
+stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 \describe{
 \item{\\u8f9e\\u66f8}{result of chamame}
 \item{\\u6587\\u5883\\u754c}{result of chamame}
@@ -34,7 +34,6 @@ chamame: https://chamame.ninjal.ac.jp/index.html
 \examples{
 data(neko_chamame)
 neko_chamame \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.)))
+  unescape_utf()
 }
 \keyword{datasets}

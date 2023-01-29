@@ -23,15 +23,15 @@ clean_sudachi_local(df, ...)
 
 clean_chamame(df, ...)
 
-pos_filter_mecab_local(df, s_id = "sentence_id")
+pos_filter_mecab_local(df)
 
 add_depend_ginza(df, s_id = "sentence_id")
 
-pos_filter_ginza_local(df, s_id = "sentence_id")
+pos_filter_ginza_local(df)
 
-pos_filter_sudachi_local(df, s_id = "sentence_id")
+pos_filter_sudachi_local(df)
 
-pos_filter_chamame(df, s_id = "sentence_id")
+pos_filter_chamame(df)
 
 delete_stop_words(
   df,
@@ -84,31 +84,27 @@ data(neko_ginza)
 data(review_sudachi_c)
 data(synonym)
 synonym <- 
-  synonym \%>\% dplyr::mutate_all(stringi::stri_unescape_unicode)
+  synonym \%>\% unescape_utf()
 
 neko_mecab <- 
   neko_mecab \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  unescape_utf() \%>\%
   print()
 
 neko_mecab \%>\%
   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym)
 
 neko_ginza \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  unescape_utf() \%>\%
   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym)
 
 review_sudachi_c \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  unescape_utf() \%>\%
   clean_sudachi_local(use_common_data = TRUE, synonym_df = synonym)
 
 library(tidyverse)
 data(neko)
-neko <-
-   neko \%>\%
-   dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+neko <- unescape_utf(neko)
 neko_ginza <- moranajp_all(neko, text_col = "text", method = "ginza")
 neko_ginza \%>\%
    pos_filter_ginza_local()

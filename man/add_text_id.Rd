@@ -10,10 +10,11 @@ add_text_id(tbl, method, brk = "BPOMORANAJP")
 \item{tbl}{A tibble or data.frame.}
 
 \item{method}{A text. Method to use: "mecab", "ginza",
-"sudachi_a", "sudachi_b", and "sudachi_c".
+"sudachi_a", "sudachi_b", "sudachi_c", or "chamame".
 "a", "b" and "c" specify the mode of splitting.
 "a" split shortest, "b" middle and "c" longest.
-See https://github.com/WorksApplications/Sudachi for detail.}
+See https://github.com/WorksApplications/Sudachi for detail.
+"chamame" use https://chamame.ninjal.ac.jp/ and rvest.}
 
 \item{brk}{A string of break point}
 }

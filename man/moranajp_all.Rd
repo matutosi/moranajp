@@ -3,12 +3,17 @@
 \name{moranajp_all}
 \alias{moranajp_all}
 \alias{moranajp}
+\alias{remove_linebreaks}
+\alias{separate_cols_ginza}
 \alias{make_input}
 \alias{make_cmd}
 \alias{make_cmd_mecab}
 \alias{out_cols_mecab}
 \alias{out_cols_ginza}
 \alias{out_cols_sudachi}
+\alias{out_cols_jp}
+\alias{out_cols_en}
+\alias{out_cols}
 \alias{mecab_all}
 \alias{mecab}
 \title{Morphological analysis for a specific column in dataframe}
@@ -19,10 +24,15 @@ moranajp_all(
   method = "mecab",
   text_col = "text",
   option = "",
-  iconv = ""
+  iconv = "",
+  col_lang = "jp"
 )
 
-moranajp(tbl, bin_dir, method, text_col, option = "", iconv = "")
+moranajp(tbl, bin_dir, method, text_col, option = "", iconv = "", col_lang)
+
+remove_linebreaks(tbl, text_col)
+
+separate_cols_ginza(tbl, col_lang)
 
 make_input(tbl, text_col, iconv, brk = "BPOMORANAJP ")
 
@@ -30,11 +40,17 @@ make_cmd(method, option = "")
 
 make_cmd_mecab(option = "")
 
-out_cols_mecab()
+out_cols_mecab(col_lang = "jp")
 
-out_cols_ginza()
+out_cols_ginza(col_lang = "jp")
 
-out_cols_sudachi()
+out_cols_sudachi(col_lang = "jp")
+
+out_cols_jp()
+
+out_cols_en()
+
+out_cols()
 
 mecab_all(tbl, text_col = "text", bin_dir = "")
 
@@ -46,10 +62,11 @@ mecab(tbl, bin_dir)
 \item{bin_dir}{A text. Directory of mecab.}
 
 \item{method}{A text. Method to use: "mecab", "ginza",
-"sudachi_a", "sudachi_b", and "sudachi_c".
+"sudachi_a", "sudachi_b", "sudachi_c", or "chamame".
 "a", "b" and "c" specify the mode of splitting.
 "a" split shortest, "b" middle and "c" longest.
-See https://github.com/WorksApplications/Sudachi for detail.}
+See https://github.com/WorksApplications/Sudachi for detail.
+"chamame" use https://chamame.ninjal.ac.jp/ and rvest.}
 
 \item{text_col}{A text. Colnames for morphological analysis.}
 
@@ -64,10 +81,30 @@ Default (""): don't convert.
 iconv is also used to convert input text before running MeCab.
 "CP932_UTF-8": iconv(input, from =  "UTF-8", to = "Shift-JIS")}
 
+\item{col_lang}{A text. "jp" or "en"}
+
 \item{brk}{A string of break point}
 }
 \value{
 A tibble.   Output of 'MeCab' and added column "text_id".
+
+A string
+
+A string
+
+A string
+
+A character vector
+
+A character vector
+
+A character vector
+
+A character vector
+
+A character vector
+
+A data.frame
 }
 \description{
 Using 'MeCab' for morphological analysis.
@@ -79,7 +116,7 @@ Keep other colnames in dataframe.
   data(neko)
   neko <-
       neko \%>\%
-      dplyr::mutate(text=stringi::stri_unescape_unicode(text))
+      unescape_utf()
 
   # mecab
   bin_dir <- "d:/pf/mecab/bin"

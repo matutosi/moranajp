@@ -44,13 +44,16 @@ add_text_id_df <- function(df, col, brk, end_with_brk = TRUE){
 #' add_group(tbl, col = "col", end_with_brk = FALSE)
 #' 
 #' @export
-add_group <- function(tbl, col, brk = "EOS", grp = "group", cond = NULL, end_with_brk = TRUE){
+add_group <- function(tbl, col, brk = "EOS", grp = "group", 
+                      cond = NULL, end_with_brk = TRUE){
   adj <- "adjust"
-  if(is.null(cond)){cond <- paste0(".$", col, " == '", brk, "'")}  # cond: .$col == 'brk'
+  if(is.null(cond)){
+    cond <- paste0(".$", col, " == '", brk, "'")  # cond: .$col == 'brk'
+  }
   tbl <- 
     tbl %>%
-  #     dplyr::mutate(`:=`({{grp}}, (.data[[col]] == brk) + 0 )) %>%  # "+ 0": convert boolean to numeric
-    dplyr::mutate(`:=`({{grp}}, (eval(str2expression(cond))) + 0 )) %>%  # "+ 0": convert boolean to numeric
+    dplyr::mutate(`:=`({{grp}}, 
+      (eval(str2expression(cond))) + 0 )) %>%  # "+ 0": boolean to numeric
     dplyr::mutate(`:=`({{grp}}, purrr::accumulate(.data[[grp]], `+`))) %>%
     dplyr::mutate(`:=`({{grp}}, .data[[grp]] + 1))
 
@@ -86,12 +89,6 @@ add_sentence_no <- function(df, snt = "sentence"){
   }
   cond <- paste0(cond_1, " & ", cond_2) %>% unescape_utf()
   df <- add_group(df, cond = cond)
-  #   df <- 
-  #     df %>%
-  #     dplyr::mutate(`:=`({{snt}}, 
-  #       eval(str2expression(cond)) + 0 )) %>% # "+ 0": convert boolean to numeric
-  #     dplyr::mutate(`:=`({{snt}}, purrr::accumulate(.data[[snt]], `+`))) %>%
-  #     dplyr::mutate(`:=`({{snt}}, .data[[snt]] + 1))
   return(df)
 }
 

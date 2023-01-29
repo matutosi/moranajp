@@ -24,6 +24,6 @@ Stop words for morphological analysis
 \examples{
 data(stop_words)
 stop_words \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode)
+  unescape_utf()
 }
 \keyword{datasets}

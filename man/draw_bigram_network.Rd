@@ -90,13 +90,11 @@ Draw bigram network using morphological analysis data.
 \examples{
 library(tidyverse)
 data(synonym)
-synonym <- dplyr::mutate_all(synonym, stringi::stri_unescape_unicode)
+synonym <- unescape_utf(synonym)
 
 data(neko_mecab)
 neko_mecab <- 
-  neko_mecab \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  unescape_utf() \%>\%
   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
   print()
 
@@ -107,7 +105,7 @@ bigram_neko <-
 data(neko_ginza)
 neko_ginza <- 
   neko_ginza \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  unescape_utf() \%>\%
   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
   print()
 
@@ -123,31 +121,29 @@ add_stop_words <-
   c("\\\\u3042\\\\u308b", "\\\\u3059\\\\u308b", "\\\\u3066\\\\u308b", 
     "\\\\u3044\\\\u308b","\\\\u306e", "\\\\u306a\\\\u308b", "\\\\u304a\\\\u308b", 
     "\\\\u3093", "\\\\u308c\\\\u308b", "*") \%>\% 
-  stringi::stri_unescape_unicode()
+   unescape_utf()
 
 data(review_chamame)
 bigram_review <- 
   review_chamame \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  unescape_utf() \%>\%
   clean_chamame(add_stop_words = add_stop_words) \%>\%
   draw_bigram_network()
 
 data(review_mecab)
 review_mecab \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
-  magrittr::set_colnames(stringi::stri_unescape_unicode(colnames(.))) \%>\%
+  unescape_utf() \%>\%
   clean_mecab_local() \%>\%
   draw_bigram_network()
 
 data(review_ginza)
 review_ginza \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  unescape_utf() \%>\%
   clean_ginza_local() \%>\%
   draw_bigram_network(term = "lemma")
 
 review_ginza \%>\%
-  dplyr::mutate_all(stringi::stri_unescape_unicode) \%>\%
+  unescape_utf() \%>\%
   clean_ginza_local() \%>\%
   draw_bigram_network(term = "lemma", depend = TRUE)
 
