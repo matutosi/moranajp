@@ -67,7 +67,7 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
   return(tbl)
 }
 
-#' Add sentence id
+#' Wrapper function for add_group() to add sentence id
 #' 
 #' @param   df    A dataframe
 #' @param   snt   A string for sentence colame
