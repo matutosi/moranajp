@@ -372,7 +372,6 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
 #' @param col_lang    A text. "jp" or "en"
 #' @return A dataframe
 #' @examples
-#' 
 #' text <- 
 #'   paste0("\\u3059", 
 #'          paste0(rep("\\u3082",8),collapse=""), 
@@ -383,16 +382,20 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
 #' @export
 web_chamame <- function(text, col_lang = "jp"){
   html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
-  search <- 
+  form <- 
     rvest::html_form(html)[[1]] %>%
-    rvest::html_form_set(st = text)
-  for(i in 1: 5){ search$fields[[48]] <- NULL}  # "out-e: csv"          - "c-code: sjis"
-  for(i in 1:12){ search$fields[[35]] <- NULL}  # "f13: 1"              - "f24: 1"
-  for(i in 1: 5){ search$fields[[29]] <- NULL}  # "f4: 1"               - "f11: 1"
-  for(i in 1: 3){ search$fields[[22]] <- NULL}  # "f1: 1"               - "f3: 1"
-  for(i in 1:12){ search$fields[[10]] <- NULL}  # "dic2: unidic-spoken" - "dic10: ipadic"
-  for(i in 1: 6){ search$fields[[ 3]] <- NULL}  # "file[]: "            - "suuji: 1"
-  resp <- rvest::html_form_submit(search)
+    rvest::html_form_set(st = text) %>%
+    html_form_radio_set("out-e" = "html")
+  index <-  sort(decreasing = TRUE, 
+                 c( 3:8,    # "file[]: "            - "suuji: 1"
+                   10:21,   # "dic2: unidic-spoken" - "dic10: ipadic"
+                   22:24,   # "f1: 1"               - "f3: 1"
+                   29:33,   # "f4: 1"               - "f11: 1"
+                   35:46))   # "f13: 1"              - "f24: 1"
+  for(i in index){
+    form$fields[[i]] <- NULL
+  }
+  resp <- rvest::html_form_submit(form)
   chamame <- 
     rvest::read_html(resp) %>%
     rvest::html_table() %>%
@@ -400,6 +403,66 @@ web_chamame <- function(text, col_lang = "jp"){
     dplyr::select(3:8)
   colnames(chamame) <- out_cols_chamame(col_lang = col_lang)
   return(chamame)
+}
+
+#' Helper function for web_chamame
+#' 
+#' @param form vest_form object
+#' @param ... <dynamic-dots> Name-value pairs giving radio button to modify.
+#' @return 
+#' @examples
+#' text <- 
+#'   paste0("\\u3059", 
+#'          paste0(rep("\\u3082",8),collapse=""), 
+#'          "\\u306e\\u3046\\u3061") %>%
+#'   unescape_utf()
+#' html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
+#' form <- 
+#'   rvest::html_form(html)[[1]] %>%
+#'   html_form_set(st = text) %>%
+#'   html_form_radio_set("out-e" = "html")
+#' resp <- html_form_submit(form)
+#' rvest::read_html(resp) %>%
+#'   rvest::html_table() %>%
+#'   `[[`(1)
+#' 
+#' @rdname web_chamame
+#' @export
+html_form_radio_set <- function(form, ...){
+  # https://github.com/tidyverse/rvest/blob/main/R/form.R
+  rvest:::check_form(form)
+  new_values <- rlang::list2(...)
+  rvest:::check_fields(form, new_values)
+
+  v_name <- names(new_values)
+  field   <- form$fields
+  f_name  <- names(field)
+  dup_rad <- unique(f_name[duplicated(f_name) & is_radio(field)])
+
+  i_radio <- 
+    dup_rad %>%
+    map(`==`, f_name) %>%
+    map(which) %>%
+    `[`(dup_rad %in% v_name)
+
+  for(i in seq_along(i_radio)){
+    for(j in i_radio[[i]]){
+      form$fields[[j]]$value <- new_values[i]
+    }
+  }
+
+  return(form)
+}
+
+#' Helper function for web_chamame
+#' @param fields  $fields in vest_form object
+#' @return A boolean or vector
+#' @rdname web_chamame
+#' @export
+is_radio <- function(fields){
+  fields %>%
+    purrr::map_chr(`$`, "type") %>%
+    purrr::map_lgl(`==`, "radio")
 }
 
 #' @rdname moranajp_all
