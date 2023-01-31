@@ -35,6 +35,8 @@ add_text_id_df <- function(df, col, brk, end_with_brk = TRUE){
 #' @param tbl           A dataframe
 #' @param col           A string to specify the column including breaks
 #' @param brk           A string to specify breaks
+#' @param grp           A string to specify group
+#' @param cond          A string to specify condition
 #' @param end_with_brk  A logical
 #' @return   A dataframe
 #' @examples
@@ -46,6 +48,7 @@ add_text_id_df <- function(df, col, brk, end_with_brk = TRUE){
 #' @export
 add_group <- function(tbl, col, brk = "EOS", grp = "group", 
                       cond = NULL, end_with_brk = TRUE){
+  # col = "col"; brk = "EOS"; grp = "group"; cond = NULL; end_with_brk = TRUE; tbl <- tibble::tibble(col=c(rep("a", 2), brk, rep("b", 3), brk, rep("c", 4), brk))
   adj <- "adjust"
   if(is.null(cond)){
     cond <- paste0(".$", col, " == '", brk, "'")  # cond: .$col == 'brk'
@@ -70,25 +73,40 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
 #' Wrapper function for add_group() to add sentence id
 #' 
 #' @param   df    A dataframe
-#' @param   snt   A string for sentence colame
+#' @param   s_id  A string for sentence colame
 #' @return  A dataframe
 #' @examples
 #' review_mecab %>%
 #'   unescape_utf() %>%
-#'   add_sentence_no()
+#'   add_sentence_no() %>%
+#'   print(n=200)
 #' 
 #' @export
-add_sentence_no <- function(df, snt = "sentence"){
+add_sentence_no <- function(df, s_id = "sentence"){
   cnames <- colnames(df)
   if(sum(cnames %in% "lemma") + sum(cnames %in% "pos_1") == 2){
     cond_1 <- ".$lemma %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
     cond_2 <- ".$pos_1 == \\'\\u53e5\\u70b9\\'"
   }else{
-    cond_1 <- ".$\\u8868\\u5c64\\u5f62 %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
-    cond_2 <- ".$\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1 == \\'\\u53e5\\u70b9\\'"
+    cond_1 <- ".data[['\\u8868\\u5c64\\u5f62']] %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
+    cond_2 <- ".data[['\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1']] == \\'\\u53e5\\u70b9\\'"
   }
   cond <- paste0(cond_1, " & ", cond_2) %>% unescape_utf()
-  df <- add_group(df, cond = cond)
+  df <- 
+    df %>%
+    dplyr::mutate(`:=`({{s_id}}, 
+      (eval(str2expression(cond))) + 0 )) %>%  # "+ 0": boolean to numeric
+    dplyr::mutate(`:=`({{s_id}}, purrr::accumulate(.data[[s_id]], `+`))) %>%
+    dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + 1))
+
+  adj <- "adjust"  # temporary use
+  df <- 
+    df %>%
+    dplyr::mutate(`:=`({{adj}}, 
+      -(eval(str2expression(cond))) + 0 )) %>%  # "+ 0": boolean to numeric
+    dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + .data[[adj]])) %>%
+    dplyr::select(-dplyr::all_of(adj))
+
   return(df)
 }
 

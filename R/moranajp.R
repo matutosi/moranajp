@@ -56,8 +56,7 @@
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
              text_col = "text", option = "", iconv = "",
              col_lang = "jp"){
-  # text_col = "text"; option = ""; iconv = ""
-  # text_col = "text"; option = ""; bin_dir <- "d:/pf/mecab/bin/"; iconv   <- "CP932_UTF-8"; method  <- "mecab"; tbl <- review %>% mu
+  # text_col = "text"; option = ""; bin_dir = "d:/pf/mecab/bin/"; iconv = "CP932_UTF-8"; method = "mecab"; tbl = review %>% unescape_utf(); col_lang = "jp"
   print(paste0("Analaysing by ", method, ". Please wait."))
   text_id    <- "text_id"
   tmp_group  <- "tmp_group"  # Use temporary
@@ -310,11 +309,11 @@ out_cols_en <- function(){
 #' @return A data.frame
 out_cols <- function(){
   order <- c(10, 99, 99, 99, 99, 12, 13, 11, 2, 99, 99, 99, 1, 3, 9, 4, 5, 6, 7, 8)
-  tibble::tibble(jp = out_cols_jp(), en = out_cols_en()) %>%
+  tibble::tibble("jp" := out_cols_jp(), "en" := out_cols_en()) %>%
   dplyr::distinct() %>%
-  dplyr::arrange(jp) %>%
+  dplyr::arrange(.data[["jp"]]) %>%
   dplyr::bind_cols(order = order) %>%
-  dplyr::arrange(order, jp)
+  dplyr::arrange(order, .data[["jp"]])
 }
 
 #' Add id column into result of morphological analysis
@@ -337,7 +336,16 @@ add_text_id <- function(tbl, method, brk = "BPOMORANAJP"){
   }
   col_no <- ifelse(method == "ginza", 2, 1)
   col <- cnames[col_no]
-  tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
+  # add_group() do not work inside this function
+  #   add_group() work on its own.
+  #   tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
+  tbl <- 
+    tbl %>%
+    dplyr::mutate(`:=`({{text_id}}, 
+      (.data[[col]] == brk) + 0 )) %>%  # "+ 0": boolean to numeric
+    dplyr::mutate(`:=`({{text_id}}, 
+      purrr::accumulate(.data[[text_id]], `+`))) %>%
+    dplyr::mutate(`:=`({{text_id}}, .data[[text_id]] + 1))
   return(tbl)
 }
 
@@ -408,8 +416,8 @@ web_chamame <- function(text, col_lang = "jp"){
 #' Helper function for web_chamame
 #' 
 #' @param form vest_form object
-#' @param ... <dynamic-dots> Name-value pairs giving radio button to modify.
-#' @return 
+#' @param ... dynamic-dots Name-value pairs giving radio button to modify.
+#' @return vest_form object
 #' @examples
 #' text <- 
 #'   paste0("\\u3059", 
@@ -430,9 +438,9 @@ web_chamame <- function(text, col_lang = "jp"){
 #' @export
 html_form_radio_set <- function(form, ...){
   # https://github.com/tidyverse/rvest/blob/main/R/form.R
-  rvest:::check_form(form)
+  #   rvest:::check_form(form)
   new_values <- rlang::list2(...)
-  rvest:::check_fields(form, new_values)
+  #   rvest:::check_fields(form, new_values)
 
   v_name <- names(new_values)
   field   <- form$fields
@@ -441,8 +449,8 @@ html_form_radio_set <- function(form, ...){
 
   i_radio <- 
     dup_rad %>%
-    map(`==`, f_name) %>%
-    map(which) %>%
+    purrr::map(`==`, f_name) %>%
+    purrr::map(which) %>%
     `[`(dup_rad %in% v_name)
 
   for(i in seq_along(i_radio)){
