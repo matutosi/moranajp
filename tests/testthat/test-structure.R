@@ -14,7 +14,7 @@ testthat::test_that("position_sentence() work", {
 })
 
 testthat::test_that("aling_sentence() work", {
-  # s_id = "sentence_id"; term = "term"; x_pos = "x"
+  # s_id = "sentence"; term = "term"; x_pos = "x"
   s1 <- 1:4
   s2 <- 3:6
   s3 <- 5:7
@@ -22,7 +22,7 @@ testthat::test_that("aling_sentence() work", {
   s_order <- list(s1, s2, s3, s4)
   term <- purrr::map2(list(letters), s_order, `[`)
   df <- tibble::tibble(
-          sentence_id = rep(seq_along(term), purrr::map_int(term, length)),
+          sentence = rep(seq_along(term), purrr::map_int(term, length)),
           term = unlist(term),
           x = seq_along(term))
   df_expect <- df %>%
