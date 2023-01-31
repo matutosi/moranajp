@@ -1,7 +1,6 @@
 #' Clean up result of morphological analyzed data frame
 #' 
 #' @param df               A dataframe including result of morphological analysis.
-#' @param term             A string to indicate the word term column.
 #' @param use_common_data  A logical. TRUE: use data(stop_words).
 #' @param add_stop_words   A string vector adding into stop words. 
 #'                         When use_common_data is TRUE and add_stop_words are given, 
@@ -13,7 +12,7 @@
 #'                         should be the same.
 #'                         When synonym_df and synonym pairs (synonym_from and synonym_to)
 #'                         are given, both of them will be used as synonym.
-#' @param s_id             A String to specify sentence_id
+#' @param add_depend       A logical. Available for ginza
 #' @param ...              Extra arguments to internal fuctions.
 #' @return A dataframe.
 #' @name clean_up
@@ -32,216 +31,95 @@
 #'   print()
 #' 
 #' neko_mecab %>%
-#'   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym)
+#'   clean_mecab(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' neko_ginza %>%
 #'   unescape_utf() %>%
-#'   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym)
+#'   clean_ginza(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' review_sudachi_c %>%
 #'   unescape_utf() %>%
-#'   clean_sudachi_local(use_common_data = TRUE, synonym_df = synonym)
+#'   add_sentence_no() %>%
+#'   clean_sudachi(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' @export
-clean_mecab_local <- function(df, ...){
+clean_up <- function(df, add_depend = FALSE, ...){
   df <- 
     df %>%
-    pos_filter_mecab_local() %>%
+    pos_filter() %>%
     delete_stop_words(...) %>%
     replace_words(...)
+  if(add_depend){
+    df <- add_depend_ginza(df)
+  }
   return(df)
 }
 
 #' @rdname clean_up
 #' @export
-clean_ginza_local <- function(df, ...){
-  if(!exists("s_id")){ s_id <- "sentence_id" }
-  term <- "lemma"
-  df <- 
-    df %>%
-    add_depend_ginza(s_id = s_id) %>%
-    pos_filter_ginza_local() %>%
-    delete_stop_words(term = term, ...) %>%
-    replace_words(term = term, ...)
-  return(df)
-}
-
-#' @rdname clean_up
-#' @export
-clean_sudachi_local <- function(df, ...){
-  df <- 
-    df %>%
-    pos_filter_sudachi_local() %>%
-    delete_stop_words(...) %>%
-    replace_words(...)
-  return(df)
-}
-
-#' @rdname clean_up
-#' @export
-clean_chamame <- function(df, ...){
-  df <- 
-    df %>%
-    pos_filter_chamame() %>%
-    delete_stop_words(...) %>%
-    replace_words(...)
-  return(df)
-}
-
-#' @rdname clean_up
-#' @export
-pos_filter_mecab_local <- function(df){
-  # pos filter setting
+pos_filter <- function(df){
+  pos_0 <- if_else("pos"   %in% colnames(df), 
+                   "pos",
+                   unescape_utf("\\u54c1\\u8a5e"))
+  pos_1 <- if_else("pos_1" %in% colnames(df), 
+                   "pos_1", 
+                   unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
+  filter_pos_0 <- 
+    c("\\u540d\\u8a5e",      "\\u52d5\\u8a5e",
+      "\\u5f62\\u5bb9\\u8a5e", "\\u5f62\\u72b6\\u8a5e") %>%
+    unescape_utf()
   filter_pos_1 <- 
-    c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
-    unescape_utf()
-
-  filter_pos_2 <- 
-    c("\\u666e\\u901a\\u540d\\u8a5e", "\\u56fa\\u6709\\u540d\\u8a5e", 
-      "\\u56fa\\u6709", "\\u4e00\\u822c", "\\u81ea\\u7acb", 
-      "\\u30b5\\u5909\\u63a5\\u7d9a", 
-      "\\u5f62\\u5bb9\\u52d5\\u8a5e\\u8a9e\\u5e79", 
-      "\\u30ca\\u30a4\\u5f62\\u5bb9\\u8a5e\\u8a9e\\u5e79", 
+    c("\\u666e\\u901a\\u540d\\u8a5e",
+      "\\u56fa\\u6709\\u540d\\u8a5e",
+      "\\u56fa\\u6709",
+      "\\u4e00\\u822c",
+      "\\u81ea\\u7acb",
+      "\\u30b5\\u5909\\u63a5\\u7d9a",
+      "\\u5f62\\u5bb9\\u52d5\\u8a5e\\u8a9e\\u5e79",
+      "\\u30ca\\u30a4\\u5f62\\u5bb9\\u8a5e\\u8a9e\\u5e79",
       "\\u526f\\u8a5e\\u53ef\\u80fd") %>%
-    unescape_utf()
-
-  cols <- 
-    c("\\u539f\\u5f62", "\\u54c1\\u8a5e", 
-      "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
-    unescape_utf()
-
-  df <- 
-    df %>%
-    na.omit() %>%
-    dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
-
-  df <- 
-    df %>% # filter by pos (parts of speech)
-    dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
-    dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
-    dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
-    dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-")) %>%
-    dplyr::relocate(
-      dplyr::any_of(c("text_id", "term", "pos_1", "pos_2")))
-  return(df)
+      unescape_utf()
+  df %>%
+    dplyr::filter(.data[[pos_0]] %in% filter_pos_0) %>%
+    dplyr::filter(.data[[pos_1]] %in% filter_pos_1)
 }
 
 #' @rdname clean_up
 #' @export
-add_depend_ginza <- function(df, s_id = "sentence_id"){
-  #   cond <- "stringr::str_detect(id, '^#')"
+add_depend_ginza <- function(df){
+  s_id <- "sentence"
+  term <- ifelse("lemma" %in% colnames(df), 
+                 "lemma",  
+                 unescape_utf("\\u8868\\u5c64\\u5f62"))
+  head <- ifelse("head" %in% colnames(df), 
+                 "head",  
+                 unescape_utf("\\u4fc2\\u53d7\\u5143"))
   df <- 
     df %>%
-  #     add_group() %>%
-  #     add_series_no(cond = cond, new_col = s_id, starts_with = 1) %>%
+    add_sentence_no() %>%
     dplyr::mutate(
         "word_no" := .data[["id"]], 
         "id" := stringr::str_c(.data[[s_id]], "_", .data[["word_no"]]))
   depend <- 
     df %>%
-    dplyr::select("head_id" := .data[["id"]], "lemma_dep" := .data[["lemma"]])
+    dplyr::select("head_id" := .data[["id"]], "lemma_dep" := .data[[term]])
   df <- 
     df %>%
     dplyr::mutate("head_id" := 
-        stringr::str_c(.data[[s_id]], "_", .data[["head"]])) %>%
+        stringr::str_c(.data[[s_id]], "_", .data[[head]])) %>%
     dplyr::left_join(depend)
   return(df)
 }
 
 #' @rdname clean_up
 #' @export
-#' @examples
-#' library(tidyverse)
-#' data(neko)
-#' neko <- unescape_utf(neko)
-#' neko_ginza <- moranajp_all(neko, text_col = "text", method = "ginza")
-#' neko_ginza %>%
-#'    pos_filter_ginza_local()
-#' 
-#' 
-pos_filter_ginza_local <- function(df){
-    filter_pos_1 <- 
-        c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
-          "\\u5f62\\u72b6\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
-        unescape_utf()
-    filter_pos_2 <- 
-        c("\\u666e\\u901a\\u540d\\u8a5e", 
-          "\\u56fa\\u6709\\u540d\\u8a5e", "\\u4e00\\u822c") %>%
-        unescape_utf()
-    df <- 
-        df %>%
-        dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
-        dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) 
-    return(df)
-}
-
-#' @rdname clean_up
-#' @export
-pos_filter_sudachi_local <- function(df){
-  # pos filter setting
-  filter_pos_1 <- 
-    c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", "\\u5f62\\u5bb9\\u8a5e") %>%
-    unescape_utf()
-  cols <- 
-    c("\\u539f\\u5f62", "\\u54c1\\u8a5e", 
-      "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1") %>%
-    unescape_utf()
-
-  df <- 
-    df %>%
-    na.omit() %>%
-    dplyr::rename("term" := cols[1], "pos_1" := cols[2], "pos_2" := cols[3])
-
-  df <- 
-    df %>% # filter by pos (parts of speech)
-    dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
-    dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
-    dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-")) %>%
-    dplyr::relocate(
-      dplyr::any_of(c("text_id", "sentence_id", "term", "pos_1", "pos_2")))
-  return(df)
-}
-
-
-#' @rdname clean_up
-#' @export
-pos_filter_chamame <- function(df){
-  cols <- 
-    c("\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)", "\\u54c1\\u8a5e") %>%
-    unescape_utf()
-
-  df <-
-    df %>%
-    dplyr::rename("term" := cols[1], "pos" := cols[2])  %>%
-    tidyr::separate(.data[["pos"]], into = c("pos_1", "pos_2"), sep="-", extra = "drop", fill = "right") %>%
-    dplyr::mutate("pos_1" := tidyr::replace_na(.data[["pos_1"]], "-")) %>%
-    dplyr::mutate("pos_2" := tidyr::replace_na(.data[["pos_2"]], "-"))
-
-  # pos filter setting
-  filter_pos_1 <- 
-    c("\\u540d\\u8a5e", "\\u52d5\\u8a5e", 
-      "\\u5f62\\u5bb9\\u8a5e", "\\u526f\\u8a5e") %>%
-    unescape_utf()
-  filter_pos_2 <- 
-    c("\\u666e\\u901a\\u540d\\u8a5e", 
-      "\\u975e\\u81ea\\u7acb\\u53ef\\u80fd", "\\u4e00\\u822c") %>%
-    unescape_utf()
-  df <- 
-    df %>% # filter by pos (parts of speech)
-    dplyr::filter(.data[["pos_1"]] %in% filter_pos_1) %>%
-    dplyr::filter(.data[["pos_2"]] %in% filter_pos_2) %>%
-    dplyr::relocate(
-      dplyr::any_of(c("text_id", "term", "pos_1", "pos_2")))
-  return(df)
-}
-
-#' @rdname clean_up
-#' @export
 delete_stop_words <- function(df,
-                              term = "term",
                               use_common_data = TRUE,
                               add_stop_words = NULL,
                               ...){ # `...' will be omitted
+  term <- ifelse("lemma" %in% colnames(df), 
+                 "lemma",  
+                 unescape_utf("\\u8868\\u5c64\\u5f62"))
   stop_words <- 
     if(use_common_data){
         utils::data(stop_words, envir = environment())
@@ -262,13 +140,15 @@ delete_stop_words <- function(df,
 #' @rdname clean_up
 #' @export
 replace_words <- function(df, 
-                          term = "term",
                           synonym_df = NULL,
                           synonym_from = NULL,
                           synonym_to = NULL,
                           ...){ # `...' will be omitted
   if(is.null(synonym_df) & is.null(synonym_from) & is.null(synonym_to))
       return(df)
+  term <- ifelse("lemma" %in% colnames(df), 
+                 "lemma",  
+                 unescape_utf("\\u8868\\u5c64\\u5f62"))
   rep_words        <- synonym_to
   names(rep_words) <- synonym_from
   if(!is.null(synonym_df)){
