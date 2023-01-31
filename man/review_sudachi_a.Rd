@@ -7,9 +7,12 @@
 \alias{review_sudachi_c}
 \title{Analyzed data of review by Sudachi}
 \format{
-A data frame with 20634 rows and 9 variable:
+A data frame with 20100 rows and 12 variable:
 \describe{
-\item{text_id}{result of Sudachi}
+\item{text_id}{id}
+\item{chap}{chapter}
+\item{sect}{section}
+\item{para}{paragraph}
 \item{\\u8868\\u5c64\\u5f62}{result of Sudachi}
 \item{\\u54c1\\u8a5e}{result of Sudachi}
 \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Sudachi}
@@ -20,9 +23,9 @@ A data frame with 20634 rows and 9 variable:
 \item{\\u539f\\u5f62}{result of Sudachi}
 }
 
-A data frame with 20096 rows and 9 variable:
+A data frame with 19565 rows and 12 variable:
 
-A data frame with 20056 rows and 9 variable:
+A data frame with 19526 rows and 12 variable:
 }
 \usage{
 review_sudachi_a

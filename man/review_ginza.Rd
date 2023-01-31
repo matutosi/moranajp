@@ -5,22 +5,24 @@
 \alias{review_ginza}
 \title{Analyzed data of review by GiNZA}
 \format{
-A data frame with 21491 rows and 14 variable:
+A data frame with 19514 rows and 16 variable:
 \describe{
-\item{text_id    }{result of GiNZA}
-\item{id         }{result of GiNZA}
-\item{form       }{result of GiNZA}
-\item{lemma      }{result of GiNZA}
-\item{upos       }{result of GiNZA}
-\item{xpos       }{result of GiNZA}
-\item{pos_1      }{result of GiNZA}
-\item{pos_2      }{result of GiNZA}
-\item{pos_3      }{result of GiNZA}
-\item{feats      }{result of GiNZA}
-\item{head       }{result of GiNZA}
-\item{deprel     }{result of GiNZA}
-\item{deps       }{result of GiNZA}
-\item{misc       }{result of GiNZA}
+\item{text_id}{id}
+\item{chap}{chapter}
+\item{sect}{section}
+\item{para}{paragraph}
+\item{id}{result of GiNZA}
+\item{\\u8868\\u5c64\\u5f62}{result of GiNZA}
+\item{\\u539f\\u5f62}{result of GiNZA}
+\item{UD\\u54c1\\u8a5e\\u30bf\\u30b0}{result of GiNZA}
+\item{\\u54c1\\u8a5e}{result of GiNZA}
+\item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of GiNZA}
+\item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of GiNZA}
+\item{\\u5c5e\\u6027}{result of GiNZA}
+\item{\\u4fc2\\u53d7\\u5143}{result of GiNZA}
+\item{\\u4fc2\\u53d7\\u30bf\\u30b0}{result of GiNZA}
+\item{\\u4fc2\\u53d7\\u30da\\u30a2}{result of GiNZA}
+\item{\\u305d\\u306e\\u4ed6}{result of GiNZA}
 }
 }
 \usage{

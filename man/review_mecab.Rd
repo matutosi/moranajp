@@ -5,11 +5,14 @@
 \alias{review_mecab}
 \title{Analyzed data of review by MeCab}
 \format{
-A data frame with  20523 rows and 11 variable:
+A data frame with  199985 rows and 14 variable:
 (column names are escaped by stringi::stri_escape_unicode(),
 stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 \describe{
-\item{text_id}{result of MeCab}
+\item{text_id}{id}
+\item{chap}{chapter}
+\item{sect}{section}
+\item{para}{paragraph}
 \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
 \item{\\u54c1\\u8a5e}{result of MeCab}
 \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of MeCab}

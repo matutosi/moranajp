@@ -5,9 +5,9 @@
 \alias{review}
 \title{Full text of review article}
 \format{
-A data frame with 457 rows and 2 variables:
+A data frame with 457 rows and 4 variables:
 \describe{
-\item{text}{
+\item{text}{Body text. Escaped by stringi::stri_escape_unicode().
 Body text. Escaped by stringi::stri_escape_unicode().
 Citation is as below.
 Matsumura et al. 2014.
@@ -17,9 +17,9 @@ Vegetation Science, 31, 193-218.
 doi = 10.15031/vegsci.31.193
 https://www.jstage.jst.go.jp/article/vegsci/31/2/31_193/_article/-char/en
 }
-\item{chap}{
-Dammy number of chapter.
-}
+\item{chap}{chapter}
+\item{sect}{section}
+\item{para}{paragraph}
 }
 }
 \usage{

@@ -7,9 +7,9 @@
 \alias{neko_sudachi_c}
 \title{Analyzed data of neko by Sudachi}
 \format{
-A data frame with 3137 rows and 9 variable:
+A data frame with 3130 rows and 9 variable:
 \describe{
-\item{text_id}{result of Sudachi}
+\item{text_id}{id}
 \item{\\u8868\\u5c64\\u5f62}{result of Sudachi}
 \item{\\u54c1\\u8a5e}{result of Sudachi}
 \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Sudachi}
@@ -20,9 +20,9 @@ A data frame with 3137 rows and 9 variable:
 \item{\\u539f\\u5f62}{result of Sudachi}
 }
 
-A data frame with 3095 rows and 9 variable:
+A data frame with 3088 rows and 9 variable:
 
-A data frame with 3087 rows and 9 variable:
+A data frame with 3080 rows and 9 variable:
 }
 \usage{
 neko_sudachi_a

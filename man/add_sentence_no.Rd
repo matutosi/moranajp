@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_id.R
 \name{add_sentence_no}
 \alias{add_sentence_no}
-\title{Add sentence id}
+\title{Wrapper function for add_group() to add sentence id}
 \usage{
 add_sentence_no(df, snt = "sentence")
 }
@@ -15,7 +15,7 @@ add_sentence_no(df, snt = "sentence")
 A dataframe
 }
 \description{
-Add sentence id
+Wrapper function for add_group() to add sentence id
 }
 \examples{
 review_mecab \%>\%

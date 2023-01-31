@@ -20,6 +20,10 @@ add_group(
 
 \item{brk}{A string to specify breaks}
 
+\item{grp}{A string to specify group}
+
+\item{cond}{A string to specify condition}
+
 \item{end_with_brk}{A logical}
 }
 \value{

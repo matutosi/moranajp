@@ -3,32 +3,62 @@
 \name{out_cols_chamame}
 \alias{out_cols_chamame}
 \alias{web_chamame}
+\alias{html_form_radio_set}
+\alias{is_radio}
 \title{Morphological analysis for Japanese text by web chamame}
 \usage{
 out_cols_chamame(col_lang = "jp")
 
 web_chamame(text, col_lang = "jp")
+
+html_form_radio_set(form, ...)
+
+is_radio(fields)
 }
 \arguments{
 \item{col_lang}{A text. "jp" or "en"}
 
 \item{text}{A text.}
+
+\item{form}{vest_form object}
+
+\item{...}{dynamic-dots Name-value pairs giving radio button to modify.}
+
+\item{fields}{$fields in vest_form object}
 }
 \value{
 A character vector
 
 A dataframe
+
+vest_form object
+
+A boolean or vector
 }
 \description{
 Using https://chamame.ninjal.ac.jp/ and rvest.
 }
 \examples{
-
 text <- 
   paste0("\\\\u3059", 
          paste0(rep("\\\\u3082",8),collapse=""), 
          "\\\\u306e\\\\u3046\\\\u3061") \%>\%
   unescape_utf()
 web_chamame(text)
+
+text <- 
+  paste0("\\\\u3059", 
+         paste0(rep("\\\\u3082",8),collapse=""), 
+         "\\\\u306e\\\\u3046\\\\u3061") \%>\%
+  unescape_utf()
+html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
+form <- 
+  rvest::html_form(html)[[1]] \%>\%
+  html_form_set(st = text) \%>\%
+  html_form_radio_set("out-e" = "html")
+resp <- html_form_submit(form)
+rvest::read_html(resp) \%>\%
+  rvest::html_table() \%>\%
+  `[[`(1)
 
 }
