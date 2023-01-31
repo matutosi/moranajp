@@ -4,10 +4,14 @@
 # moranajp 0.9.5.9000
 
 * Todo
-    * Deprecate `mecab()` and `mecab_all()`.
-    * Add `method` argument in `mecab()` and `mecab_all()` 
-      to be able to use "sudachi"
+    * Deprecate `mecab()` and `mecab_all()`
+    * Organise and tidy add_id() and related functions
+
 * Done
+
+* Can use "sudachi", "ginza" and "chamame"
+    * Add `method` argument in `mecab()` and `mecab_all()` 
+      to be able to use "sudachi", "ginza" and "chamame"
 
 # moranajp 0.9.5
 

@@ -20,11 +20,13 @@ Imports:
     magrittr,
     purrr,
     rlang,
+    rvest,
     stats,
     stringr,
     tibble,
     tidyr
 Suggests:
+    devtools,
     knitr,
     rmarkdown,
     stringi,
