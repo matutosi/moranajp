@@ -38,7 +38,7 @@ review_sudachi_c <-
   review_sudachi_c %>%
   unescape_utf() %>%
   dplyr::select(dplyr::all_of(cols)) %>%
-  clean_sudachi_local() %>%
+  clean_sudachi() %>%
   delete_parenthesis()
 
 review <- 
