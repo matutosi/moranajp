@@ -1,7 +1,7 @@
 #' Draw bigram network using morphological analysis data.
 #' 
 #' @param df           A dataframe including result of morphological analysis.
-#' @param sentence_id  A dstring to specify sentence.
+#' @param s_id         A string to specify sentence.
 #' @param bigram       A result of bigram().
 #' @param bigram_net   A result of bigram_net().
 #' @param rand_seed    A numeric.
@@ -32,7 +32,7 @@
 #' data(neko_mecab)
 #' neko_mecab <- 
 #'   unescape_utf() %>%
-#'   clean_mecab_local(use_common_data = TRUE, synonym_df = synonym) %>%
+#'   clean_mecab(use_common_data = TRUE, synonym_df = synonym) %>%
 #'   print()
 #' 
 #' bigram_neko <- 
@@ -43,7 +43,7 @@
 #' neko_ginza <- 
 #'   neko_ginza %>%
 #'   unescape_utf() %>%
-#'   clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) %>%
+#'   clean_ginza(use_common_data = TRUE, synonym_df = synonym) %>%
 #'   print()
 #' 
 #' bigram_neko_ginza_dep <- 
@@ -70,18 +70,18 @@
 #' data(review_mecab)
 #' review_mecab %>%
 #'   unescape_utf() %>%
-#'   clean_mecab_local() %>%
+#'   clean_mecab() %>%
 #'   draw_bigram_network()
 #' 
 #' data(review_ginza)
 #' review_ginza %>%
 #'   unescape_utf() %>%
-#'   clean_ginza_local() %>%
+#'   clean_ginza() %>%
 #'   draw_bigram_network(term = "lemma")
 #' 
 #' review_ginza %>%
 #'   unescape_utf() %>%
-#'   clean_ginza_local() %>%
+#'   clean_ginza() %>%
 #'   draw_bigram_network(term = "lemma", depend = TRUE)
 #' 
 #' @export
@@ -97,19 +97,19 @@ draw_bigram_network <- function(df, ...){
 
 #' @rdname draw_bigram_network
 #' @export
-bigram <- function(df, sentence_id = "sentence_id", 
+bigram <- function(df, s_id = "sentence", 
                    term = "term", depend = FALSE, term_depend = NULL, 
                    ...){ # `...' will be omitted
   word_1 <- "word_1"
   word_2 <- "word_2"
   freq <- "freq"
   bigram_dep <- 
-    if(depend) bigram_depend(df, sentence_id, term, term_depend) else NULL
+    if(depend) bigram_depend(df, s_id, term, term_depend) else NULL
   bigram <- 
     df %>%
-    dplyr::group_by(.data[[sentence_id]]) %>%
+    dplyr::group_by(.data[[s_id]]) %>%
   # according to arrow direction in ggplot: "word_2-word_1"
-    dplyr::transmute(.data[[sentence_id]], 
+    dplyr::transmute(.data[[s_id]], 
                      {{word_2}} := .data[[term]], 
                      {{word_1}} := dplyr::lag(.data[[term]])) %>%
     dplyr::ungroup() %>%
@@ -129,12 +129,12 @@ bigram <- function(df, sentence_id = "sentence_id",
 
 #' @rdname draw_bigram_network
 #' @export
-bigram_depend <- function(df, sentence_id = "sentence_id",
+bigram_depend <- function(df, s_id = "sentence",
                           term = "term", term_depend = NULL){
   if(is.null(term_depend)) term_depend <- stringr::str_c(term, "_dep")
   bigram_dep <- 
     df %>%
-    dplyr::transmute(.data[[sentence_id]], 
+    dplyr::transmute(.data[[s_id]], 
       "word_1" := .data[[term]], "word_2" := .data[[term_depend]])
   return(bigram_dep)
 }

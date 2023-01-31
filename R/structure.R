@@ -86,7 +86,7 @@ delete_parenthesis <- function(df, pos = "pos_1"){
 #' 
 #' @name align_sentence
 #' @param  df    A dataframe analysed by MeCab
-#' @param  s_id  A String to specify sentence_id
+#' @param  s_id  A String to specify sentence
 #' @param  term,x_pos A String to specify term and x_position
 #' @return  A dataframe
 #' @examples
@@ -99,14 +99,14 @@ delete_parenthesis <- function(df, pos = "pos_1"){
 #' s_order <- list(s1, s2, s3, s4)
 #' term <- map2(list(letters), s_order, `[`)
 #' df <- tibble::tibble(
-#'         sentence_id = rep(seq_along(term), purrr::map_int(term, length)),
+#'         s_id = rep(seq_along(term), purrr::map_int(term, length)),
 #'         term = unlist(term),
 #'         x = seq_along(term))
 #'   # show dataframe
 #' df
 #' align_sentence(df)
 #'   # plot
-#' s_id <- "sentence_id"
+#' s_id <- "sentence"
 #' df %>%
 #'   align_sentence() %>%
 #'   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) %>%
@@ -117,10 +117,10 @@ delete_parenthesis <- function(df, pos = "pos_1"){
 #' 
 #' @export
 align_sentence <- function(df, 
-                           s_id = "sentence_id",
+                           s_id = "sentence",
                            term = "term",
                            x_pos = "x"){
-  # s_id = "sentence_id"; term = "term"; x_pos = "x"  # for debug
+  # s_id = "sentence"; term = "term"; x_pos = "x"  # for debug
   ids <- unique(df[[s_id]])
   need_adjust <- NULL
   str_width <- list()
@@ -162,13 +162,13 @@ align_sentence <- function(df,
 #' 
 #' @export
 adjust_sentence <- function(df, 
-                            s_id = "sentence_id",
+                            s_id = "sentence",
                             term = "term",
                             x_pos = "x", 
                             need_adjust, 
                             str_width
                             ){
-  # df <- review_sudachi_c; s_id = "sentence_id"; term = "term"; x_pos = "x"  # for debug
+  # df <- review_sudachi_c; s_id = "sentence"; term = "term"; x_pos = "x"  # for debug
   ids <- unique(df[[s_id]])
   for(j in need_adjust){
     i <- ids[match(j, ids) - 1]
@@ -198,10 +198,10 @@ adjust_sentence <- function(df,
 #' s2 <- letters[3:6]
 #' term <- c(s1, s2)
 #' df <- tibble::tibble(
-#'         sentence_id = rep(1:2, c(length(s1), length(s2))), 
+#'         sentence = rep(1:2, c(length(s1), length(s2))), 
 #'         term = term,
 #'         x = seq_along(term))
-#' s_id <- "sentence_id"
+#' s_id <- "sentence"
 #' term <- "term"
 #' x_pos <- "x"
 #' calc_diff_x_pos(df, s_id, term, x_pos, 1, 2)
