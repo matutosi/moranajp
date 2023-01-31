@@ -9,7 +9,7 @@ position_paragraph(df, s_id, word)
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
 
-\item{s_id}{A String to specify sentence_id}
+\item{s_id}{A String to specify sentence}
 
 \item{word}{A string}
 }

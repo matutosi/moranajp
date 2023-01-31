@@ -4,12 +4,12 @@
 \alias{align_sentence}
 \title{Align x_position of words according to common words between two sentences}
 \usage{
-align_sentence(df, s_id = "sentence_id", term = "term", x_pos = "x")
+align_sentence(df, s_id = "sentence", term = "term", x_pos = "x")
 }
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
 
-\item{s_id}{A String to specify sentence_id}
+\item{s_id}{A String to specify sentence}
 
 \item{term, x_pos}{A String to specify term and x_position}
 }
@@ -29,14 +29,14 @@ s4 <- 7:10
 s_order <- list(s1, s2, s3, s4)
 term <- map2(list(letters), s_order, `[`)
 df <- tibble::tibble(
-        sentence_id = rep(seq_along(term), purrr::map_int(term, length)),
+        s_id = rep(seq_along(term), purrr::map_int(term, length)),
         term = unlist(term),
         x = seq_along(term))
   # show dataframe
 df
 align_sentence(df)
   # plot
-s_id <- "sentence_id"
+s_id <- "sentence"
 df \%>\%
   align_sentence() \%>\%
   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) \%>\%

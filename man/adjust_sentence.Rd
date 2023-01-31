@@ -6,7 +6,7 @@
 \usage{
 adjust_sentence(
   df,
-  s_id = "sentence_id",
+  s_id = "sentence",
   term = "term",
   x_pos = "x",
   need_adjust,
@@ -16,7 +16,7 @@ adjust_sentence(
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
 
-\item{s_id}{A String to specify sentence_id}
+\item{s_id}{A String to specify sentence}
 
 \item{term, x_pos}{A String to specify term and x_position}
 

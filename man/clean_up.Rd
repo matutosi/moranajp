@@ -2,48 +2,22 @@
 % Please edit documentation in R/clean_up.R
 \name{clean_up}
 \alias{clean_up}
-\alias{clean_mecab}
-\alias{clean_ginza}
-\alias{clean_sudachi}
-\alias{clean_chamame}
-\alias{pos_filter_mecab}
+\alias{pos_filter}
 \alias{add_depend_ginza}
-\alias{pos_filter_ginza}
-\alias{pos_filter_sudachi}
-\alias{pos_filter_chamame}
 \alias{delete_stop_words}
 \alias{replace_words}
 \title{Clean up result of morphological analyzed data frame}
 \usage{
-clean_mecab(df, ...)
+clean_up(df, add_depend = FALSE, ...)
 
-clean_ginza(df, ...)
+pos_filter(df)
 
-clean_sudachi(df, ...)
+add_depend_ginza(df)
 
-clean_chamame(df, ...)
-
-pos_filter_mecab(df)
-
-add_depend_ginza(df, s_id = "sentence_id")
-
-pos_filter_ginza(df)
-
-pos_filter_sudachi(df)
-
-pos_filter_chamame(df)
-
-delete_stop_words(
-  df,
-  term = "term",
-  use_common_data = TRUE,
-  add_stop_words = NULL,
-  ...
-)
+delete_stop_words(df, use_common_data = TRUE, add_stop_words = NULL, ...)
 
 replace_words(
   df,
-  term = "term",
   synonym_df = NULL,
   synonym_from = NULL,
   synonym_to = NULL,
@@ -53,11 +27,9 @@ replace_words(
 \arguments{
 \item{df}{A dataframe including result of morphological analysis.}
 
+\item{add_depend}{A logical. Available for ginza}
+
 \item{...}{Extra arguments to internal fuctions.}
-
-\item{s_id}{A String to specify sentence_id}
-
-\item{term}{A string to indicate the word term column.}
 
 \item{use_common_data}{A logical. TRUE: use data(stop_words).}
 
@@ -98,18 +70,11 @@ neko_mecab \%>\%
 
 neko_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza(use_common_data = TRUE, synonym_df = synonym)
+  clean_ginza(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 
 review_sudachi_c \%>\%
   unescape_utf() \%>\%
+  add_sentence_no() \%>\%
   clean_sudachi(use_common_data = TRUE, synonym_df = synonym)
-
-library(tidyverse)
-data(neko)
-neko <- unescape_utf(neko)
-neko_ginza <- moranajp_all(neko, text_col = "text", method = "ginza")
-neko_ginza \%>\%
-   pos_filter_ginza()
-
 
 }

@@ -9,7 +9,7 @@ calc_diff_x_pos(df, s_id, term, x_pos, i, j)
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
 
-\item{s_id}{A String to specify sentence_id}
+\item{s_id}{A String to specify sentence}
 
 \item{term, x_pos}{A String to specify term and x_position}
 
@@ -26,10 +26,10 @@ s1 <- letters[1:4]
 s2 <- letters[3:6]
 term <- c(s1, s2)
 df <- tibble::tibble(
-        sentence_id = rep(1:2, c(length(s1), length(s2))), 
+        sentence = rep(1:2, c(length(s1), length(s2))), 
         term = term,
         x = seq_along(term))
-s_id <- "sentence_id"
+s_id <- "sentence"
 term <- "term"
 x_pos <- "x"
 calc_diff_x_pos(df, s_id, term, x_pos, 1, 2)

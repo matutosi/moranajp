@@ -13,19 +13,14 @@ draw_bigram_network(df, ...)
 
 bigram(
   df,
-  sentence_id = "sentence_id",
+  s_id = "sentence",
   term = "term",
   depend = FALSE,
   term_depend = NULL,
   ...
 )
 
-bigram_depend(
-  df,
-  sentence_id = "sentence_id",
-  term = "term",
-  term_depend = NULL
-)
+bigram_depend(df, s_id = "sentence", term = "term", term_depend = NULL)
 
 bigram_net(bigram, rand_seed = 12, threshold = 100, ...)
 
@@ -51,7 +46,7 @@ bigram_network_plot(
 
 \item{...}{Extra arguments to internal fuctions.}
 
-\item{sentence_id}{A dstring to specify sentence.}
+\item{s_id}{A string to specify sentence.}
 
 \item{term, term_depend}{A string of terms (words) or dependnt terms column
 to use bigram.}
