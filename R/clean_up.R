@@ -13,6 +13,7 @@
 #'                         should be the same.
 #'                         When synonym_df and synonym pairs (synonym_from and synonym_to)
 #'                         are given, both of them will be used as synonym.
+#' @param s_id             A String to specify sentence_id
 #' @param ...              Extra arguments to internal fuctions.
 #' @return A dataframe.
 #' @name clean_up
