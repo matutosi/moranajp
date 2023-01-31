@@ -2,34 +2,34 @@
 % Please edit documentation in R/clean_up.R
 \name{clean_up}
 \alias{clean_up}
-\alias{clean_mecab_local}
-\alias{clean_ginza_local}
-\alias{clean_sudachi_local}
+\alias{clean_mecab}
+\alias{clean_ginza}
+\alias{clean_sudachi}
 \alias{clean_chamame}
-\alias{pos_filter_mecab_local}
+\alias{pos_filter_mecab}
 \alias{add_depend_ginza}
-\alias{pos_filter_ginza_local}
-\alias{pos_filter_sudachi_local}
+\alias{pos_filter_ginza}
+\alias{pos_filter_sudachi}
 \alias{pos_filter_chamame}
 \alias{delete_stop_words}
 \alias{replace_words}
 \title{Clean up result of morphological analyzed data frame}
 \usage{
-clean_mecab_local(df, ...)
+clean_mecab(df, ...)
 
-clean_ginza_local(df, ...)
+clean_ginza(df, ...)
 
-clean_sudachi_local(df, ...)
+clean_sudachi(df, ...)
 
 clean_chamame(df, ...)
 
-pos_filter_mecab_local(df)
+pos_filter_mecab(df)
 
 add_depend_ginza(df, s_id = "sentence_id")
 
-pos_filter_ginza_local(df)
+pos_filter_ginza(df)
 
-pos_filter_sudachi_local(df)
+pos_filter_sudachi(df)
 
 pos_filter_chamame(df)
 
@@ -94,22 +94,22 @@ neko_mecab <-
   print()
 
 neko_mecab \%>\%
-  clean_mecab_local(use_common_data = TRUE, synonym_df = synonym)
+  clean_mecab(use_common_data = TRUE, synonym_df = synonym)
 
 neko_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza_local(use_common_data = TRUE, synonym_df = synonym)
+  clean_ginza(use_common_data = TRUE, synonym_df = synonym)
 
 review_sudachi_c \%>\%
   unescape_utf() \%>\%
-  clean_sudachi_local(use_common_data = TRUE, synonym_df = synonym)
+  clean_sudachi(use_common_data = TRUE, synonym_df = synonym)
 
 library(tidyverse)
 data(neko)
 neko <- unescape_utf(neko)
 neko_ginza <- moranajp_all(neko, text_col = "text", method = "ginza")
 neko_ginza \%>\%
-   pos_filter_ginza_local()
+   pos_filter_ginza()
 
 
 }

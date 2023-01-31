@@ -20,6 +20,7 @@ Wrapper function for add_group() to add sentence id
 \examples{
 review_mecab \%>\%
   unescape_utf() \%>\%
-  add_sentence_no()
+  add_sentence_no() \%>\%
+  print(n=200)
 
 }

@@ -95,7 +95,7 @@ synonym <- unescape_utf(synonym)
 data(neko_mecab)
 neko_mecab <- 
   unescape_utf() \%>\%
-  clean_mecab_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
+  clean_mecab(use_common_data = TRUE, synonym_df = synonym) \%>\%
   print()
 
 bigram_neko <- 
@@ -106,7 +106,7 @@ data(neko_ginza)
 neko_ginza <- 
   neko_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza_local(use_common_data = TRUE, synonym_df = synonym) \%>\%
+  clean_ginza(use_common_data = TRUE, synonym_df = synonym) \%>\%
   print()
 
 bigram_neko_ginza_dep <- 
@@ -133,18 +133,18 @@ bigram_review <-
 data(review_mecab)
 review_mecab \%>\%
   unescape_utf() \%>\%
-  clean_mecab_local() \%>\%
+  clean_mecab() \%>\%
   draw_bigram_network()
 
 data(review_ginza)
 review_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza_local() \%>\%
+  clean_ginza() \%>\%
   draw_bigram_network(term = "lemma")
 
 review_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza_local() \%>\%
+  clean_ginza() \%>\%
   draw_bigram_network(term = "lemma", depend = TRUE)
 
 }
