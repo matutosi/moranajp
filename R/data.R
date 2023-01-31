@@ -10,44 +10,15 @@
 #'   unescape_utf()
 "neko"
 
-#' Analyzed data of neko by chamame
-#'
-#' chamame: https://chamame.ninjal.ac.jp/index.html
-#'
-#' @format A data frame with  2965 rows and 14 variable: 
-#' (column names are escaped by stringi::stri_escape_unicode(), 
-#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
-#' \describe{
-#'   \item{\\u8f9e\\u66f8}{result of chamame}
-#'   \item{\\u6587\\u5883\\u754c}{result of chamame}
-#'   \item{\\u66f8\\u5b57\\u5f62\\uff08\\uff1d\\u8868\\u5c64\\u5f62\\uff09}{result of chamame}
-#'   \item{\\u8a9e\\u5f59\\u7d20}{result of chamame}
-#'   \item{\\u8a9e\\u5f59\\u7d20\\u8aad\\u307f}{result of chamame}
-#'   \item{\\u54c1\\u8a5e}{result of chamame}
-#'   \item{\\u6d3b\\u7528\\u578b}{result of chamame}
-#'   \item{\\u6d3b\\u7528\\u5f62}{result of chamame}
-#'   \item{\\u767a\\u97f3\\u5f62\\u51fa\\u73fe\\u5f62}{result of chamame}
-#'   \item{\\u4eee\\u540d\\u5f62\\u51fa\\u73fe\\u5f62}{result of chamame}
-#'   \item{\\u8a9e\\u7a2e}{result of chamame}
-#'   \item{\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)}{result of chamame}
-#'   \item{\\u8a9e\\u5f62(\\u57fa\\u672c\\u5f62)}{result of chamame}
-#'   \item{...14}{result of chamame}
-#' }
-#' @examples
-#' data(neko_chamame)
-#' neko_chamame %>%
-#'   unescape_utf()
-"neko_chamame"
-
 #' Analyzed data of neko by MeCab
 #'
 #' MeCab: https://taku910.github.io/mecab/
 #'
-#' @format A data frame with  2893 rows and 11 variable: 
+#' @format A data frame with  2884 rows and 11 variable: 
 #' (column names are escaped by stringi::stri_escape_unicode(), 
 #' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 #' \describe{
-#'   \item{text_id}{result of MeCab}
+#'   \item{text_id}{id}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
 #'   \item{\\u54c1\\u8a5e}{result of MeCab}
 #'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of MeCab}
@@ -69,22 +40,21 @@
 #'
 #' GiNZA: https://megagonlabs.github.io/ginza/
 #' 
-#' @format A data frame with 733 rows and 14 variable: 
+#' @format A data frame with 2945 rows and 13 variable: 
 #' \describe{
-#'   \item{text_id    }{result of GiNZA}
-#'   \item{id         }{result of GiNZA}
-#'   \item{form       }{result of GiNZA}
-#'   \item{lemma      }{result of GiNZA}
-#'   \item{upos       }{result of GiNZA}
-#'   \item{xpos       }{result of GiNZA}
-#'   \item{pos_1      }{result of GiNZA}
-#'   \item{pos_2      }{result of GiNZA}
-#'   \item{pos_3      }{result of GiNZA}
-#'   \item{feats      }{result of GiNZA}
-#'   \item{head       }{result of GiNZA}
-#'   \item{deprel     }{result of GiNZA}
-#'   \item{deps       }{result of GiNZA}
-#'   \item{misc       }{result of GiNZA}
+#'   \item{text_id}{id}
+#'   \item{id}{result of GiNZA}
+#'   \item{\\u8868\\u5c64\\u5f62}{result of GiNZA}
+#'   \item{\\u539f\\u5f62}{result of GiNZA}
+#'   \item{UD\\u54c1\\u8a5e\\u30bf\\u30b0}{result of GiNZA}
+#'   \item{\\u54c1\\u8a5e}{result of GiNZA}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of GiNZA}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of GiNZA}
+#'   \item{\\u5c5e\\u6027}{result of GiNZA}
+#'   \item{\\u4fc2\\u53d7\\u5143}{result of GiNZA}
+#'   \item{\\u4fc2\\u53d7\\u30bf\\u30b0}{result of GiNZA}
+#'   \item{\\u4fc2\\u53d7\\u30da\\u30a2}{result of GiNZA}
+#'   \item{\\u305d\\u306e\\u4ed6}{result of GiNZA}
 #' }
 #' @examples
 #' data(neko_ginza)
@@ -96,9 +66,9 @@
 #'
 #' Sudachi: https://github.com/WorksApplications/Sudachi
 #' 
-#' @format A data frame with 3137 rows and 9 variable: 
+#' @format A data frame with 3130 rows and 9 variable: 
 #' \describe{
-#'   \item{text_id}{result of Sudachi}
+#'   \item{text_id}{id}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of Sudachi}
 #'   \item{\\u54c1\\u8a5e}{result of Sudachi}
 #'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Sudachi}
@@ -115,18 +85,40 @@
 "neko_sudachi_a"
 
 #' @rdname neko_sudachi_a
-#' @format A data frame with 3095 rows and 9 variable: 
+#' @format A data frame with 3088 rows and 9 variable: 
 "neko_sudachi_b"
 
 #' @rdname neko_sudachi_a
-#' @format A data frame with 3087 rows and 9 variable: 
+#' @format A data frame with 3080 rows and 9 variable: 
 "neko_sudachi_c"
+
+#' Analyzed data of neko by chamame
+#'
+#' chamame: https://chamame.ninjal.ac.jp/index.html
+#'
+#' @format A data frame with  2959 rows and 7 variable: 
+#' (column names are escaped by stringi::stri_escape_unicode(), 
+#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
+#' \describe{
+#'   \item{text_id}{id}
+#'   \item{\\u8868\\u5c64\\u5f62}{result of chamame}
+#'   \item{\\u54c1\\u8a5e}{result of chamame}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of chamame}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of chamame}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of chamame}
+#'   \item{\\u539f\\u5f62}{result of chamame}
+#' }
+#' @examples
+#' data(neko_chamame)
+#' neko_chamame %>%
+#'   unescape_utf()
+"neko_chamame"
 
 #' Full text of review article
 #'
-#' @format A data frame with 457 rows and 2 variables: 
+#' @format A data frame with 457 rows and 4 variables: 
 #' \describe{
-#'   \item{text}{
+#'   \item{text}{Body text. Escaped by stringi::stri_escape_unicode().
 #'     Body text. Escaped by stringi::stri_escape_unicode().
 #'     Citation is as below. 
 #'     Matsumura et al. 2014. 
@@ -136,9 +128,9 @@
 #'       doi = 10.15031/vegsci.31.193
 #'     https://www.jstage.jst.go.jp/article/vegsci/31/2/31_193/_article/-char/en
 #'   }
-#'   \item{chap}{
-#'     Dammy number of chapter.
-#'   }
+#'   \item{chap}{chapter}
+#'   \item{sect}{section}
+#'   \item{para}{paragraph}
 #' }
 #' @examples
 #' data(review)
@@ -146,44 +138,18 @@
 #'   unescape_utf()
 "review"
 
-#' Analyzed data of review by chamame
-#'
-#' chamame: https://chamame.ninjal.ac.jp/index.html
-#'
-#' @format A data frame with  21013 rows and 14 variable 
-#' (column names are escaped by stringi::stri_escape_unicode(), 
-#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
-#' \describe{
-#'   \item{\\u8f9e\\u66f8}{result of chamame}
-#'   \item{\\u6587\\u5883\\u754c}{result of chamame}
-#'   \item{\\u66f8\\u5b57\\u5f62\\uff08\\uff1d\\u8868\\u5c64\\u5f62\\uff09}{result of chamame}
-#'   \item{\\u8a9e\\u5f59\\u7d20}{result of chamame}
-#'   \item{\\u8a9e\\u5f59\\u7d20\\u8aad\\u307f}{result of chamame}
-#'   \item{\\u54c1\\u8a5e}{result of chamame}
-#'   \item{\\u6d3b\\u7528\\u578b}{result of chamame}
-#'   \item{\\u6d3b\\u7528\\u5f62}{result of chamame}
-#'   \item{\\u767a\\u97f3\\u5f62\\u51fa\\u73fe\\u5f62}{result of chamame}
-#'   \item{\\u4eee\\u540d\\u5f62\\u51fa\\u73fe\\u5f62}{result of chamame}
-#'   \item{\\u8a9e\\u7a2e}{result of chamame}
-#'   \item{\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)}{result of chamame}
-#'   \item{\\u8a9e\\u5f62(\\u57fa\\u672c\\u5f62)}{result of chamame}
-#'   \item{...14}{result of chamame}
-#' }
-#' @examples
-#' data(review_chamame)
-#' review_chamame %>%
-#'   unescape_utf()
-"review_chamame"
-
 #' Analyzed data of review by MeCab
 #'
 #' MeCab: https://taku910.github.io/mecab/
 #'
-#' @format A data frame with  20523 rows and 11 variable: 
+#' @format A data frame with  199985 rows and 14 variable: 
 #' (column names are escaped by stringi::stri_escape_unicode(), 
 #' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
 #' \describe{
-#'   \item{text_id}{result of MeCab}
+#'   \item{text_id}{id}
+#'   \item{chap}{chapter}
+#'   \item{sect}{section}
+#'   \item{para}{paragraph}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of MeCab}
 #'   \item{\\u54c1\\u8a5e}{result of MeCab}
 #'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of MeCab}
@@ -205,22 +171,24 @@
 #'
 #' GiNZA: https://megagonlabs.github.io/ginza/
 #' 
-#' @format A data frame with 21491 rows and 14 variable: 
+#' @format A data frame with 19514 rows and 16 variable: 
 #' \describe{
-#'   \item{text_id    }{result of GiNZA}
-#'   \item{id         }{result of GiNZA}
-#'   \item{form       }{result of GiNZA}
-#'   \item{lemma      }{result of GiNZA}
-#'   \item{upos       }{result of GiNZA}
-#'   \item{xpos       }{result of GiNZA}
-#'   \item{pos_1      }{result of GiNZA}
-#'   \item{pos_2      }{result of GiNZA}
-#'   \item{pos_3      }{result of GiNZA}
-#'   \item{feats      }{result of GiNZA}
-#'   \item{head       }{result of GiNZA}
-#'   \item{deprel     }{result of GiNZA}
-#'   \item{deps       }{result of GiNZA}
-#'   \item{misc       }{result of GiNZA}
+#'   \item{text_id}{id}
+#'   \item{chap}{chapter}
+#'   \item{sect}{section}
+#'   \item{para}{paragraph}
+#'   \item{id}{result of GiNZA}
+#'   \item{\\u8868\\u5c64\\u5f62}{result of GiNZA}
+#'   \item{\\u539f\\u5f62}{result of GiNZA}
+#'   \item{UD\\u54c1\\u8a5e\\u30bf\\u30b0}{result of GiNZA}
+#'   \item{\\u54c1\\u8a5e}{result of GiNZA}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of GiNZA}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of GiNZA}
+#'   \item{\\u5c5e\\u6027}{result of GiNZA}
+#'   \item{\\u4fc2\\u53d7\\u5143}{result of GiNZA}
+#'   \item{\\u4fc2\\u53d7\\u30bf\\u30b0}{result of GiNZA}
+#'   \item{\\u4fc2\\u53d7\\u30da\\u30a2}{result of GiNZA}
+#'   \item{\\u305d\\u306e\\u4ed6}{result of GiNZA}
 #' }
 #' @examples
 #' data(review_ginza)
@@ -232,9 +200,12 @@
 #'
 #' Sudachi: https://github.com/WorksApplications/Sudachi
 #' 
-#' @format A data frame with 20634 rows and 9 variable: 
+#' @format A data frame with 20100 rows and 12 variable: 
 #' \describe{
-#'   \item{text_id}{result of Sudachi}
+#'   \item{text_id}{id}
+#'   \item{chap}{chapter}
+#'   \item{sect}{section}
+#'   \item{para}{paragraph}
 #'   \item{\\u8868\\u5c64\\u5f62}{result of Sudachi}
 #'   \item{\\u54c1\\u8a5e}{result of Sudachi}
 #'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of Sudachi}
@@ -251,12 +222,37 @@
 "review_sudachi_a"
 
 #' @rdname review_sudachi_a
-#' @format A data frame with 20096 rows and 9 variable: 
+#' @format A data frame with 19565 rows and 12 variable: 
 "review_sudachi_b"
 
 #' @rdname review_sudachi_a
-#' @format A data frame with 20056 rows and 9 variable: 
+#' @format A data frame with 19526 rows and 12 variable: 
 "review_sudachi_c"
+
+#' Analyzed data of review by chamame
+#'
+#' chamame: https://chamame.ninjal.ac.jp/index.html
+#'
+#' @format A data frame with  21125 rows and 10 variable 
+#' (column names are escaped by stringi::stri_escape_unicode(), 
+#' stringi::stri_unescape_unicode() or unescape_utf() will show Japanese)
+#' \describe{
+#'   \item{text_id}{id}
+#'   \item{chap}{chapter}
+#'   \item{sect}{section}
+#'   \item{para}{paragraph}
+#'   \item{\\u8868\\u5c64\\u5f62}{result of chamame}
+#'   \item{\\u54c1\\u8a5e}{result of chamame}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1}{result of chamame}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e2}{result of chamame}
+#'   \item{\\u54c1\\u8a5e\\u7d30\\u5206\\u985e3}{result of chamame}
+#'   \item{\\u539f\\u5f62}{result of chamame}
+#' }
+#' @examples
+#' data(review_chamame)
+#' review_chamame %>%
+#'   unescape_utf()
+"review_chamame"
 
 #' Stop words for morphological analysis
 #'
