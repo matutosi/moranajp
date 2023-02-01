@@ -3,12 +3,10 @@
 #' @param df           A dataframe including result of morphological analysis.
 #' @param s_id         A string to specify sentence.
 #' @param bigram       A result of bigram().
-#' @param bigram_net   A result of bigram_net().
+#' @param big_net      A result of bigram_net().
 #' @param rand_seed    A numeric.
 #' @param threshold    A numeric used as threshold for frequency of bigram.
-#' @param term,term_depend
-#'                     A string of terms (words) or dependnt terms column 
-#'                     to use bigram.
+#' @param term_depend  A string of dependnt terms column to use bigram.
 #' @param depend       A logical to 
 #' @param freq         A numeric of word frequency in bigram_net.
 #'                     Can be got using word_freq().
@@ -31,9 +29,10 @@
 #' 
 #' data(neko_mecab)
 #' neko_mecab <- 
+#'   neko_mecab  %>%
 #'   unescape_utf() %>%
-#'   clean_mecab(use_common_data = TRUE, synonym_df = synonym) %>%
-#'   print()
+#'   add_sentence_no() %>%
+#'   clean_up(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' bigram_neko <- 
 #'   neko_mecab %>%
@@ -43,16 +42,18 @@
 #' neko_ginza <- 
 #'   neko_ginza %>%
 #'   unescape_utf() %>%
-#'   clean_ginza(use_common_data = TRUE, synonym_df = synonym) %>%
-#'   print()
+#'   add_sentence_no() %>%
+#'   clean_up(use_common_data = TRUE, synonym_df = synonym)
+#' #   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' bigram_neko_ginza_dep <- 
 #'   neko_ginza %>%
-#'   bigram(term = "lemma", depend = TRUE)
+#'   bigram()
+#' #   bigram(depend = TRUE)
 #' 
 #' bigram_neko_ginza <- 
 #'  neko_ginza %>%
-#'    bigram(term = "lemma")
+#'    bigram()
 #' 
 #' add_stop_words <- 
 #'   c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
@@ -64,25 +65,29 @@
 #' bigram_review <- 
 #'   review_chamame %>%
 #'   unescape_utf() %>%
-#'   clean_chamame(add_stop_words = add_stop_words) %>%
+#'   add_sentence_no() %>%
+#'   clean_up(add_stop_words = add_stop_words) %>%
 #'   draw_bigram_network()
 #' 
 #' data(review_mecab)
 #' review_mecab %>%
 #'   unescape_utf() %>%
-#'   clean_mecab() %>%
+#'   add_sentence_no() %>%
+#'   clean_up() %>%
 #'   draw_bigram_network()
 #' 
 #' data(review_ginza)
 #' review_ginza %>%
 #'   unescape_utf() %>%
-#'   clean_ginza() %>%
-#'   draw_bigram_network(term = "lemma")
+#'   add_sentence_no() %>%
+#'   clean_up() %>%
+#'   draw_bigram_network()
 #' 
-#' review_ginza %>%
-#'   unescape_utf() %>%
-#'   clean_ginza() %>%
-#'   draw_bigram_network(term = "lemma", depend = TRUE)
+#' # review_ginza %>%
+#' #   unescape_utf() %>%
+#' #   add_sentence_no() %>%
+#' #   clean_up(add_depend = TRUE) %>%
+#' #   draw_bigram_network(depend = TRUE)
 #' 
 #' @export
 draw_bigram_network <- function(df, ...){
@@ -98,13 +103,15 @@ draw_bigram_network <- function(df, ...){
 #' @rdname draw_bigram_network
 #' @export
 bigram <- function(df, s_id = "sentence", 
-                   term = "term", depend = FALSE, term_depend = NULL, 
+                   depend = FALSE, term_depend = NULL, 
                    ...){ # `...' will be omitted
+  term <- ifelse("lemma" %in% colnames(df), 
+                 "lemma",  
+                 unescape_utf("\\u8868\\u5c64\\u5f62"))
   word_1 <- "word_1"
   word_2 <- "word_2"
   freq <- "freq"
-  bigram_dep <- 
-    if(depend) bigram_depend(df, s_id, term, term_depend) else NULL
+  bigram_dep <- if(depend) bigram_depend(df, s_id) else NULL
   bigram <- 
     df %>%
     dplyr::group_by(.data[[s_id]]) %>%
@@ -129,9 +136,14 @@ bigram <- function(df, s_id = "sentence",
 
 #' @rdname draw_bigram_network
 #' @export
-bigram_depend <- function(df, s_id = "sentence",
-                          term = "term", term_depend = NULL){
-  if(is.null(term_depend)) term_depend <- stringr::str_c(term, "_dep")
+bigram_depend <- function(df, s_id = "sentence"){
+  term <- ifelse("lemma" %in% colnames(df), 
+          "lemma",  
+          unescape_utf("\\u8868\\u5c64\\u5f62"))
+  term_depend <- ifelse("head" %in% colnames(df), 
+                 "head",  
+                 unescape_utf("\\u4fc2\\u53d7\\u5143"))
+  #   if(is.null(term_depend)) term_depend <- stringr::str_c(term, "_dep")
   bigram_dep <- 
     df %>%
     dplyr::transmute(.data[[s_id]], 
@@ -151,10 +163,13 @@ bigram_net <- function(bigram, rand_seed = 12, threshold = 100, ...){  # `...' w
 
 #' @rdname draw_bigram_network
 #' @export
-word_freq <- function(df, bigram_net, term = "term", ...){
+word_freq <- function(df, big_net, ...){
+  term <- ifelse("lemma" %in% colnames(df), 
+                 "lemma",  
+                 unescape_utf("\\u8868\\u5c64\\u5f62"))
   freq <- "freq"
   name <- 
-    bigram_net %>%
+    big_net %>%
     igraph::V() %>%
     attr("name")
   df <- 
@@ -169,7 +184,7 @@ word_freq <- function(df, bigram_net, term = "term", ...){
 
 #' @rdname draw_bigram_network
 #' @export
-bigram_network_plot <- function(bigram_net, freq,
+bigram_network_plot <- function(big_net, freq,
                                 ...,  # `...' will be omitted
                                 arrow_size  = 5,
                                 circle_size = 5,
@@ -185,8 +200,8 @@ bigram_network_plot <- function(bigram_net, freq,
   arrow_size  <- grid::unit(arrow_size, 'mm')
   breaks      <- if(no_scale) NULL else ggplot2::waiver()
 
-  bigram_net_plot <- 
-    bigram_net %>%
+  big_net_plot <- 
+    big_net %>%
     # the most understandable layout
     ggraph::ggraph(layout = "fr") + 
     ggraph::geom_edge_link(color  = arrow_col, 
@@ -207,5 +222,5 @@ bigram_network_plot <- function(bigram_net, freq,
     ggplot2::scale_x_continuous(limits = x_limits, breaks = breaks) + 
     ggplot2::scale_y_continuous(limits = y_limits, breaks = breaks)
 
-  return(bigram_net_plot)
+  return(big_net_plot)
 }

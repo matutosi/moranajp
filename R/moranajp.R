@@ -427,9 +427,9 @@ web_chamame <- function(text, col_lang = "jp"){
 #' html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
 #' form <- 
 #'   rvest::html_form(html)[[1]] %>%
-#'   html_form_set(st = text) %>%
+#'   rvest::html_form_set(st = text) %>%
 #'   html_form_radio_set("out-e" = "html")
-#' resp <- html_form_submit(form)
+#' resp <- rvest::html_form_submit(form)
 #' rvest::read_html(resp) %>%
 #'   rvest::html_table() %>%
 #'   `[[`(1)

@@ -43,7 +43,6 @@ position_paragraph <- function(df, s_id, word){
 #' Delete parenthesis and its internals
 #'
 #' @param   df  A dataframe analysed by MeCab
-#' @param   pos A string to specify (pos) position of sentence
 #' @return  A dataframe
 #' @examples
 #' library(tidyverse)
@@ -52,25 +51,28 @@ position_paragraph <- function(df, s_id, word){
 #'           "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62") %>%
 #'          unescape_utf()
 #' review_sudachi_a %>%
-#'   unescape_utf()
+#'   unescape_utf() %>%
 #'   dplyr::mutate(`:=`(text_id, as.numeric(text_id))) %>%
 #'   dplyr::filter(text_id < 5) %>%
 #'   dplyr::select(dplyr::all_of(cols)) %>%
-#'   print(n=120) %>%
-#'   delete_parenthesis(pos = unescape_utf("\u54c1\u8a5e\u7d30\u5206\u985e1") ) %>%
-#'   print(n=120)
+#'   print(n=80) %>%
+#'   delete_parenthesis() %>%
+#'   print(n=80)
 #' 
 #' @export
-delete_parenthesis <- function(df, pos = "pos_1"){
+delete_parenthesis <- function(df){
   pare_begin <- unescape_utf("\\u62ec\\u5f27\\u958b")
   pare_end   <- unescape_utf("\\u62ec\\u5f27\\u9589")
   paren <- "parenthesis"
   del <- "delete"
+  pos_1 <- ifelse("pos_1" %in% colnames(df), 
+                  "pos_1", 
+                  unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
   df %>%
     dplyr::mutate(`:=`({{paren}}, 
       dplyr::case_when(
-        .data[[pos]] == pare_begin ~ -1,
-        .data[[pos]] == pare_end   ~  1,
+        .data[[pos_1]] == pare_begin ~ -1,
+        .data[[pos_1]] == pare_end   ~  1,
         TRUE ~ 0
       )
     )) %>%
@@ -97,16 +99,16 @@ delete_parenthesis <- function(df, pos = "pos_1"){
 #' s3 <- 3:6
 #' s4 <- 7:10
 #' s_order <- list(s1, s2, s3, s4)
+#' s_id <- "sentence"
 #' term <- map2(list(letters), s_order, `[`)
 #' df <- tibble::tibble(
-#'         s_id = rep(seq_along(term), purrr::map_int(term, length)),
+#'         {{s_id}} := rep(seq_along(term), purrr::map_int(term, length)),
 #'         term = unlist(term),
 #'         x = seq_along(term))
 #'   # show dataframe
 #' df
 #' align_sentence(df)
 #'   # plot
-#' s_id <- "sentence"
 #' df %>%
 #'   align_sentence() %>%
 #'   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) %>%

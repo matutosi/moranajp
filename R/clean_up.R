@@ -31,16 +31,16 @@
 #'   print()
 #' 
 #' neko_mecab %>%
-#'   clean_mecab(use_common_data = TRUE, synonym_df = synonym)
+#'   clean_up(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' neko_ginza %>%
 #'   unescape_utf() %>%
-#'   clean_ginza(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
+#'   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' review_sudachi_c %>%
 #'   unescape_utf() %>%
 #'   add_sentence_no() %>%
-#'   clean_sudachi(use_common_data = TRUE, synonym_df = synonym)
+#'   clean_up(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' @export
 clean_up <- function(df, add_depend = FALSE, ...){
@@ -58,12 +58,12 @@ clean_up <- function(df, add_depend = FALSE, ...){
 #' @rdname clean_up
 #' @export
 pos_filter <- function(df){
-  pos_0 <- if_else("pos"   %in% colnames(df), 
-                   "pos",
-                   unescape_utf("\\u54c1\\u8a5e"))
-  pos_1 <- if_else("pos_1" %in% colnames(df), 
-                   "pos_1", 
-                   unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
+  pos_0 <- ifelse("pos"   %in% colnames(df), 
+                  "pos",
+                  unescape_utf("\\u54c1\\u8a5e"))
+  pos_1 <- ifelse("pos_1" %in% colnames(df), 
+                  "pos_1", 
+                  unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
   filter_pos_0 <- 
     c("\\u540d\\u8a5e",      "\\u52d5\\u8a5e",
       "\\u5f62\\u5bb9\\u8a5e", "\\u5f62\\u72b6\\u8a5e") %>%
