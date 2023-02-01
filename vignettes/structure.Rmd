@@ -17,41 +17,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+  # ```{r setup}
+```{r, eval = FALSE}
 devtools::load_all(".")
   # library(moranajp)
 library(tidyverse)
 library(grid)
 
-
-
-cols <- c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
-          "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62",
-          "text_id", "chap", "sect", "para") %>%
-          stringi::stri_unescape_unicode()
-surface_form  <- stringi::stri_unescape_unicode("\u8868\u5c64\u5f62")
-original_form <- stringi::stri_unescape_unicode("\u539f\u5f62")
-s_id <- "text_id"
-
-data(review_sudachi_c)
-review_sudachi_c <- 
-  review_sudachi_c %>%
-  unescape_utf() %>%
-  dplyr::select(dplyr::all_of(cols)) %>%
-  clean_sudachi() %>%
-  delete_parenthesis()
-
 review <- 
   review_sudachi_c %>%
-  dplyr::filter(.data[[s_id]] < 20) %>%
-  dplyr::filter(pos_1 != stringi::stri_unescape_unicode("\u52d5\u8a5e")) %>%
-  dplyr::filter(pos_2 != stringi::stri_unescape_unicode("\u6570\u8a5e")) %>%
-  dplyr::filter( !stringr::str_detect(term, "[A-z]+") ) %>%
-  dplyr::mutate(`:=`(w, 
-    stringi::stri_width( .data[[surface_form]]) )) %>%
-  dplyr::mutate(`:=`(x, 
-    purrr::accumulate(w, `+`) 
-    )) %>%
+  unescape_utf() %>%
+  dplyr::filter(.data[["text_id"]] < 20) %>%
+  clean_up() %>%
+  # 
+  delete_parenthesis() %>%
   align_sentence(s_id = "text_id")
 
 review %>%

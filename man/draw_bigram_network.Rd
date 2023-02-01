@@ -11,23 +11,16 @@
 \usage{
 draw_bigram_network(df, ...)
 
-bigram(
-  df,
-  s_id = "sentence",
-  term = "term",
-  depend = FALSE,
-  term_depend = NULL,
-  ...
-)
+bigram(df, s_id = "sentence", depend = FALSE, term_depend = NULL, ...)
 
-bigram_depend(df, s_id = "sentence", term = "term", term_depend = NULL)
+bigram_depend(df, s_id = "sentence")
 
 bigram_net(bigram, rand_seed = 12, threshold = 100, ...)
 
-word_freq(df, bigram_net, term = "term", ...)
+word_freq(df, big_net, ...)
 
 bigram_network_plot(
-  bigram_net,
+  big_net,
   freq,
   ...,
   arrow_size = 5,
@@ -48,10 +41,9 @@ bigram_network_plot(
 
 \item{s_id}{A string to specify sentence.}
 
-\item{term, term_depend}{A string of terms (words) or dependnt terms column
-to use bigram.}
-
 \item{depend}{A logical to}
+
+\item{term_depend}{A string of dependnt terms column to use bigram.}
 
 \item{bigram}{A result of bigram().}
 
@@ -59,7 +51,7 @@ to use bigram.}
 
 \item{threshold}{A numeric used as threshold for frequency of bigram.}
 
-\item{bigram_net}{A result of bigram_net().}
+\item{big_net}{A result of bigram_net().}
 
 \item{freq}{A numeric of word frequency in bigram_net.
 Can be got using word_freq().}
@@ -89,9 +81,10 @@ synonym <- unescape_utf(synonym)
 
 data(neko_mecab)
 neko_mecab <- 
+  neko_mecab  \%>\%
   unescape_utf() \%>\%
-  clean_mecab(use_common_data = TRUE, synonym_df = synonym) \%>\%
-  print()
+  add_sentence_no() \%>\%
+  clean_up(use_common_data = TRUE, synonym_df = synonym)
 
 bigram_neko <- 
   neko_mecab \%>\%
@@ -101,16 +94,18 @@ data(neko_ginza)
 neko_ginza <- 
   neko_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza(use_common_data = TRUE, synonym_df = synonym) \%>\%
-  print()
+  add_sentence_no() \%>\%
+  clean_up(use_common_data = TRUE, synonym_df = synonym)
+#   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 
 bigram_neko_ginza_dep <- 
   neko_ginza \%>\%
-  bigram(term = "lemma", depend = TRUE)
+  bigram()
+#   bigram(depend = TRUE)
 
 bigram_neko_ginza <- 
  neko_ginza \%>\%
-   bigram(term = "lemma")
+   bigram()
 
 add_stop_words <- 
   c("\\\\u3042\\\\u308b", "\\\\u3059\\\\u308b", "\\\\u3066\\\\u308b", 
@@ -122,24 +117,28 @@ data(review_chamame)
 bigram_review <- 
   review_chamame \%>\%
   unescape_utf() \%>\%
-  clean_chamame(add_stop_words = add_stop_words) \%>\%
+  add_sentence_no() \%>\%
+  clean_up(add_stop_words = add_stop_words) \%>\%
   draw_bigram_network()
 
 data(review_mecab)
 review_mecab \%>\%
   unescape_utf() \%>\%
-  clean_mecab() \%>\%
+  add_sentence_no() \%>\%
+  clean_up() \%>\%
   draw_bigram_network()
 
 data(review_ginza)
 review_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza() \%>\%
-  draw_bigram_network(term = "lemma")
+  add_sentence_no() \%>\%
+  clean_up() \%>\%
+  draw_bigram_network()
 
-review_ginza \%>\%
-  unescape_utf() \%>\%
-  clean_ginza() \%>\%
-  draw_bigram_network(term = "lemma", depend = TRUE)
+# review_ginza \%>\%
+#   unescape_utf() \%>\%
+#   add_sentence_no() \%>\%
+#   clean_up(add_depend = TRUE) \%>\%
+#   draw_bigram_network(depend = TRUE)
 
 }

@@ -66,15 +66,15 @@ neko_mecab <-
   print()
 
 neko_mecab \%>\%
-  clean_mecab(use_common_data = TRUE, synonym_df = synonym)
+  clean_up(use_common_data = TRUE, synonym_df = synonym)
 
 neko_ginza \%>\%
   unescape_utf() \%>\%
-  clean_ginza(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
+  clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 
 review_sudachi_c \%>\%
   unescape_utf() \%>\%
   add_sentence_no() \%>\%
-  clean_sudachi(use_common_data = TRUE, synonym_df = synonym)
+  clean_up(use_common_data = TRUE, synonym_df = synonym)
 
 }

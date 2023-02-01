@@ -27,16 +27,16 @@ s2 <- 3:6
 s3 <- 3:6
 s4 <- 7:10
 s_order <- list(s1, s2, s3, s4)
+s_id <- "sentence"
 term <- map2(list(letters), s_order, `[`)
 df <- tibble::tibble(
-        s_id = rep(seq_along(term), purrr::map_int(term, length)),
+        {{s_id}} := rep(seq_along(term), purrr::map_int(term, length)),
         term = unlist(term),
         x = seq_along(term))
   # show dataframe
 df
 align_sentence(df)
   # plot
-s_id <- "sentence"
 df \%>\%
   align_sentence() \%>\%
   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) \%>\%

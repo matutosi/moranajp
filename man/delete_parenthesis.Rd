@@ -4,12 +4,10 @@
 \alias{delete_parenthesis}
 \title{Delete parenthesis and its internals}
 \usage{
-delete_parenthesis(df, pos = "pos_1")
+delete_parenthesis(df)
 }
 \arguments{
 \item{df}{A dataframe analysed by MeCab}
-
-\item{pos}{A string to specify (pos) position of sentence}
 }
 \value{
 A dataframe
@@ -24,12 +22,12 @@ cols <- c("text_id", "\\\\u8868\\\\u5c64\\\\u5f62", "\\\\u54c1\\\\u8a5e",
           "\\\\u54c1\\\\u8a5e\\\\u7d30\\\\u5206\\\\u985e1", "\\\\u539f\\\\u5f62") \%>\%
          unescape_utf()
 review_sudachi_a \%>\%
-  unescape_utf()
+  unescape_utf() \%>\%
   dplyr::mutate(`:=`(text_id, as.numeric(text_id))) \%>\%
   dplyr::filter(text_id < 5) \%>\%
   dplyr::select(dplyr::all_of(cols)) \%>\%
-  print(n=120) \%>\%
-  delete_parenthesis(pos = unescape_utf("\u54c1\u8a5e\u7d30\u5206\u985e1") ) \%>\%
-  print(n=120)
+  print(n=80) \%>\%
+  delete_parenthesis() \%>\%
+  print(n=80)
 
 }
