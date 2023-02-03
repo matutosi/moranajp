@@ -3,7 +3,7 @@
 \name{out_cols_chamame}
 \alias{out_cols_chamame}
 \alias{web_chamame}
-\alias{html_form_radio_set}
+\alias{html_radio_set}
 \alias{is_radio}
 \title{Morphological analysis for Japanese text by web chamame}
 \usage{
@@ -11,7 +11,7 @@ out_cols_chamame(col_lang = "jp")
 
 web_chamame(text, col_lang = "jp")
 
-html_form_radio_set(form, ...)
+html_radio_set(form, ...)
 
 is_radio(fields)
 }
@@ -55,7 +55,7 @@ html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
 form <- 
   rvest::html_form(html)[[1]] \%>\%
   rvest::html_form_set(st = text) \%>\%
-  html_form_radio_set("out-e" = "html")
+  html_radio_set("out-e" = "html")
 resp <- rvest::html_form_submit(form)
 rvest::read_html(resp) \%>\%
   rvest::html_table() \%>\%

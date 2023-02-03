@@ -4,7 +4,7 @@
 \alias{draw_bigram_network}
 \alias{bigram}
 \alias{bigram_depend}
-\alias{bigram_net}
+\alias{bigram_network}
 \alias{word_freq}
 \alias{bigram_network_plot}
 \title{Draw bigram network using morphological analysis data.}
@@ -15,7 +15,7 @@ bigram(df, s_id = "sentence", depend = FALSE, term_depend = NULL, ...)
 
 bigram_depend(df, s_id = "sentence")
 
-bigram_net(bigram, rand_seed = 12, threshold = 100, ...)
+bigram_network(bigram, rand_seed = 12, threshold = 100, ...)
 
 word_freq(df, big_net, ...)
 
@@ -41,7 +41,7 @@ bigram_network_plot(
 
 \item{s_id}{A string to specify sentence.}
 
-\item{depend}{A logical to}
+\item{depend}{A logical.}
 
 \item{term_depend}{A string of dependnt terms column to use bigram.}
 
@@ -51,9 +51,9 @@ bigram_network_plot(
 
 \item{threshold}{A numeric used as threshold for frequency of bigram.}
 
-\item{big_net}{A result of bigram_net().}
+\item{big_net}{A result of bigram_network().}
 
-\item{freq}{A numeric of word frequency in bigram_net.
+\item{freq}{A numeric of word frequency in bigram_network.
 Can be got using word_freq().}
 
 \item{arrow_size, circle_size, text_size, }{A numeric.}
@@ -95,13 +95,11 @@ neko_ginza <-
   neko_ginza \%>\%
   unescape_utf() \%>\%
   add_sentence_no() \%>\%
-  clean_up(use_common_data = TRUE, synonym_df = synonym)
-#   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
+  clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 
 bigram_neko_ginza_dep <- 
   neko_ginza \%>\%
-  bigram()
-#   bigram(depend = TRUE)
+  bigram(depend = TRUE)
 
 bigram_neko_ginza <- 
  neko_ginza \%>\%
@@ -135,10 +133,10 @@ review_ginza \%>\%
   clean_up() \%>\%
   draw_bigram_network()
 
-# review_ginza \%>\%
-#   unescape_utf() \%>\%
-#   add_sentence_no() \%>\%
-#   clean_up(add_depend = TRUE) \%>\%
-#   draw_bigram_network(depend = TRUE)
+review_ginza \%>\%
+  unescape_utf() \%>\%
+  add_sentence_no() \%>\%
+  clean_up(add_depend = TRUE) \%>\%
+  draw_bigram_network(depend = TRUE)
 
 }

@@ -393,7 +393,7 @@ web_chamame <- function(text, col_lang = "jp"){
   form <- 
     rvest::html_form(html)[[1]] %>%
     rvest::html_form_set(st = text) %>%
-    html_form_radio_set("out-e" = "html")
+    html_radio_set("out-e" = "html")
   index <-  sort(decreasing = TRUE, 
                  c( 3:8,    # "file[]: "            - "suuji: 1"
                    10:21,   # "dic2: unidic-spoken" - "dic10: ipadic"
@@ -428,7 +428,7 @@ web_chamame <- function(text, col_lang = "jp"){
 #' form <- 
 #'   rvest::html_form(html)[[1]] %>%
 #'   rvest::html_form_set(st = text) %>%
-#'   html_form_radio_set("out-e" = "html")
+#'   html_radio_set("out-e" = "html")
 #' resp <- rvest::html_form_submit(form)
 #' rvest::read_html(resp) %>%
 #'   rvest::html_table() %>%
@@ -436,7 +436,7 @@ web_chamame <- function(text, col_lang = "jp"){
 #' 
 #' @rdname web_chamame
 #' @export
-html_form_radio_set <- function(form, ...){
+html_radio_set <- function(form, ...){
   # https://github.com/tidyverse/rvest/blob/main/R/form.R
   #   rvest:::check_form(form)
   new_values <- rlang::list2(...)
