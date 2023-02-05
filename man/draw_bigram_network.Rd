@@ -11,9 +11,9 @@
 \usage{
 draw_bigram_network(df, ...)
 
-bigram(df, s_id = "sentence", depend = FALSE, term_depend = NULL, ...)
+bigram(df, group = "sentence", depend = FALSE, term_depend = NULL, ...)
 
-bigram_depend(df, s_id = "sentence")
+bigram_depend(df, group = "sentence")
 
 bigram_network(bigram, rand_seed = 12, threshold = 100, ...)
 
@@ -39,7 +39,7 @@ bigram_network_plot(
 
 \item{...}{Extra arguments to internal fuctions.}
 
-\item{s_id}{A string to specify sentence.}
+\item{group}{A string to specify sentence.}
 
 \item{depend}{A logical.}
 
