@@ -101,10 +101,6 @@ bigram_neko_ginza_dep <-
   neko_ginza \%>\%
   bigram(depend = TRUE)
 
-bigram_neko_ginza <- 
- neko_ginza \%>\%
-   bigram()
-
 add_stop_words <- 
   c("\\\\u3042\\\\u308b", "\\\\u3059\\\\u308b", "\\\\u3066\\\\u308b", 
     "\\\\u3044\\\\u308b","\\\\u306e", "\\\\u306a\\\\u308b", "\\\\u304a\\\\u308b", 
@@ -119,20 +115,7 @@ bigram_review <-
   clean_up(add_stop_words = add_stop_words) \%>\%
   draw_bigram_network()
 
-data(review_mecab)
-review_mecab \%>\%
-  unescape_utf() \%>\%
-  add_sentence_no() \%>\%
-  clean_up() \%>\%
-  draw_bigram_network()
-
 data(review_ginza)
-review_ginza \%>\%
-  unescape_utf() \%>\%
-  add_sentence_no() \%>\%
-  clean_up() \%>\%
-  draw_bigram_network()
-
 review_ginza \%>\%
   unescape_utf() \%>\%
   add_sentence_no() \%>\%
