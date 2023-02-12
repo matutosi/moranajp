@@ -21,19 +21,19 @@ gen_morana_data <- function(df, bin_dir, iconv, method, head = FALSE){
     escape_utf()
 }
 
-  # ginza
-bin_dir <- ""
-iconv   <- ""
-method  <- "ginza"
-review_ginza <- gen_morana_data(review, bin_dir = bin_dir, iconv = iconv, method = method)
-usethis::use_data(review_ginza, overwrite = TRUE)
-
   # mecab
 bin_dir <- "d:/pf/mecab/bin/"
 iconv   <- "CP932_UTF-8"
 method  <- "mecab"
 review_mecab <- gen_morana_data(review, bin_dir = bin_dir, iconv = iconv, method = method)
 usethis::use_data(review_mecab, overwrite = TRUE)
+
+  # ginza
+bin_dir <- ""
+iconv   <- ""
+method  <- "ginza"
+review_ginza <- gen_morana_data(review, bin_dir = bin_dir, iconv = iconv, method = method)
+usethis::use_data(review_ginza, overwrite = TRUE)
 
   # sudachi
 bin_dir <- "d:/pf/sudachi/"

@@ -35,6 +35,7 @@
 #' 
 #' neko_ginza %>%
 #'   unescape_utf() %>%
+#'   add_sentence_no() %>%
 #'   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' review_sudachi_c %>%
@@ -49,21 +50,15 @@ clean_up <- function(df, add_depend = FALSE, ...){
     pos_filter() %>%
     delete_stop_words(...) %>%
     replace_words(...)
-  if(add_depend){
-    df <- add_depend_ginza(df)
-  }
+  if(add_depend){ df <- add_depend_ginza(df) }
   return(df)
 }
 
 #' @rdname clean_up
 #' @export
 pos_filter <- function(df){
-  pos_0 <- ifelse("pos"   %in% colnames(df), 
-                  "pos",
-                  unescape_utf("\\u54c1\\u8a5e"))
-  pos_1 <- ifelse("pos_1" %in% colnames(df), 
-                  "pos_1", 
-                  unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
+  pos_0 <- term_pos_0(df)
+  pos_1 <- term_pos_1(df)
   filter_pos_0 <- 
     c("\\u540d\\u8a5e",      "\\u52d5\\u8a5e",
       "\\u5f62\\u5bb9\\u8a5e", "\\u5f62\\u72b6\\u8a5e") %>%
@@ -88,24 +83,25 @@ pos_filter <- function(df){
 #' @export
 add_depend_ginza <- function(df){
   s_id <- "sentence"
-  term <- ifelse("lemma" %in% colnames(df), 
-                 "lemma",  
-                 unescape_utf("\\u8868\\u5c64\\u5f62"))
+  term <- term_lemma(df)
   head <- ifelse("head" %in% colnames(df), 
                  "head",  
                  unescape_utf("\\u4fc2\\u53d7\\u5143"))
+  h_id <- paste0(head, "_id")
+  t_dep <- paste0(term, "_dep")
+  if(!s_id %in% colnames(df)) df <- add_sentence_no(df, {{s_id}})
+
   df <- 
     df %>%
-    add_sentence_no() %>%
     dplyr::mutate(
         "word_no" := .data[["id"]], 
         "id" := stringr::str_c(.data[[s_id]], "_", .data[["word_no"]]))
   depend <- 
     df %>%
-    dplyr::select("head_id" := .data[["id"]], "lemma_dep" := .data[[term]])
+    dplyr::select({{h_id}} := .data[["id"]], {{t_dep}} := .data[[term]])
   df <- 
     df %>%
-    dplyr::mutate("head_id" := 
+    dplyr::mutate({{h_id}} := 
         stringr::str_c(.data[[s_id]], "_", .data[[head]])) %>%
     dplyr::left_join(depend)
   return(df)
@@ -117,9 +113,7 @@ delete_stop_words <- function(df,
                               use_common_data = TRUE,
                               add_stop_words = NULL,
                               ...){ # `...' will be omitted
-  term <- ifelse("lemma" %in% colnames(df), 
-                 "lemma",  
-                 unescape_utf("\\u8868\\u5c64\\u5f62"))
+  term <- term_lemma(df)
   stop_words <- 
     if(use_common_data){
         utils::data(stop_words, envir = environment())
@@ -146,9 +140,7 @@ replace_words <- function(df,
                           ...){ # `...' will be omitted
   if(is.null(synonym_df) & is.null(synonym_from) & is.null(synonym_to))
       return(df)
-  term <- ifelse("lemma" %in% colnames(df), 
-                 "lemma",  
-                 unescape_utf("\\u8868\\u5c64\\u5f62"))
+  term <- term_lemma(df)
   rep_words        <- synonym_to
   names(rep_words) <- synonym_from
   if(!is.null(synonym_df)){
@@ -159,4 +151,31 @@ replace_words <- function(df,
     df %>%
     dplyr::mutate(`:=`({{term}}, stringr::str_replace_all(.data[[term]], rep_words)))
   return(df)
+}
+
+#' @rdname clean_up
+#' @export
+term_lemma <- function(df){
+  term <- ifelse("lemma" %in% colnames(df), 
+          "lemma",  
+          unescape_utf("\\u539f\\u5f62"))
+  return(term)
+}
+
+#' @rdname clean_up
+#' @export
+term_pos_0 <- function(df){
+  pos_0 <- ifelse("pos"   %in% colnames(df), 
+                  "pos",
+                  unescape_utf("\\u54c1\\u8a5e"))
+  return(pos_0)
+}
+
+#' @rdname clean_up
+#' @export
+term_pos_1 <- function(df){
+  pos_1 <- ifelse("pos_1" %in% colnames(df), 
+                  "pos_1", 
+                  unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
+  return(pos_1)
 }

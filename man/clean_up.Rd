@@ -6,6 +6,9 @@
 \alias{add_depend_ginza}
 \alias{delete_stop_words}
 \alias{replace_words}
+\alias{term_lemma}
+\alias{term_pos_0}
+\alias{term_pos_1}
 \title{Clean up result of morphological analyzed data frame}
 \usage{
 clean_up(df, add_depend = FALSE, ...)
@@ -23,6 +26,12 @@ replace_words(
   synonym_to = NULL,
   ...
 )
+
+term_lemma(df)
+
+term_pos_0(df)
+
+term_pos_1(df)
 }
 \arguments{
 \item{df}{A dataframe including result of morphological analysis.}
@@ -70,6 +79,7 @@ neko_mecab \%>\%
 
 neko_ginza \%>\%
   unescape_utf() \%>\%
+  add_sentence_no() \%>\%
   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 
 review_sudachi_c \%>\%

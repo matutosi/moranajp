@@ -65,9 +65,7 @@ delete_parenthesis <- function(df){
   pare_end   <- unescape_utf("\\u62ec\\u5f27\\u9589")
   paren <- "parenthesis"
   del <- "delete"
-  pos_1 <- ifelse("pos_1" %in% colnames(df), 
-                  "pos_1", 
-                  unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
+  pos_1 <- term_pos_1(df)
   df %>%
     dplyr::mutate(`:=`({{paren}}, 
       dplyr::case_when(

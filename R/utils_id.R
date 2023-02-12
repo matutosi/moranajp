@@ -84,8 +84,12 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
 #' @export
 add_sentence_no <- function(df, s_id = "sentence"){
   cnames <- colnames(df)
-  if(sum(cnames %in% "lemma") + sum(cnames %in% "pos_1") == 2){
-    cond_1 <- ".$lemma %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
+  # Use "form" Not "lemma"
+  #   ginza returns half size "." (period) not full size for lemma.
+  #   so cond_1 does not work when using "lennma".
+  #   form is usually full size period, thus it works.
+  if(sum(cnames %in% "form") + sum(cnames %in% "pos_1") == 2){
+    cond_1 <- ".$form %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
     cond_2 <- ".$pos_1 == \\'\\u53e5\\u70b9\\'"
   }else{
     cond_1 <- ".data[['\\u8868\\u5c64\\u5f62']] %in% c(\\'\\u3002\\', \\'\\uff0e\\')"

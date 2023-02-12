@@ -17,7 +17,7 @@ escape_japanese(x)
 Generate code like "stringi::stri_unescape_unicode(...)"
 }
 \examples{
-stringi::stri_unescape_unicode("\u8868\u5c64\u5f62") \%>\%
+stringi::stri_unescape_unicode("\\\\u8868\\\\u5c64\\\\u5f62") \%>\%
   print() \%>\%
   escape_japanese()
 
