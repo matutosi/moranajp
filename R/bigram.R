@@ -4,6 +4,7 @@
 #' @param group        A string to specify sentence.
 #' @param bigram       A result of bigram().
 #' @param big_net      A result of bigram_network().
+#' @param draw         A logical.
 #' @param rand_seed    A numeric.
 #' @param threshold    A numeric used as threshold for frequency of bigram.
 #' @param term_depend  A string of dependnt terms column to use bigram.
@@ -71,12 +72,12 @@
 #'   draw_bigram_network(depend = TRUE)
 #' 
 #' @export
-draw_bigram_network <- function(df, ...){
+draw_bigram_network <- function(df, draw = TRUE, ...){
   big <- bigram(df, ...)
   big_net <- bigram_network(big, ...)
   freq <- word_freq(df, big_net, ...)
   gg <- bigram_network_plot(big_net, freq = freq, ...)
-  print(gg)
+  if(draw) print(gg)
   res <- list(df = df, bigram = big, freq = freq, gg = gg)
   return(res)
 }
