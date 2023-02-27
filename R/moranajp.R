@@ -123,11 +123,11 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", co
 #' @rdname moranajp_all
 remove_linebreaks <- function(tbl, text_col){
   if (stringr::str_detect(
-      stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\r\\n"))
+      stringr::str_c(tbl[[text_col]], collapse = NULL), "\\r\\n"))
     message("Removed line breaks !")
-  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), "\\n"))
+  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = NULL), "\\n"))
     message("Removed line breaks !")
-  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = FALSE), '&|\\||<|>|"'))
+  if (stringr::str_detect(stringr::str_c(tbl[[text_col]], collapse = NULL), '&|\\||<|>|"'))
     message('Removed &, |, <. > or " !')
   tbl %>%
     dplyr::mutate(`:=`({{text_col}},
