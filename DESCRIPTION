@@ -16,6 +16,7 @@ Imports:
     dplyr,
     ggplot2,
     ggraph,
+    grid,
     igraph,
     magrittr,
     purrr,
@@ -23,15 +24,15 @@ Imports:
     rvest,
     stats,
     stringr,
+    stringi,
     tibble,
-    tidyr
+    tidyr,
+    utils
 Suggests:
     devtools,
     knitr,
     rmarkdown,
-    stringi,
     testthat (>= 3.0.0),
-    tidyverse
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
