@@ -19,9 +19,11 @@ knitr::opts_chunk$set(
 
   # ```{r setup}
 ```{r, eval = FALSE}
-devtools::load_all(".")
-  # library(moranajp)
-library(tidyverse)
+  # devtools::load_all(".")
+library(moranajp)
+library(magrittr)
+library(dplyr)
+library(stringi)
 library(grid)
 
 review <- 

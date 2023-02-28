@@ -45,7 +45,8 @@ position_paragraph <- function(df, s_id, word){
 #' @param   df  A dataframe analysed by MeCab
 #' @return  A dataframe
 #' @examples
-#' library(tidyverse)
+#' library(magrittr)
+#' library(dplyr)
 #' data(review_mecab)
 #' cols <- c("text_id", "\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
 #'           "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62") %>%
@@ -90,7 +91,10 @@ delete_parenthesis <- function(df){
 #' @param  term,x_pos A String to specify term and x_position
 #' @return  A dataframe
 #' @examples
-#' library(tidyverse)
+#' library(magrittr)
+#' library(dplyr)
+#' library(purrr)
+#' library(ggplot2)
 #'   # settings
 #' s1 <- 1:4
 #' s2 <- 3:6

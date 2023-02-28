@@ -9,7 +9,7 @@
 \alias{bigram_network_plot}
 \title{Draw bigram network using morphological analysis data.}
 \usage{
-draw_bigram_network(df, ...)
+draw_bigram_network(df, draw = TRUE, ...)
 
 bigram(df, group = "sentence", depend = FALSE, term_depend = NULL, ...)
 
@@ -36,6 +36,8 @@ bigram_network_plot(
 }
 \arguments{
 \item{df}{A dataframe including result of morphological analysis.}
+
+\item{draw}{A logical.}
 
 \item{...}{Extra arguments to internal fuctions.}
 
@@ -75,7 +77,7 @@ gg (ggplot2 object of bigram network plot).
 Draw bigram network using morphological analysis data.
 }
 \examples{
-library(tidyverse)
+library(magrittr)
 data(synonym)
 synonym <- unescape_utf(synonym)
 

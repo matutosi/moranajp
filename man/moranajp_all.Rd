@@ -112,7 +112,7 @@ Keep other colnames in dataframe.
 }
 \examples{
 \dontrun{
-  library(tidyverse)
+  library(magrittr)
   data(neko)
   neko <-
       neko \%>\%

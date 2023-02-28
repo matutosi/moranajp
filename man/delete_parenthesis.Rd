@@ -16,7 +16,8 @@ A dataframe
 Delete parenthesis and its internals
 }
 \examples{
-library(tidyverse)
+library(magrittr)
+library(dplyr)
 data(review_mecab)
 cols <- c("text_id", "\\\\u8868\\\\u5c64\\\\u5f62", "\\\\u54c1\\\\u8a5e", 
           "\\\\u54c1\\\\u8a5e\\\\u7d30\\\\u5206\\\\u985e1", "\\\\u539f\\\\u5f62") \%>\%

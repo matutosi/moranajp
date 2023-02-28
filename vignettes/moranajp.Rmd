@@ -17,13 +17,13 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 options(encoding="UTF-8")
-library(tidyverse)
+library(magrittr)
+library(stringr)
 library(moranajp)
 ```
 
 ```{r}
 bin_dir <- "d:/pf/mecab/bin/" # input your environment
-library(tidyverse)
 
 data(neko)
 neko <- unescape_utf(neko)

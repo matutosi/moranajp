@@ -20,7 +20,10 @@ A dataframe
 Align x_position of words according to common words between two sentences
 }
 \examples{
-library(tidyverse)
+library(magrittr)
+library(dplyr)
+library(purrr)
+library(ggplot2)
   # settings
 s1 <- 1:4
 s2 <- 3:6

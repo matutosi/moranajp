@@ -25,7 +25,7 @@
 #' @return A tibble.   Output of 'MeCab' and added column "text_id".
 #' @examples
 #' \dontrun{
-#'   library(tidyverse)
+#'   library(magrittr)
 #'   data(neko)
 #'   neko <-
 #'       neko %>%

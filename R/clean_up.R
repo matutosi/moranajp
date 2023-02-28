@@ -17,7 +17,7 @@
 #' @return A dataframe.
 #' @name clean_up
 #' @examples
-#' library(tidyverse)
+#' library(magrittr)
 #' data(neko_mecab)
 #' data(neko_ginza)
 #' data(review_sudachi_c)
