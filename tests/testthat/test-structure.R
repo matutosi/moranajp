@@ -30,4 +30,3 @@ testthat::test_that("aling_sentence() work", {
 
   expect_equal(align_sentence(df), df_expect)
 })
-
