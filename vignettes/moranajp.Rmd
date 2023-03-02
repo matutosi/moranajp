@@ -16,28 +16,25 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-options(encoding="UTF-8")
-library(magrittr)
-library(stringr)
 library(moranajp)
+library(magrittr)
 ```
 
 ```{r}
-bin_dir <- "d:/pf/mecab/bin/" # input your environment
-
 data(neko)
 neko <- unescape_utf(neko)
 head(neko)
 
-n_match <- 
-  list.files(bin_dir) %>%
-  stringr::str_count("mecab") %>%
-  sum()
+  # MeCab (Need install MeCab)
+bin_dir <- "d:/pf/mecab/bin"
+iconv <- "CP932_UTF-8"
+neko %>%
+  moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) %>%
+  print(n=30)
 
-  # if(n_match > 0){
-  #   neko %>%
-  #     unescape_utf() %>%
-  #     moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = "CP932_UTF-8") %>%
-  #     print(n=100)
-  # }
+  # chamame (Do not need install, but use web service)
+neko %>%
+  head(3) %>%
+  moranajp_all(method = "chamame", text_col = "text") %>%
+  print(n=30)
 ```
