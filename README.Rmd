@@ -11,16 +11,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-# moranajp
+# moranajp はじめに
 
 The goal of moranajp is a tool of morphological analysis for Japanese. 
 
-readme in Japanese: https://github.com/matutosi/moranajp/blob/main/READMEjp.md
+moranajpは，日本語形態素解析をするためのものです．
 
-## Installation
+## Installation インストール
 
 You can install the released version of moranajp from [GitHub] ( https://github.com/matutosi/moranajp ). 
 You need install MeCab ( https://taku910.github.io/mecab/ ). 
+
+最新バージョンは，[GitHub] ( https://github.com/matutosi/moranajp ) でダウンロードできます．
+MeCab ( https://taku910.github.io/mecab/ ) を別途インストールする必要があります．
 
 ``` r
   # CRAN
@@ -31,47 +34,89 @@ install.packages("moranajp")
 devtools::install_github("matutosi/moranajp")
 ```
 
-You can download binary version (zip file). 
+## Example 使用例
 
-https://github.com/matutosi/moranajp/tree/main/zip
-
-
-## Example
-
-``` r
-options(encoding="UTF-8")
+```{r}
 library(moranajp)
-library(tidyverse)
 library(magrittr)
 
 data(neko)
-neko <- 
-  neko %>%
-  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
-  dplyr::mutate(cols = 1:nrow(.))
-neko  # First part of 'I Am a Cat' by Soseki Natsume
+neko <- unescape_utf(neko)
+head(neko) # 『吾輩は猫である』(夏目漱石)の冒頭部分
 
-  # Directory of mecab
-bin_dir <- "c:/MeCab/bin/"  # set your environment
+  # MeCab (Need install MeCab) 
+  # MeCabをインストールする必要あり
+bin_dir <- "d:/pf/mecab/bin" # set your environment MeCabをインストールしたフォルダを指定
+  # bin_dir <- "/opt/local/mecab/bin/"  # Example for Mac or Linux
+iconv <- "CP932_UTF-8"       # maybe need in Windows Windowsで必要な場合あり
+  # 文字化けする場合は，引数 iconv を使ってください．
+  # `iconv = "CP932_UTF-8"` or `iconv = "EUC_UTF-8"`
+neko %>%
+  moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) %>%
+  print(n=30)
 
-res <- moranajp_all(neko, text_col="text", bin_dir=bin_dir)
-res
-  # # if illegal character, use iconv = "CP932_UTF-8" or iconv = "EUC_UTF-8"
-  # moranajp_all(neko, text_col="text", bin_dir=bin_dir, iconv="CP932_UTF-8")
+  # chamame (Do not need install, but use web service)
+  # 別途ツールのインストールのなし(Web茶まめを使用)
+neko %>%
+  head(3) %>%
+  moranajp_all(method = "chamame", text_col = "text") %>%
+  print(n=30)
 ```
 
-## Note
+```{r,  fig.width=7, fig.height=7}
+library(moranajp)
+library(magrittr)
+
+data(synonym)
+synonym <- unescape_utf(synonym)
+
+data(neko_mecab)
+neko_mecab <- 
+  neko_mecab  %>%
+  unescape_utf() %>%
+  add_sentence_no() %>%
+  clean_up(use_common_data = TRUE, synonym_df = synonym)
+
+bigram_neko <- 
+  neko_mecab %>%
+  draw_bigram_network()
+
+add_stop_words <- 
+  c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
+    "\\u3044\\u308b","\\u306e", "\\u306a\\u308b", "\\u304a\\u308b", 
+    "\\u3093", "\\u308c\\u308b", "*") %>% 
+   unescape_utf()
+
+data(review_chamame)
+bigram_review <- 
+  review_chamame %>%
+  dplyr::slice(1:2000) %>%
+  unescape_utf() %>%
+  add_sentence_no() %>%
+  clean_up(add_stop_words = add_stop_words) %>%
+  draw_bigram_network()
+```
+
+
+## Note 注意点
 
 Line breaks in the text will be removed to avoid lag text id. 
 If you want to remain line breaks, please change them into other character. 
 
-## Citation
+文字列内の改行コード(\r\n, \n)は，削除されます(改行コードでずれるのを防ぐため)．
+改行コードに意味がある場合は，事前に改行コードを別の文字列に変更するなどの対応をしてください．
+
+## Citation 引用
 
 Toshikazu Matsumura (2021) Morphological analysis for Japanese with R. https://github.com/matutosi/moranajp/.
 
-## Installation of MeCab for (Linux / Mac)
+松村 俊和 (2021) Rによる日本語形態素解析. https://github.com/matutosi/moranajp/.
+
+## Installation of MeCab for (Linux / Mac) MeCabのインストール(Linux / Mac)
 
 download file (mecab-0.996.tar.gz, mecab-ipadic-2.7.0-20070801.tar.gz)
+
+ファイルのダウンロード(mecab-0.996.tar.gz, mecab-ipadic-2.7.0-20070801.tar.gz)
 
 http://taku910.github.io/mecab/#download
 
@@ -83,16 +128,20 @@ http://taku910.github.io/mecab/#download
   make
   sudo make install
   # install directory
+  # 辞書のインストール
   tar xvf mecab-ipadic-2.7.0-20070801.tar.gz
   cd mecab-ipadic-2.7.0-20070801
   ./configure  --with-mecab-config=/opt/local/mecab/bin/mecab-config --with-charset=utf8 --prefix=/opt/local/mecab
   make
   sudo make install
   # add path
+  # パスの追加
   echo 'export PATH=/opt/local/mecab/bin:$PATH' >> ~/.bash_profile
   source ~/.bash_profile
   # run mecab
+  # mecabの実行
   mecab
 ```
 
-ref (in Japanese)  https://qiita.com/nkjm/items/913584c00af199794257
+ref (in Japanese) 参考
+https://qiita.com/nkjm/items/913584c00af199794257

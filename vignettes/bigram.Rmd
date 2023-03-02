@@ -16,13 +16,11 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-options(encoding="UTF-8")
-library(magrittr)
-library(stringr)
 library(moranajp)
+library(magrittr)
 ```
 
-```{r,  fig.width=7, fig.height=7}
+```{r,  fig.width=6, fig.height=6}
 data(synonym)
 synonym <- unescape_utf(synonym)
 
@@ -51,5 +49,4 @@ bigram_review <-
   add_sentence_no() %>%
   clean_up(add_stop_words = add_stop_words) %>%
   draw_bigram_network()
-
 ```
