@@ -1,9 +1,10 @@
 Package: moranajp
 Title: Morphological Analysis for Japanese
-Version: 0.9.6
+Version: 0.9.6.9000
 Authors@R: 
     person("Toshikazu", "Matsumura", , "matutosi@gmail.com", role = c("aut", "cre"))
-Description: Supports morphological analysis for Japanese by using 'MeCab'. 
+Description: Supports morphological analysis for Japanese 
+    by using 'MeCab', 'Sudachi', 'Chamame', or 'Ginza'.
     Can input data.frame and obtain all results of 'MeCab' and row number of 
     original data.frame as a text id. 
 License: MIT + file LICENSE

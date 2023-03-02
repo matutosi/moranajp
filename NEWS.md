@@ -1,10 +1,15 @@
 # moranajp release news
 
-# moranajp 0.9.6
+# moranajp 0.9.6.9000
 
-* Todo
+* Todo in 1.0.0
     * Deprecate `mecab()` and `mecab_all()`
     * Organise and tidy add_id() and related functions
+
+* Todo in 0.9.7
+    * Can use structure analysis and related functions
+
+# moranajp 0.9.6
 
 * 2023-02-28
 * Add `bigram()` and related functions
