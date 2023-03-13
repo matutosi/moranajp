@@ -129,13 +129,13 @@ align_sentence <- function(df,
   need_adjust <- NULL
   str_width <- list()
   df_original <- df
-  for(j in utils::tail(seq_along(ids), -1)){
+  for(j in utils::tail(seq_along(ids), -1)){ # 2:n
     for(i in seq(from = j - 1, to = 1)){
   # print(paste0("j: ", ids[j], ", i: ", ids[i]))  # for debug
       diff <- calc_diff_x_pos(df, s_id, term, x_pos, ids[i], ids[j])
       if( sum(diff) != 0 ){ break }
       if(ids[i] == ids[1]){  # no common word: need_adjust
-  # print("no match")  # for debug
+print("no match")  # for debug
         need_adjust <- c(need_adjust, ids[j])
         last_x  <- max(dplyr::filter(df_original, .data[[s_id]] == ids[j-1])[[x_pos]])
         first_x <- min(dplyr::filter(df_original, .data[[s_id]] == ids[j  ])[[x_pos]])

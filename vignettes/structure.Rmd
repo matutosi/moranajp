@@ -23,26 +23,51 @@ knitr::opts_chunk$set(
 library(moranajp)
 library(magrittr)
 library(dplyr)
+library(ggplot2)
 library(stringi)
 library(grid)
+
+df <- 
+  neko_sudachi_c %>%
+  unescape_utf() %>%
+  add_group(col = "表層形", brk = "EOS", grp = "sentence") %>%
+  dplyr::filter(sentence > 9) %>%
+  dplyr::filter(sentence < 15) %>%
+  clean_up() %>%
+  delete_parenthesis() %>%
+  dplyr::select(sentence, 原形) %>%
+  dplyr::mutate(x = stringr::str_length(原形)) %>%
+  dplyr::mutate(x = purrr::accumulate(x, `+`)) %>%
+  magrittr::set_colnames(c("sentence", "term", "x"))
+
+df_ali <- 
+  align_sentence(df)
+
+df_ali %>%
+  ggplot(aes(x, .data[["sentence"]], label = .data[["term"]])) +
+  geom_text() +
+  scale_y_reverse() +
+  theme_bw()
 
 review <- 
   review_sudachi_c %>%
   unescape_utf() %>%
   dplyr::filter(.data[["text_id"]] < 20) %>%
   clean_up() %>%
-  # 
   delete_parenthesis() %>%
-  align_sentence(s_id = "text_id")
+  dplyr::select(text_id, 原形) %>%
+  dplyr::mutate(x = stringr::str_length(原形)) %>%
+  dplyr::mutate(x = purrr::accumulate(x, `+`)) %>%
+  align_sentence(s_id = "text_id", term = "原形")
 
 review %>%
-  ggplot(aes(x, .data[[s_id]], label = term)) + 
+  ggplot(aes(x, .data[["text_id"]], label = .data[["表層形"]])) + 
   geom_text() + 
   theme_bw()
 ```
 
 ```{r, eval = FALSE}
-review  %>%
+review %>%
   #   dplyr::filter(text_id < 5) %>%
   dplyr::select(term, x) %>%
   dplyr::group_by(term, x) %>%
