@@ -16,7 +16,7 @@ add_text_id_df(df, col, brk, end_with_brk = TRUE)
 
 \item{end_with_brk}{A logical.
 TRUE: brk means the end of groups.
-FALSE: brk means the begining of groups.}
+FALSE: brk means the beginning of groups.}
 
 \item{df}{A dataframe.}
 

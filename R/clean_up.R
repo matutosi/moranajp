@@ -5,7 +5,7 @@
 #' @param add_stop_words   A string vector adding into stop words. 
 #'                         When use_common_data is TRUE and add_stop_words are given, 
 #'                         both of them will be used as stop_words.
-#' @param synonym_df       A datarame including synonym word pairs. 
+#' @param synonym_df       A data.frame including synonym word pairs. 
 #'                         The first column: replace from, the second: replace to.
 #' @param synonym_from,synonym_to
 #'                         A string vector. Length of synonym_from and synonym_to 
@@ -13,7 +13,7 @@
 #'                         When synonym_df and synonym pairs (synonym_from and synonym_to)
 #'                         are given, both of them will be used as synonym.
 #' @param add_depend       A logical. Available for ginza
-#' @param ...              Extra arguments to internal fuctions.
+#' @param ...              Extra arguments to internal functions.
 #' @return A dataframe.
 #' @name clean_up
 #' @examples

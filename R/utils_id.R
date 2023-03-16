@@ -6,7 +6,7 @@
 #' @param df             A dataframe.
 #' @param end_with_brk   A logical.
 #'                       TRUE: brk means the end of groups.
-#'                       FALSE: brk means the begining of groups.
+#'                       FALSE: brk means the beginning of groups.
 #' 
 #' @return  id_with_break() returns id vector, add_id_df() returns dataframe.
 #' @examples

@@ -39,13 +39,13 @@ bigram_network_plot(
 
 \item{draw}{A logical.}
 
-\item{...}{Extra arguments to internal fuctions.}
+\item{...}{Extra arguments to internal functions.}
 
 \item{group}{A string to specify sentence.}
 
 \item{depend}{A logical.}
 
-\item{term_depend}{A string of dependnt terms column to use bigram.}
+\item{term_depend}{A string of dependent terms column to use bigram.}
 
 \item{bigram}{A result of bigram().}
 
@@ -62,7 +62,7 @@ Can be got using word_freq().}
 
 \item{font_family}{A string.}
 
-\item{arrow_col, circle_col}{A string to specicy arrow and circle color
+\item{arrow_col, circle_col}{A string to specify arrow and circle color
 in bigram network.}
 
 \item{x_limits, y_limits}{A Pair of numeric to specify range.}
@@ -91,17 +91,6 @@ neko_mecab <-
 bigram_neko <- 
   neko_mecab \%>\%
   draw_bigram_network()
-
-data(neko_ginza)
-neko_ginza <- 
-  neko_ginza \%>\%
-  unescape_utf() \%>\%
-  add_sentence_no() \%>\%
-  clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
-
-bigram_neko_ginza_dep <- 
-  neko_ginza \%>\%
-  bigram(depend = TRUE)
 
 add_stop_words <- 
   c("\\\\u3042\\\\u308b", "\\\\u3059\\\\u308b", "\\\\u3066\\\\u308b", 

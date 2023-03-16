@@ -2,7 +2,7 @@
 % Please edit documentation in R/structure.R
 \name{position_sentence}
 \alias{position_sentence}
-\title{Find relateve position of a common word in a sentence}
+\title{Find relative position of a common word in a sentence}
 \usage{
 position_sentence(x, y)
 }

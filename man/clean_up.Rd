@@ -38,7 +38,7 @@ term_pos_1(df)
 
 \item{add_depend}{A logical. Available for ginza}
 
-\item{...}{Extra arguments to internal fuctions.}
+\item{...}{Extra arguments to internal functions.}
 
 \item{use_common_data}{A logical. TRUE: use data(stop_words).}
 
@@ -46,7 +46,7 @@ term_pos_1(df)
 When use_common_data is TRUE and add_stop_words are given,
 both of them will be used as stop_words.}
 
-\item{synonym_df}{A datarame including synonym word pairs.
+\item{synonym_df}{A data.frame including synonym word pairs.
 The first column: replace from, the second: replace to.}
 
 \item{synonym_from, synonym_to}{A string vector. Length of synonym_from and synonym_to

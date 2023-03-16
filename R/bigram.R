@@ -7,7 +7,7 @@
 #' @param draw         A logical.
 #' @param rand_seed    A numeric.
 #' @param threshold    A numeric used as threshold for frequency of bigram.
-#' @param term_depend  A string of dependnt terms column to use bigram.
+#' @param term_depend  A string of dependent terms column to use bigram.
 #' @param depend       A logical.
 #' @param freq         A numeric of word frequency in bigram_network.
 #'                     Can be got using word_freq().
@@ -15,12 +15,12 @@
 #'                     A numeric.
 #' @param font_family  A string. 
 #' @param arrow_col,circle_col
-#'                     A string to specicy arrow and circle color 
+#'                     A string to specify arrow and circle color 
 #'                     in bigram network.
 #' @param x_limits,y_limits
 #'                     A Pair of numeric to specify range.
 #' @param no_scale     A logical. FALSE: Not draw x and y axis.
-#' @param ...          Extra arguments to internal fuctions.
+#' @param ...          Extra arguments to internal functions.
 #' @return  A list including df (input), bigram, freq (frequency) and 
 #'          gg (ggplot2 object of bigram network plot).
 #' @examples
@@ -84,7 +84,7 @@ bigram <- function(df, group = "sentence",
   big <- 
     df %>%
     dplyr::group_by(.data[[group]]) %>%
-  # according to arrow direction in ggplot: "word_2-word_1"
+  # according to arrow direction in ggplot2: "word_2-word_1"
     dplyr::transmute(.data[[group]], 
                      {{word_2}} := .data[[term]], 
                      {{word_1}} := dplyr::lag(.data[[term]])) %>%

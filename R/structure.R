@@ -1,4 +1,4 @@
-#' Find relateve position of a common word in a sentence
+#' Find relative position of a common word in a sentence
 #'
 #' Helper function for mark()
 #' @param   x,y  A string vector
@@ -23,7 +23,7 @@ position_sentence <- function(x, y){
   return(0)
 }
 
-#' Find relateve position of a common word in a paragraph
+#' Find relative position of a common word in a paragraph
 #' 
 #' @inheritParams  align_sentence
 #' @param   word   A string
@@ -157,6 +157,48 @@ print("no match")  # for debug
   return(df)
 }
 
+#' @export
+align_sentence2 <- function(df, 
+                           s_id = "sentence",
+                           term = "term",
+                           x_pos = "x"){
+  # s_id = "sentence"; term = "term"; x_pos = "x"  # for debug
+  ids <- unique(df[[s_id]])
+  #   need_adjust <- NULL
+  #   str_width <- list()
+  df_original <- df
+  for(j in utils::tail(seq_along(ids), -1)){ # 2:n
+    for(i in seq(from = j - 1, to = 1)){
+  # print(paste0("j: ", ids[j], ", i: ", ids[i]))  # for debug
+      diff <- calc_diff_x_pos(df, s_id, term, x_pos, ids[i], ids[j])
+      if( sum(diff) != 0 ){ break }
+      if(ids[i] == ids[1]){  # no common word: need_adjust
+  # print("no match")  # for debug
+        diff_correct <- 
+          max(dplyr::filter(df_original, .data[[s_id]] == ids[j-1])[[x_pos]]) -
+          min(dplyr::filter(df_original, .data[[s_id]] == ids[j  ])[[x_pos]])
+        diff_present <- 
+          max(dplyr::filter(df, .data[[s_id]] == ids[j-1])[[x_pos]]) -
+          min(dplyr::filter(df, .data[[s_id]] == ids[j  ])[[x_pos]])
+        diff <- diff_present - diff_correct
+      }
+    }
+    df_aligned <- 
+      df %>%
+      dplyr::filter(.data[[s_id]] == ids[j]) %>%
+      dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
+    df <- 
+      df %>%
+      dplyr::filter(.data[[s_id]] != ids[j]) %>%
+      dplyr::bind_rows(df_aligned)
+  }
+  #   if( length(need_adjust) ){
+  #     df <- adjust_sentence(df, s_id, term, x_pos, need_adjust, str_width)
+  #   }
+  return(df)
+}
+
+
 #' Adjust x position of sentences without common term
 #' 
 #' @inheritParams  align_sentence
@@ -192,7 +234,7 @@ adjust_sentence <- function(df,
 }
 
 
-#' Calculate difference of x_position of commom word between two sentences
+#' Calculate difference of x_position of common word between two sentences
 #' 
 #' @inheritParams  align_sentence
 #' @param    i,j   A integer to specify sentence number

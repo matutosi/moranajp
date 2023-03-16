@@ -2,7 +2,7 @@
 % Please edit documentation in R/structure.R
 \name{calc_diff_x_pos}
 \alias{calc_diff_x_pos}
-\title{Calculate difference of x_position of commom word between two sentences}
+\title{Calculate difference of x_position of common word between two sentences}
 \usage{
 calc_diff_x_pos(df, s_id, term, x_pos, i, j)
 }
@@ -19,7 +19,7 @@ calc_diff_x_pos(df, s_id, term, x_pos, i, j)
 A numeric
 }
 \description{
-Calculate difference of x_position of commom word between two sentences
+Calculate difference of x_position of common word between two sentences
 }
 \examples{
 s1 <- letters[1:4]

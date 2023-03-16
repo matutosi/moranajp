@@ -2,7 +2,7 @@
 % Please edit documentation in R/structure.R
 \name{position_paragraph}
 \alias{position_paragraph}
-\title{Find relateve position of a common word in a paragraph}
+\title{Find relative position of a common word in a paragraph}
 \usage{
 position_paragraph(df, s_id, word)
 }
@@ -14,5 +14,5 @@ position_paragraph(df, s_id, word)
 \item{word}{A string}
 }
 \description{
-Find relateve position of a common word in a paragraph
+Find relative position of a common word in a paragraph
 }
