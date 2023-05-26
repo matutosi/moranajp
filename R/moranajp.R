@@ -136,11 +136,11 @@ remove_linebreaks <- function(tbl, text_col){
   }
   tbl %>%
     dplyr::mutate(`:=`({{text_col}},
-      stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) %>%
+      stringr::str_remove_all(.data[[text_col]], "\\r\\n"))) %>%
     dplyr::mutate(`:=`({{text_col}},
-      stringr::str_replace_all(.data[[text_col]], "\\n", ""))) %>%
+      stringr::str_remove_all(.data[[text_col]], "\\n"))) %>%
     dplyr::mutate(`:=`({{text_col}},
-      stringr::str_replace_all(.data[[text_col]], '&|\\||<|>|"', "")))
+      stringr::str_remove_all(.data[[text_col]], '&|\\||<|>|"')))
 }
 
 #' @rdname moranajp_all

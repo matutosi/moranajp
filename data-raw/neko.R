@@ -12,8 +12,8 @@ neko <-
   .[5:13] %>%
   tibble::tibble(text=.) %>%
   dplyr::filter(text!="") %>%
-  dplyr::mutate(text=stringr::str_replace_all(text, "　| |\\r", "")) %>%
-  dplyr::mutate(text=stringr::str_replace_all(text, "（[^（）]*）", "")) %>%
+  dplyr::mutate(text=stringr::str_remove_all(text, "　| |\\r")) %>%
+  dplyr::mutate(text=stringr::str_remove_all(text, "（[^（）]*）")) %>%
   escape_utf()
 
 usethis::use_data(neko, overwrite = TRUE)
