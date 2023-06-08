@@ -91,6 +91,7 @@ delete_parenthesis <- function(df){
 #' @param  term,x_pos A String to specify term and x_position
 #' @return  A dataframe
 #' @examples
+#' \donttest{
 #' library(magrittr)
 #' library(dplyr)
 #' library(purrr)
@@ -118,6 +119,7 @@ delete_parenthesis <- function(df){
 #'   ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
 #'     ggplot2::geom_text() + 
 #'     ggplot2::theme_bw()
+#' }
 #' 
 #' @export
 align_sentence <- function(df, 

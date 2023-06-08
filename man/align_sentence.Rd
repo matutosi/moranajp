@@ -20,6 +20,7 @@ A dataframe
 Align x_position of words according to common words between two sentences
 }
 \examples{
+\donttest{
 library(magrittr)
 library(dplyr)
 library(purrr)
@@ -47,5 +48,6 @@ df \%>\%
   ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
     ggplot2::geom_text() + 
     ggplot2::theme_bw()
+}
 
 }

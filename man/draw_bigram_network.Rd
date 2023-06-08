@@ -3,6 +3,7 @@
 \name{draw_bigram_network}
 \alias{draw_bigram_network}
 \alias{bigram}
+\alias{trigram}
 \alias{bigram_depend}
 \alias{bigram_network}
 \alias{word_freq}
@@ -12,6 +13,8 @@
 draw_bigram_network(df, draw = TRUE, ...)
 
 bigram(df, group = "sentence", depend = FALSE, term_depend = NULL, ...)
+
+trigram(df, group = "sentence")
 
 bigram_depend(df, group = "sentence")
 
