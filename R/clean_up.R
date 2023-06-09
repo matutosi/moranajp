@@ -184,7 +184,6 @@ term_pos_1 <- function(df){
 #' 
 #' @name combine_words
 #' @param df     A dataframe including result of morphological analysis.
-#' @param text   A text. Colnames for morphological analysis.
 #' @param combi  A string (combi_words()) or string vector (combine_words()) to combine words.
 #' @param sep    A string of separator of words
 #' 
@@ -198,13 +197,14 @@ term_pos_1 <- function(df){
 #' 
 #' df <- unescape_utf(review_chamame) %>% head(20)
 #' combi <- c("生物-多様", "農地-は", "農産-物", "生産-する")
-#' combine_words(df, "原形", combi)
+#' combine_words(df, combi)
 #' 
 #' @export
-combine_words <- function(df, text = "text_col", combi, sep = "-"){
+combine_words <- function(df, combi, sep = "-"){
+  term <- term_lemma(df)
   for(com in combi){
-    combined <- combi_words(df[[text]], combi = com, sep = sep)
-    df[[text]] <- combined
+    combined <- combi_words(df[[term]], combi = com, sep = sep)
+    df[[term]] <- combined
     df <- na.omit(df)
   }
   return(df)
