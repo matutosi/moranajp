@@ -117,14 +117,14 @@ trigram <- function(df, group = "sentence"){
   term <- term_lemma(df)
   word_1 <- "word_1"
   word_2 <- "word_2"
-  word_2 <- "word_3"
+  word_3 <- "word_3"
   freq <- "freq"
   big <- 
     df %>%
     dplyr::group_by(.data[[group]]) %>%
     dplyr::transmute(.data[[group]], 
                      {{word_3}} := .data[[term]], 
-                     {{word_2}} := dplyr::lag(.data[[term]], n = 1) %>%
+                     {{word_2}} := dplyr::lag(.data[[term]], n = 1),
                      {{word_1}} := dplyr::lag(.data[[term]], n = 2)) %>%
     dplyr::ungroup() %>%
     stats::na.omit()
