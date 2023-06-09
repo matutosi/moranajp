@@ -179,3 +179,43 @@ term_pos_1 <- function(df){
                   unescape_utf("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1"))
   return(pos_1)
 }
+
+#' Combine words after morphological analysis
+#' 
+#' @name combine_words
+#' @param df     A dataframe including result of morphological analysis.
+#' @param text   A text. Colnames for morphological analysis.
+#' @param combi  A string (combi_words()) or string vector (combine_words()) to combine words.
+#' @param sep    A string of separator of words
+#' 
+#' @examples
+#' library(tidyverse)
+#' x <- letters[1:10]
+#' combi <- c("b-c")
+#' combi_words(x, combi)
+#' expected <- c("a", "bc", NA, "d", "e", "f", "g", "h", "i", "j")
+#' testthat::expect_equal(combi_words(x, combi), expected)
+#' 
+#' df <- unescape_utf(review_chamame) %>% head(20)
+#' combi <- c("生物-多様", "農地-は", "農産-物", "生産-する")
+#' combine_words(df, "原形", combi)
+#' 
+#' @export
+combine_words <- function(df, text = "text_col", combi, sep = "-"){
+  for(com in combi){
+    combined <- combi_words(df[[text]], combi = com, sep = sep)
+    df[[text]] <- combined
+    df <- na.omit(df)
+  }
+  return(df)
+}
+
+#' @rdname combine_words
+#' @export
+combi_words <- function(x, combi, sep = "-"){
+  big <- str_c(x, sep, dplyr::lead(x, default = ""))
+  index <- seq(big)[big == combi]
+  x[index] <- c(stringr::str_remove(combi, sep))
+  x[index + 1] <- NA
+  return(x)
+}
