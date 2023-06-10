@@ -215,7 +215,7 @@ combine_words <- function(df, combi, sep = "-"){
 #' @rdname combine_words
 #' @export
 combi_words <- function(x, combi, sep = "-"){
-  big <- str_c(x, sep, dplyr::lead(x, default = ""))
+  big <- stringr::str_c(x, sep, dplyr::lead(x, default = ""))
   index <- seq(big)[big == combi]
   x[index] <- c(stringr::str_remove(combi, sep))
   x[index + 1] <- NA
