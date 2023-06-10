@@ -5,14 +5,12 @@
 \alias{combi_words}
 \title{Combine words after morphological analysis}
 \usage{
-combine_words(df, text = "text_col", combi, sep = "-")
+combine_words(df, combi, sep = "-")
 
 combi_words(x, combi, sep = "-")
 }
 \arguments{
 \item{df}{A dataframe including result of morphological analysis.}
-
-\item{text}{A text. Colnames for morphological analysis.}
 
 \item{combi}{A string (combi_words()) or string vector (combine_words()) to combine words.}
 
@@ -30,7 +28,9 @@ expected <- c("a", "bc", NA, "d", "e", "f", "g", "h", "i", "j")
 testthat::expect_equal(combi_words(x, combi), expected)
 
 df <- unescape_utf(review_chamame) \%>\% head(20)
-combi <- c("生物-多様", "農地-は", "農産-物", "生産-する")
-combine_words(df, "原形", combi)
+combi <- unescape_utf(
+           c("\\\\u751f\\\\u7269-\\\\u591a\\\\u69d8", "\\\\u8fb2\\\\u5730-\\\\u306f"       ,
+             "\\\\u8fb2\\\\u7523-\\\\u7269"       , "\\\\u751f\\\\u7523-\\\\u3059\\\\u308b"))
+combine_words(df, combi)
 
 }

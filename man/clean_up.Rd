@@ -21,9 +21,9 @@ delete_stop_words(df, use_common_data = TRUE, add_stop_words = NULL, ...)
 
 replace_words(
   df,
-  synonym_df = NULL,
-  synonym_from = NULL,
-  synonym_to = NULL,
+  synonym_df = tibble::tibble(),
+  synonym_from = "",
+  synonym_to = "",
   ...
 )
 
