@@ -134,12 +134,12 @@ delete_stop_words <- function(df,
 #' @rdname clean_up
 #' @export
 replace_words <- function(df, 
-                          synonym_df = NULL,
-                          synonym_from = NULL,
-                          synonym_to = NULL,
+                          synonym_df = tibble::tibble(),
+                          synonym_from = "",
+                          synonym_to = "",
                           ...){ # `...' will be omitted
-  if(is.null(synonym_df) & is.null(synonym_from) & is.null(synonym_to))
-      return(df)
+  #   if(is.null(synonym_df) & synonym_from == "" & synonym_to   == "" ){ return(df) }
+  if(nrow(synonym_df) == 0 & synonym_from == "" & synonym_to   == "" ){ return(df) }
   term <- term_lemma(df)
   rep_words        <- synonym_to
   names(rep_words) <- synonym_from
@@ -196,7 +196,9 @@ term_pos_1 <- function(df){
 #' testthat::expect_equal(combi_words(x, combi), expected)
 #' 
 #' df <- unescape_utf(review_chamame) %>% head(20)
-#' combi <- c("生物-多様", "農地-は", "農産-物", "生産-する")
+#' combi <- unescape_utf(
+#'            c("\\u751f\\u7269-\\u591a\\u69d8", "\\u8fb2\\u5730-\\u306f"       ,
+#'              "\\u8fb2\\u7523-\\u7269"       , "\\u751f\\u7523-\\u3059\\u308b"))
 #' combine_words(df, combi)
 #' 
 #' @export
@@ -219,3 +221,12 @@ combi_words <- function(x, combi, sep = "-"){
   x[index + 1] <- NA
   return(x)
 }
+  # library(tidyverse)
+  # df <- unescape_utf(review_chamame) %>% head(20)
+  # combine_words(df, NULL)
+  # combine_words(df, "")
+  # delete_stop_words(df, FALSE, "")
+  # delete_stop_words(df, FALSE, NULL)
+  # replace_words(df, NULL)
+  # replace_words(df, "")
+  # shiny::runApp("d:/matu/work/todo/textmining/R")
