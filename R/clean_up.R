@@ -147,6 +147,8 @@ replace_words <- function(df,
     rep_words        <- c(synonym_to,   synonym_df[[2]]) # 2: TO
     names(rep_words) <- c(synonym_from, synonym_df[[1]]) # 1: FROM
   }
+  rep_words <- rep_words[names(rep_words) != ""] # skip from == ""
+  if(length(rep_words) == 0){ return(df) }
   df <- 
     df %>%
     dplyr::mutate(`:=`({{term}}, stringr::str_replace_all(.data[[term]], rep_words)))
