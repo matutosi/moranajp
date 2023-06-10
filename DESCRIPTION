@@ -1,6 +1,6 @@
 Package: moranajp
 Title: Morphological Analysis for Japanese
-Version: 0.9.6.9100
+Version: 0.9.6.9110
 Authors@R: 
     person("Toshikazu", "Matsumura", , "matutosi@gmail.com", role = c("aut", "cre"))
 Description: Supports morphological analysis for Japanese 
