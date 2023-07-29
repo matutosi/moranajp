@@ -206,6 +206,10 @@ term_pos_1 <- function(df){
 #' @export
 combine_words <- function(df, combi, sep = "-"){
   term <- term_lemma(df)
+  df <- # avoid all NA cols
+    df %>%
+    dplyr::mutate_if(is.logical, as.character) %>%
+    dplyr::mutate_if(is.character, function(x){ tidyr::replace_na(x, "") })
   for(com in combi){
     combined <- combi_words(df[[term]], combi = com, sep = sep)
     df[[term]] <- combined
