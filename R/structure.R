@@ -105,7 +105,8 @@ delete_parenthesis <- function(df){
 #' s_id <- "sentence"
 #' term <- map2(list(letters), s_order, `[`)
 #' df <- tibble::tibble(
-#'         {{s_id}} := rep(seq_along(term), purrr::map_int(term, length)),
+#'         {{s_id}} := rep(seq_along(term), 
+#'         purrr::map_int(term, length)),
 #'         term = unlist(term),
 #'         x = seq_along(term))
 #'   # show dataframe
@@ -114,7 +115,8 @@ delete_parenthesis <- function(df){
 #'   # plot
 #' df %>%
 #'   align_sentence() %>%
-#'   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) %>%
+#'   dplyr::mutate(`:=`({{s_id}}, 
+#'                 .data[[s_id]] + max(.data[[s_id]]))) %>%
 #'   dplyr::bind_rows(df) %>%
 #'   ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
 #'     ggplot2::geom_text() + 
@@ -128,46 +130,6 @@ align_sentence <- function(df,
                            x_pos = "x"){
   # s_id = "sentence"; term = "term"; x_pos = "x"  # for debug
   ids <- unique(df[[s_id]])
-  need_adjust <- NULL
-  str_width <- list()
-  df_original <- df
-  for(j in utils::tail(seq_along(ids), -1)){ # 2:n
-    for(i in seq(from = j - 1, to = 1)){
-  # print(paste0("j: ", ids[j], ", i: ", ids[i]))  # for debug
-      diff <- calc_diff_x_pos(df, s_id, term, x_pos, ids[i], ids[j])
-      if( sum(diff) != 0 ){ break }
-      if(ids[i] == ids[1]){  # no common word: need_adjust
-print("no match")  # for debug
-        need_adjust <- c(need_adjust, ids[j])
-        last_x  <- max(dplyr::filter(df_original, .data[[s_id]] == ids[j-1])[[x_pos]])
-        first_x <- min(dplyr::filter(df_original, .data[[s_id]] == ids[j  ])[[x_pos]])
-        str_width[[ ids[j] ]] <- first_x - last_x
-      }
-    }
-    df_aligned <- 
-      df %>%
-      dplyr::filter(.data[[s_id]] == ids[j]) %>%
-      dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
-    df <- 
-      df %>%
-      dplyr::filter(.data[[s_id]] != ids[j]) %>%
-      dplyr::bind_rows(df_aligned)
-  }
-  if( length(need_adjust) ){
-    df <- adjust_sentence(df, s_id, term, x_pos, need_adjust, str_width)
-  }
-  return(df)
-}
-
-#' @export
-align_sentence2 <- function(df, 
-                           s_id = "sentence",
-                           term = "term",
-                           x_pos = "x"){
-  # s_id = "sentence"; term = "term"; x_pos = "x"  # for debug
-  ids <- unique(df[[s_id]])
-  #   need_adjust <- NULL
-  #   str_width <- list()
   df_original <- df
   for(j in utils::tail(seq_along(ids), -1)){ # 2:n
     for(i in seq(from = j - 1, to = 1)){
@@ -193,44 +155,6 @@ align_sentence2 <- function(df,
       df %>%
       dplyr::filter(.data[[s_id]] != ids[j]) %>%
       dplyr::bind_rows(df_aligned)
-  }
-  #   if( length(need_adjust) ){
-  #     df <- adjust_sentence(df, s_id, term, x_pos, need_adjust, str_width)
-  #   }
-  return(df)
-}
-
-
-#' Adjust x position of sentences without common term
-#' 
-#' @inheritParams  align_sentence
-#' @param    need_adjust   A integer or vector to specify that need to adjust
-#' @param    str_width     A integer or vector to adjust x position
-#' @return  A dataframe
-#' 
-#' @export
-adjust_sentence <- function(df, 
-                            s_id = "sentence",
-                            term = "term",
-                            x_pos = "x", 
-                            need_adjust, 
-                            str_width
-                            ){
-  # df <- review_sudachi_c; s_id = "sentence"; term = "term"; x_pos = "x"  # for debug
-  ids <- unique(df[[s_id]])
-  for(j in need_adjust){
-    i <- ids[match(j, ids) - 1]
-    former_x <- max(dplyr::filter(df, .data[[s_id]] == i)[[x_pos]])
-    latter_x <- min(dplyr::filter(df, .data[[s_id]] == j)[[x_pos]])
-    diff <- former_x - latter_x + str_width[[j]]
-    df_adjusted <- 
-      df %>%
-      dplyr::filter(.data[[s_id]] >= j) %>%
-      dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
-    df <- 
-      df %>%
-      dplyr::filter(.data[[s_id]] < j) %>%
-      dplyr::bind_rows(df_adjusted)
   }
   return(df)
 }
