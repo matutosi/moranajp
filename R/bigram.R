@@ -173,8 +173,9 @@ bigram_depend <- function(df, group = "sentence"){
 bigram_network <- function(bigram, rand_seed = 12, threshold = 100, ...){  # `...' will be omitted
   set.seed(rand_seed)
   freq_thresh <- dplyr::slice(bigram, threshold)[["freq"]]
+  if(length(freq_thresh) == 0){ freq_thresh <- 1 }
   bigram %>%
-    dplyr::filter(.data[["freq"]] > freq_thresh) %>%
+    dplyr::filter(.data[["freq"]] >= freq_thresh) %>%
     igraph::graph_from_data_frame()
 }
 
