@@ -34,7 +34,8 @@ s_order <- list(s1, s2, s3, s4)
 s_id <- "sentence"
 term <- map2(list(letters), s_order, `[`)
 df <- tibble::tibble(
-        {{s_id}} := rep(seq_along(term), purrr::map_int(term, length)),
+        {{s_id}} := rep(seq_along(term), 
+        purrr::map_int(term, length)),
         term = unlist(term),
         x = seq_along(term))
   # show dataframe
@@ -43,7 +44,8 @@ align_sentence(df)
   # plot
 df \%>\%
   align_sentence() \%>\%
-  dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) \%>\%
+  dplyr::mutate(`:=`({{s_id}}, 
+                .data[[s_id]] + max(.data[[s_id]]))) \%>\%
   dplyr::bind_rows(df) \%>\%
   ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
     ggplot2::geom_text() + 
