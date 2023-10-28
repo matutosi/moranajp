@@ -187,7 +187,8 @@ bigram_network_plot <- function(big_net, freq,
     ggraph::geom_node_point(color = circle_col, 
                             # default (5) means 5 * 0.2 = 1
                             size  = freq * circle_size * 0.2) +  
-    ggraph::geom_node_text(ggplot2::aes(label = .data[["name"]]), 
+  #     ggraph::geom_node_text(ggplot2::aes(label = .data[["name"]]), 
+    ggraph::geom_node_text(ggplot2::aes(label = iconv(.data[["name"]], from = "UTF-8", to = "ASCII//TRANSLIT")), 
                            vjust  = 1, 
                            hjust  = 1, 
                            size   = text_size, 
