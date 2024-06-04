@@ -122,32 +122,32 @@ trigram <- function(df, group = "sentence"){
   word_3 <- "word_3"
   freq <- "freq"
   big <- 
-    df %>%
-    dplyr::group_by(.data[[group]]) %>%
+    df |>
+    dplyr::group_by(.data[[group]]) |>
     dplyr::transmute(.data[[group]], 
                      {{word_3}} := .data[[term]], 
                      {{word_2}} := dplyr::lag(.data[[term]], n = 1),
-                     {{word_1}} := dplyr::lag(.data[[term]], n = 2)) %>%
-    dplyr::ungroup() %>%
+                     {{word_1}} := dplyr::lag(.data[[term]], n = 2)) |>
+    dplyr::ungroup() |>
     stats::na.omit()
   big <- 
-    big %>%
-    dplyr::filter(! .data[[word_1]] %in% c("EOS", "*")) %>%
-    dplyr::filter(! .data[[word_2]] %in% c("EOS", "*")) %>%
-    dplyr::filter(! .data[[word_3]] %in% c("EOS", "*")) %>%
-  #     dplyr::filter(.data[[word_1]] != "EOS|*") %>%
-  #     dplyr::filter(.data[[word_1]] != "*") %>%
+    big |>
+    dplyr::filter(! .data[[word_1]] %in% c("EOS", "*")) |>
+    dplyr::filter(! .data[[word_2]] %in% c("EOS", "*")) |>
+    dplyr::filter(! .data[[word_3]] %in% c("EOS", "*")) |>
+  #     dplyr::filter(.data[[word_1]] != "EOS|*") |>
+  #     dplyr::filter(.data[[word_1]] != "*") |>
     dplyr::distinct()
-  n_group <- big[[group]] %>% unique() %>% length()
+  n_group <- big[[group]] |> unique() |> length()
   if(n_group > 1){  
-    big %>%
-      dplyr::group_by(.data[[word_1]], .data[[word_2]], .data[[word_3]]) %>%
-      dplyr::tally(name = {{freq}}) %>%
-      dplyr::ungroup() %>%
+    big |>
+      dplyr::group_by(.data[[word_1]], .data[[word_2]], .data[[word_3]]) |>
+      dplyr::tally(name = {{freq}}) |>
+      dplyr::ungroup() |>
       dplyr::arrange(dplyr::desc(.data[[freq]]))
   }else{
-    big %>%
-      dplyr::tally(name = {{freq}}) %>%
+    big |>
+      dplyr::tally(name = {{freq}}) |>
       dplyr::arrange(dplyr::desc(.data[[freq]]))
     warn <- paste0("Not used group. " , group, " has only one category.")
     warning(warn)

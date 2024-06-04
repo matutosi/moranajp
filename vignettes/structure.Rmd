@@ -28,22 +28,22 @@ library(stringi)
 library(grid)
 
 df <- 
-  neko_sudachi_c %>%
-  unescape_utf() %>%
-  add_group(col = "表層形", brk = "EOS", grp = "sentence") %>%
-  #   dplyr::filter(sentence > 9) %>%
-  #   dplyr::filter(sentence < 15) %>%
-  clean_up() %>%
-  delete_parenthesis() %>%
-  dplyr::select(sentence, 原形) %>%
-  dplyr::mutate(x = stringr::str_length(原形)) %>%
-  dplyr::mutate(x = purrr::accumulate(x, `+`)) %>%
+  neko_sudachi_c |>
+  unescape_utf() |>
+  add_group(col = "表層形", brk = "EOS", grp = "sentence") |>
+  #   dplyr::filter(sentence > 9) |>
+  #   dplyr::filter(sentence < 15) |>
+  clean_up() |>
+  delete_parenthesis() |>
+  dplyr::select(sentence, 原形) |>
+  dplyr::mutate(x = stringr::str_length(原形)) |>
+  dplyr::mutate(x = purrr::accumulate(x, `+`)) |>
   magrittr::set_colnames(c("sentence", "term", "x"))
 
 df <- 
   align_sentence2(df)
 
-df %>%
+df |>
   ggplot(aes(x, .data[["sentence"]], label = .data[["term"]])) +
   geom_text() +
   scale_y_reverse() +
@@ -54,7 +54,7 @@ df %>%
 df_ali <- 
   align_sentence(df)
 
-df_ali %>%
+df_ali |>
   ggplot(aes(x, .data[["sentence"]], label = .data[["term"]])) +
   geom_text() +
   scale_y_reverse() +

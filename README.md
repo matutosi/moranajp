@@ -50,8 +50,8 @@ bin_dir <- "d:/pf/mecab/bin" # set your environment MeCabをインストール�
 iconv <- "CP932_UTF-8"       # maybe need in Windows Windowsで必要な場合あり
   # 文字化けする場合は，引数 iconv を使ってください．
   # `iconv = "CP932_UTF-8"` or `iconv = "EUC_UTF-8"`
-neko %>%
-  moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) %>%
+neko |>
+  moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) |>
   print(n=30)
 #> [1] "Analaysing by mecab. Please wait."
 #> # A tibble: 2,884 × 11
@@ -92,9 +92,9 @@ neko %>%
 
   # chamame (Do not need install, but use web service)
   # 別途ツールのインストールのなし(Web茶まめを使用)
-neko %>%
-  head(3) %>%
-  moranajp_all(method = "chamame", text_col = "text") %>%
+neko |>
+  head(3) |>
+  moranajp_all(method = "chamame", text_col = "text") |>
   print(n=30)
 #> [1] "Analaysing by chamame. Please wait."
 #> Submitting with ''
@@ -143,14 +143,14 @@ synonym <- unescape_utf(synonym)
 
 data(neko_mecab)
 neko_mecab <- 
-  neko_mecab  %>%
-  unescape_utf() %>%
-  add_sentence_no() %>%
+  neko_mecab  |>
+  unescape_utf() |>
+  add_sentence_no() |>
   clean_up(use_common_data = TRUE, synonym_df = synonym)
 #> Joining with `by = join_by(原形)`
 
 bigram_neko <- 
-  neko_mecab %>%
+  neko_mecab |>
   draw_bigram_network()
 #> Joining with `by = join_by(原形)`
 ```
@@ -162,16 +162,16 @@ bigram_neko <-
 add_stop_words <- 
   c("\\u3042\\u308b", "\\u3059\\u308b", "\\u3066\\u308b", 
     "\\u3044\\u308b","\\u306e", "\\u306a\\u308b", "\\u304a\\u308b", 
-    "\\u3093", "\\u308c\\u308b", "*") %>% 
+    "\\u3093", "\\u308c\\u308b", "*") |> 
    unescape_utf()
 
 data(review_chamame)
 bigram_review <- 
-  review_chamame %>%
-  dplyr::slice(1:2000) %>%
-  unescape_utf() %>%
-  add_sentence_no() %>%
-  clean_up(add_stop_words = add_stop_words) %>%
+  review_chamame |>
+  dplyr::slice(1:2000) |>
+  unescape_utf() |>
+  add_sentence_no() |>
+  clean_up(add_stop_words = add_stop_words) |>
   draw_bigram_network()
 #> Joining with `by = join_by(原形)`
 #> Joining with `by = join_by(原形)`

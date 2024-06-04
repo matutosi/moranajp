@@ -197,7 +197,7 @@ term_pos_1 <- function(df){
 #' expected <- c("a", "bc", NA, "d", "e", "f", "g", "h", "i", "j")
 #' testthat::expect_equal(combi_words(x, combi), expected)
 #' 
-#' df <- unescape_utf(review_chamame) %>% head(20)
+#' df <- unescape_utf(review_chamame) |> head(20)
 #' combi <- unescape_utf(
 #'            c("\\u751f\\u7269-\\u591a\\u69d8", "\\u8fb2\\u5730-\\u306f"       ,
 #'              "\\u8fb2\\u7523-\\u7269"       , "\\u751f\\u7523-\\u3059\\u308b"))
@@ -207,8 +207,8 @@ term_pos_1 <- function(df){
 combine_words <- function(df, combi, sep = "-"){
   term <- term_lemma(df)
   df <- # avoid all NA cols
-    df %>%
-    dplyr::mutate_if(is.logical, as.character) %>%
+    df |>
+    dplyr::mutate_if(is.logical, as.character) |>
     dplyr::mutate_if(is.character, function(x){ tidyr::replace_na(x, "") })
   for(com in combi){
     combined <- combi_words(df[[term]], combi = com, sep = sep)
@@ -228,7 +228,7 @@ combi_words <- function(x, combi, sep = "-"){
   return(x)
 }
   # library(tidyverse)
-  # df <- unescape_utf(review_chamame) %>% head(20)
+  # df <- unescape_utf(review_chamame) |> head(20)
   # combine_words(df, NULL)
   # combine_words(df, "")
   # delete_stop_words(df, FALSE, "")

@@ -25,7 +25,7 @@ testthat::test_that("aling_sentence() work", {
           sentence = rep(seq_along(term), purrr::map_int(term, length)),
           term = unlist(term),
           x = seq_along(term))
-  df_expect <- df %>%
+  df_expect <- df |>
     dplyr::mutate(x = unlist(s_order))
 
   expect_equal(align_sentence(df), df_expect)
