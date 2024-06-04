@@ -399,21 +399,27 @@ web_chamame <- function(text, col_lang = "jp"){
     rvest::html_form(html)[[1]] %>%
     rvest::html_form_set(st = text) %>%
     html_radio_set("out-e" = "html")
-  index <-  sort(decreasing = TRUE, 
-                 c( 3:8,    # "file[]: "            - "suuji: 1"
-                   10:21,   # "dic2: unidic-spoken" - "dic10: ipadic"
-                   22:24,   # "f1: 1"               - "f3: 1"
-                   29:33,   # "f4: 1"               - "f11: 1"
-                   35:46))   # "f13: 1"              - "f24: 1"
-  for(i in index){
-    form$fields[[i]] <- NULL
+  need_index <- 
+    c(1,  # button
+      2,  # textarea
+      5,  # hankaku-zenkaku
+      11, # unidic-spoken
+      25:53, # f1:f28
+      58, # out-e: html
+      62  # submit
+      )
+  del_index <- sort(
+    setdiff(1:62, need_index), 
+    decreasing = TRUE)
+  for (i in del_index) {
+      form$fields[[i]] <- NULL
   }
   resp <- rvest::html_form_submit(form)
   chamame <- 
     rvest::read_html(resp) %>%
     rvest::html_table() %>%
     `[[`(1) %>%
-    dplyr::select(3:8)
+    dplyr::select(3,9:12,4)
   colnames(chamame) <- out_cols_chamame(col_lang = col_lang)
   return(chamame)
 }
