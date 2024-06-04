@@ -24,7 +24,7 @@ An example of synonym word pairs
 }
 \examples{
 data(synonym)
-synonym \%>\%
+synonym |>
   unescape_utf()
 }
 \keyword{datasets}

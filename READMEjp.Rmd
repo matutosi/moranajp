@@ -46,8 +46,8 @@ library(magrittr)
 
 data(neko)
 neko <- 
-  neko %>%
-  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
+  neko |>
+  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) |>
   dplyr::mutate(cols = 1:nrow(.))
 neko  # 『吾輩は猫である』(夏目漱石)の冒頭部分
 

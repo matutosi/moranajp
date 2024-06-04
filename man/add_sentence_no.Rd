@@ -18,9 +18,9 @@ A dataframe
 Wrapper function for add_group() to add sentence id
 }
 \examples{
-review_mecab \%>\%
-  unescape_utf() \%>\%
-  add_sentence_no() \%>\%
+review_mecab |>
+  unescape_utf() |>
+  add_sentence_no() |>
   print(n=200)
 
 }

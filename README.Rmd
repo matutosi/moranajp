@@ -27,8 +27,8 @@ You need install MeCab ( https://taku910.github.io/mecab/ ).
 install.packages("moranajp")
 
   # development
-  # install.packages("devtools")
-devtools::install_github("matutosi/moranajp")
+  # install.packages("remotes")
+remotes::install_github("matutosi/moranajp")
 ```
 
 You can download binary version (zip file). 
@@ -46,8 +46,8 @@ library(magrittr)
 
 data(neko)
 neko <- 
-  neko %>%
-  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) %>%
+  neko |>
+  dplyr::mutate(text = stringi::stri_unescape_unicode(text)) |>
   dplyr::mutate(cols = 1:nrow(.))
 neko  # First part of 'I Am a Cat' by Soseki Natsume
 

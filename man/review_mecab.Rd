@@ -33,7 +33,7 @@ MeCab: https://taku910.github.io/mecab/
 }
 \examples{
 data(review_mecab)
-review_mecab \%>\%
+review_mecab |>
   unescape_utf()
 }
 \keyword{datasets}

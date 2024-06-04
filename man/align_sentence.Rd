@@ -40,10 +40,10 @@ df <- tibble::tibble(
 df
 align_sentence(df)
   # plot
-df \%>\%
-  align_sentence() \%>\%
-  dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) \%>\%
-  dplyr::bind_rows(df) \%>\%
+df |>
+  align_sentence() |>
+  dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) |>
+  dplyr::bind_rows(df) |>
   ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
     ggplot2::geom_text() + 
     ggplot2::theme_bw()

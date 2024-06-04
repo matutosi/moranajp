@@ -21,10 +21,10 @@ Wrapper functions for escape and unescape unicode
 }
 \examples{
 data(review_mecab)
-review_mecab \%>\%
-  print() \%>\%
-  unescape_utf() \%>\%
-  print() \%>\%
+review_mecab |>
+  print() |>
+  unescape_utf() |>
+  print() |>
   escape_utf()
 
 }

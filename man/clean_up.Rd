@@ -67,24 +67,24 @@ data(neko_ginza)
 data(review_sudachi_c)
 data(synonym)
 synonym <- 
-  synonym \%>\% unescape_utf()
+  synonym |> unescape_utf()
 
 neko_mecab <- 
-  neko_mecab \%>\%
-  unescape_utf() \%>\%
+  neko_mecab |>
+  unescape_utf() |>
   print()
 
-neko_mecab \%>\%
+neko_mecab |>
   clean_up(use_common_data = TRUE, synonym_df = synonym)
 
-neko_ginza \%>\%
-  unescape_utf() \%>\%
-  add_sentence_no() \%>\%
+neko_ginza |>
+  unescape_utf() |>
+  add_sentence_no() |>
   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 
-review_sudachi_c \%>\%
-  unescape_utf() \%>\%
-  add_sentence_no() \%>\%
+review_sudachi_c |>
+  unescape_utf() |>
+  add_sentence_no() |>
   clean_up(use_common_data = TRUE, synonym_df = synonym)
 
 }

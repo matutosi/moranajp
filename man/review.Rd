@@ -30,7 +30,7 @@ Full text of review article
 }
 \examples{
 data(review)
-review \%>\%
+review |>
   unescape_utf()
 }
 \keyword{datasets}

@@ -10,7 +10,7 @@ cols_jp <-
     "id"                                  , "\\u8868\\u5c64\\u5f62"               , "\\u539f\\u5f62"                      , # ginza
      "UD\\u54c1\\u8a5e\\u30bf\\u30b0"     , "\\u54c1\\u8a5e\\u30bf\\u30b0"        , "\\u5c5e\\u6027"                      ,
      "\\u4fc2\\u53d7\\u5143"              , "\\u4fc2\\u53d7\\u30bf\\u30b0"        , "\\u4fc2\\u53d7\\u30da\\u30a2"        ,
-     "\\u305d\\u306e\\u4ed6") %>%
+     "\\u305d\\u306e\\u4ed6") |>
   unescape_utf()
 cols_en <- 
   c("form", "pos", "pos_1", "pos_2", "pos_3", "conjugation_type", "conjugation_form", "lemma", "reading", "soud", # mecab
@@ -18,10 +18,10 @@ cols_en <-
     "id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")                             # ginza
 order <- c(10, 99, 99, 99, 99, 12, 13, 11, 2, 99, 99, 99, 1, 3, 9, 4, 5, 6, 7, 8)
 out_cols <- 
-  tibble::tibble(cols_jp, cols_en) %>%
-  dplyr::distinct() %>%
-  dplyr::arrange(cols_jp) %>%
-  dplyr::bind_cols(order = order) %>%
+  tibble::tibble(cols_jp, cols_en) |>
+  dplyr::distinct() |>
+  dplyr::arrange(cols_jp) |>
+  dplyr::bind_cols(order = order) |>
   dplyr::arrange(order, cols_jp)
 
   #    cols_jp     cols_en          order
