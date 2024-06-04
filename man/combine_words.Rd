@@ -27,7 +27,7 @@ combi_words(x, combi)
 expected <- c("a", "bc", NA, "d", "e", "f", "g", "h", "i", "j")
 testthat::expect_equal(combi_words(x, combi), expected)
 
-df <- unescape_utf(review_chamame) \%>\% head(20)
+df <- unescape_utf(review_chamame) |> head(20)
 combi <- unescape_utf(
            c("\\\\u751f\\\\u7269-\\\\u591a\\\\u69d8", "\\\\u8fb2\\\\u5730-\\\\u306f"       ,
              "\\\\u8fb2\\\\u7523-\\\\u7269"       , "\\\\u751f\\\\u7523-\\\\u3059\\\\u308b"))
