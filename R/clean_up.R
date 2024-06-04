@@ -23,32 +23,32 @@
 #' data(review_sudachi_c)
 #' data(synonym)
 #' synonym <- 
-#'   synonym %>% unescape_utf()
+#'   synonym |> unescape_utf()
 #' 
 #' neko_mecab <- 
-#'   neko_mecab %>%
-#'   unescape_utf() %>%
+#'   neko_mecab |>
+#'   unescape_utf() |>
 #'   print()
 #' 
-#' neko_mecab %>%
+#' neko_mecab |>
 #'   clean_up(use_common_data = TRUE, synonym_df = synonym)
 #' 
-#' neko_ginza %>%
-#'   unescape_utf() %>%
-#'   add_sentence_no() %>%
+#' neko_ginza |>
+#'   unescape_utf() |>
+#'   add_sentence_no() |>
 #'   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
 #' 
-#' review_sudachi_c %>%
-#'   unescape_utf() %>%
-#'   add_sentence_no() %>%
+#' review_sudachi_c |>
+#'   unescape_utf() |>
+#'   add_sentence_no() |>
 #'   clean_up(use_common_data = TRUE, synonym_df = synonym)
 #' 
 #' @export
 clean_up <- function(df, add_depend = FALSE, ...){
   df <- 
-    df %>%
-    pos_filter() %>%
-    delete_stop_words(...) %>%
+    df |>
+    pos_filter() |>
+    delete_stop_words(...) |>
     replace_words(...)
   if(add_depend){ df <- add_depend_ginza(df) }
   return(df)
@@ -61,7 +61,7 @@ pos_filter <- function(df){
   pos_1 <- term_pos_1(df)
   filter_pos_0 <- 
     c("\\u540d\\u8a5e",      "\\u52d5\\u8a5e",
-      "\\u5f62\\u5bb9\\u8a5e", "\\u5f62\\u72b6\\u8a5e") %>%
+      "\\u5f62\\u5bb9\\u8a5e", "\\u5f62\\u72b6\\u8a5e") |>
     unescape_utf()
   filter_pos_1 <- 
     c("\\u666e\\u901a\\u540d\\u8a5e",
@@ -72,10 +72,10 @@ pos_filter <- function(df){
       "\\u30b5\\u5909\\u63a5\\u7d9a",
       "\\u5f62\\u5bb9\\u52d5\\u8a5e\\u8a9e\\u5e79",
       "\\u30ca\\u30a4\\u5f62\\u5bb9\\u8a5e\\u8a9e\\u5e79",
-      "\\u526f\\u8a5e\\u53ef\\u80fd") %>%
+      "\\u526f\\u8a5e\\u53ef\\u80fd") |>
       unescape_utf()
-  df %>%
-    dplyr::filter(.data[[pos_0]] %in% filter_pos_0) %>%
+  df |>
+    dplyr::filter(.data[[pos_0]] %in% filter_pos_0) |>
     dplyr::filter(.data[[pos_1]] %in% filter_pos_1)
 }
 
@@ -92,17 +92,17 @@ add_depend_ginza <- function(df){
   if(!s_id %in% colnames(df)) df <- add_sentence_no(df, {{s_id}})
 
   df <- 
-    df %>%
+    df |>
     dplyr::mutate(
         "word_no" := .data[["id"]], 
         "id" := stringr::str_c(.data[[s_id]], "_", .data[["word_no"]]))
   depend <- 
-    df %>%
+    df |>
     dplyr::select({{h_id}} := .data[["id"]], {{t_dep}} := .data[[term]])
   df <- 
-    df %>%
+    df |>
     dplyr::mutate({{h_id}} := 
-        stringr::str_c(.data[[s_id]], "_", .data[[head]])) %>%
+        stringr::str_c(.data[[s_id]], "_", .data[[head]])) |>
     dplyr::left_join(depend)
   return(df)
 }
@@ -117,15 +117,15 @@ delete_stop_words <- function(df,
   stop_words <- 
     if(use_common_data){
         utils::data(stop_words, envir = environment())
-        stop_words %>%
-          purrr::map_dfr(unescape_utf) %>%
+        stop_words |>
+          purrr::map_dfr(unescape_utf) |>
           magrittr::set_colnames(term)
     } else {
         tibble::tibble()
     }
   stop_words <- 
-      tibble::tibble(add_stop_words) %>%
-          magrittr::set_colnames(term) %>%
+      tibble::tibble(add_stop_words) |>
+          magrittr::set_colnames(term) |>
           dplyr::bind_rows(stop_words)
   df <- dplyr::anti_join(df, stop_words)
   return(df)
@@ -150,7 +150,7 @@ replace_words <- function(df,
   rep_words <- rep_words[names(rep_words) != ""] # skip from == ""
   if(length(rep_words) == 0){ return(df) }
   df <- 
-    df %>%
+    df |>
     dplyr::mutate(`:=`({{term}}, stringr::str_replace_all(.data[[term]], rep_words)))
   return(df)
 }

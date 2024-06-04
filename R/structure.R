@@ -49,15 +49,15 @@ position_paragraph <- function(df, s_id, word){
 #' library(dplyr)
 #' data(review_mecab)
 #' cols <- c("text_id", "\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
-#'           "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62") %>%
+#'           "\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1", "\\u539f\\u5f62") |>
 #'          unescape_utf()
-#' review_sudachi_a %>%
-#'   unescape_utf() %>%
-#'   dplyr::mutate(`:=`(text_id, as.numeric(text_id))) %>%
-#'   dplyr::filter(text_id < 5) %>%
-#'   dplyr::select(dplyr::all_of(cols)) %>%
-#'   print(n=80) %>%
-#'   delete_parenthesis() %>%
+#' review_sudachi_a |>
+#'   unescape_utf() |>
+#'   dplyr::mutate(`:=`(text_id, as.numeric(text_id))) |>
+#'   dplyr::filter(text_id < 5) |>
+#'   dplyr::select(dplyr::all_of(cols)) |>
+#'   print(n=80) |>
+#'   delete_parenthesis() |>
 #'   print(n=80)
 #' 
 #' @export
@@ -67,18 +67,18 @@ delete_parenthesis <- function(df){
   paren <- "parenthesis"
   del <- "delete"
   pos_1 <- term_pos_1(df)
-  df %>%
+  df |>
     dplyr::mutate(`:=`({{paren}}, 
       dplyr::case_when(
         .data[[pos_1]] == pare_begin ~ -1,
         .data[[pos_1]] == pare_end   ~  1,
         TRUE ~ 0
       )
-    )) %>%
+    )) |>
     dplyr::mutate(`:=`({{del}}, 
       purrr::accumulate(.data[[paren]], `+`)
-    )) %>%
-    dplyr::filter(.data[[del]] == 0 & .data[[paren]] == 0) %>%
+    )) |>
+    dplyr::filter(.data[[del]] == 0 & .data[[paren]] == 0) |>
     dplyr::select(-.data[[paren]], -.data[[del]])
 }
 
@@ -113,11 +113,10 @@ delete_parenthesis <- function(df){
 #' df
 #' align_sentence(df)
 #'   # plot
-#' df %>%
-#'   align_sentence() %>%
-#'   dplyr::mutate(`:=`({{s_id}}, 
-#'                 .data[[s_id]] + max(.data[[s_id]]))) %>%
-#'   dplyr::bind_rows(df) %>%
+#' df |>
+#'   align_sentence() |>
+#'   dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + max(.data[[s_id]]))) |>
+#'   dplyr::bind_rows(df) |>
 #'   ggplot2::ggplot(aes(x, .data[[s_id]], label = term)) + 
 #'     ggplot2::geom_text() + 
 #'     ggplot2::theme_bw()
@@ -148,13 +147,52 @@ align_sentence <- function(df,
       }
     }
     df_aligned <- 
-      df %>%
-      dplyr::filter(.data[[s_id]] == ids[j]) %>%
+      df |>
+      dplyr::filter(.data[[s_id]] == ids[j]) |>
       dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
     df <- 
-      df %>%
-      dplyr::filter(.data[[s_id]] != ids[j]) %>%
+      df |>
+      dplyr::filter(.data[[s_id]] != ids[j]) |>
       dplyr::bind_rows(df_aligned)
+  }
+<<<<<<< HEAD
+=======
+  if( length(need_adjust) ){
+    df <- adjust_sentence(df, s_id, term, x_pos, need_adjust, str_width)
+  }
+  return(df)
+}
+
+#' Adjust x position of sentences without common term
+#' 
+#' @inheritParams  align_sentence
+#' @param    need_adjust   A integer or vector to specify that need to adjust
+#' @param    str_width     A integer or vector to adjust x position
+#' @return  A dataframe
+#' 
+#' @export
+adjust_sentence <- function(df, 
+                            s_id = "sentence",
+                            term = "term",
+                            x_pos = "x", 
+                            need_adjust, 
+                            str_width
+                            ){
+  # df <- review_sudachi_c; s_id = "sentence"; term = "term"; x_pos = "x"  # for debug
+  ids <- unique(df[[s_id]])
+  for(j in need_adjust){
+    i <- ids[match(j, ids) - 1]
+    former_x <- max(dplyr::filter(df, .data[[s_id]] == i)[[x_pos]])
+    latter_x <- min(dplyr::filter(df, .data[[s_id]] == j)[[x_pos]])
+    diff <- former_x - latter_x + str_width[[j]]
+    df_adjusted <- 
+      df |>
+      dplyr::filter(.data[[s_id]] >= j) |>
+      dplyr::mutate(`:=`({{x_pos}}, .data[[x_pos]] + diff))
+    df <- 
+      df |>
+      dplyr::filter(.data[[s_id]] < j) |>
+      dplyr::bind_rows(df_adjusted)
   }
   return(df)
 }
@@ -212,8 +250,8 @@ print(paste0(j, "-", i, ": ", matched_w, diff))
 #' 
 #' @export
 add_word_id <- function(df, s_id, w_id){
-  df %>%
-    dplyr::group_by(.data[[s_id]]) %>%
-    dplyr::mutate(`:=`({{w_id}}, dplyr::row_number())) %>%
+  df |>
+    dplyr::group_by(.data[[s_id]]) |>
+    dplyr::mutate(`:=`({{w_id}}, dplyr::row_number())) |>
     dplyr::ungroup()
 }

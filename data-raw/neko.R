@@ -4,24 +4,24 @@ library(tidyverse)
 devtools::load_all(".")
 
 neko <-
-  rvest::read_html("https://www.konekono-heya.com/books/wagahai1.html") %>%
-  rvest::html_element("body") %>%
-  rvest::html_text2() %>%
-  stringr::str_split("\\r\\n") %>%
-  .[[1]] %>%
-  .[5:13] %>%
-  tibble::tibble(text=.) %>%
-  dplyr::filter(text!="") %>%
-  dplyr::mutate(text=stringr::str_remove_all(text, "　| |\\r")) %>%
-  dplyr::mutate(text=stringr::str_remove_all(text, "（[^（）]*）")) %>%
+  rvest::read_html("https://www.konekono-heya.com/books/wagahai1.html") |>
+  rvest::html_element("body") |>
+  rvest::html_text2() |>
+  stringr::str_split("\\r\\n") |>
+  `[[`(_, 1) |>
+  `[`(_, 5:13) |>
+  tibble::tibble(text=.) |>
+  dplyr::filter(text!="") |>
+  dplyr::mutate(text=stringr::str_replace_all(text, "　| |\\r", "")) |>
+  dplyr::mutate(text=stringr::str_replace_all(text, "（[^（）]*）", "")) |>
   escape_utf()
 
 usethis::use_data(neko, overwrite = TRUE)
 
 gen_morana_data <- function(df, bin_dir, iconv, method){
-  df %>%
-    unescape_utf() %>%
-    moranajp_all(bin_dir = bin_dir, iconv = iconv, method = method) %>%
+  df |>
+    unescape_utf() |>
+    moranajp_all(bin_dir = bin_dir, iconv = iconv, method = method) |>
     escape_utf()
 }
 
@@ -57,14 +57,14 @@ neko_chamame <- gen_morana_data(neko, bin_dir = bin_dir, iconv = iconv, method =
 usethis::use_data(neko_chamame, overwrite = TRUE)
 
 ## for check
-  # tail(neko_mecab    ) %>% unescape_utf()
-  # tail(neko_sudachi_a) %>% unescape_utf()
-  # tail(neko_sudachi_b) %>% unescape_utf()
-  # tail(neko_sudachi_c) %>% unescape_utf()
-  # tail(neko_ginza    ) %>% unescape_utf()
-  # tail(neko_chamame  ) %>% unescape_utf()
+  # tail(neko_mecab    ) |> unescape_utf()
+  # tail(neko_sudachi_a) |> unescape_utf()
+  # tail(neko_sudachi_b) |> unescape_utf()
+  # tail(neko_sudachi_c) |> unescape_utf()
+  # tail(neko_ginza    ) |> unescape_utf()
+  # tail(neko_chamame  ) |> unescape_utf()
   # 
-  # neko_mecab     %>% unescape_utf() %>% print(n=200)
-  # neko_sudachi_a %>% unescape_utf() %>% print(n=200)
-  # neko_ginza     %>% unescape_utf() %>% print(n=200)
-  # neko_chamame   %>% unescape_utf() %>% print(n=200)
+  # neko_mecab     |> unescape_utf() |> print(n=200)
+  # neko_sudachi_a |> unescape_utf() |> print(n=200)
+  # neko_ginza     |> unescape_utf() |> print(n=200)
+  # neko_chamame   |> unescape_utf() |> print(n=200)

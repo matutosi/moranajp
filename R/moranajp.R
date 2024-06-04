@@ -28,27 +28,27 @@
 #'   library(magrittr)
 #'   data(neko)
 #'   neko <-
-#'       neko %>%
+#'       neko |>
 #'       unescape_utf()
 #' 
 #'   # mecab
 #'   bin_dir <- "d:/pf/mecab/bin"
 #'   iconv <- "CP932_UTF-8"
-#'   neko %>%
-#'     moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) %>%
+#'   neko |>
+#'     moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) |>
 #'         print(n=100)
 #' 
 #'   # ginza
-#'   neko %>%
-#'     moranajp_all(text_col = "text", method = "ginza") %>%
+#'   neko |>
+#'     moranajp_all(text_col = "text", method = "ginza") |>
 #'       print(n=100)
 #' 
 #'   # sudachi
 #'   bin_dir <- "d:/pf/sudachi"
 #'   iconv <- "CP932_UTF-8"
-#'   neko %>%
+#'   neko |>
 #'     moranajp_all(text_col = "text", bin_dir = bin_dir, 
-#'                  method = "sudachi_a", iconv = iconv) %>%
+#'                  method = "sudachi_a", iconv = iconv) |>
 #'         print(n=100)
 #' 
 #' }
@@ -56,7 +56,7 @@
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
              text_col = "text", option = "", iconv = "",
              col_lang = "jp"){
-  # text_col = "text"; option = ""; bin_dir = "d:/pf/mecab/bin/"; iconv = "CP932_UTF-8"; method = "mecab"; tbl = review %>% unescape_utf(); col_lang = "jp"
+  # text_col = "text"; option = ""; bin_dir = "d:/pf/mecab/bin/"; iconv = "CP932_UTF-8"; method = "mecab"; tbl = review |> unescape_utf(); col_lang = "jp"
   print(paste0("Analaysing by ", method, ". Please wait."))
   text_id    <- "text_id"
   tmp_group  <- "tmp_group"  # Use temporary
@@ -66,26 +66,26 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
   tbl    <- remove_linebreaks(tbl, text_col)
   if(method == "chamame"){
     tbl <- 
-      tbl %>%
-        make_input(text_col = text_col, iconv = iconv) %>%
+      tbl |>
+        make_input(text_col = text_col, iconv = iconv) |>
         web_chamame(col_lang = col_lang)
   }else{
     tbl <-
-      tbl %>%
+      tbl |>
       make_groups(text_col = text_col, length = 8000,   # if error decrease length
-        tmp_group = tmp_group, str_length = str_length) %>%
-      dplyr::group_split(.data[[tmp_group]]) %>%
-      purrr::map(dplyr::select, dplyr::all_of(text_col)) %>%
+        tmp_group = tmp_group, str_length = str_length) |>
+      dplyr::group_split(.data[[tmp_group]]) |>
+      purrr::map(dplyr::select, dplyr::all_of(text_col)) |>
       purrr::map(moranajp, 
         bin_dir = bin_dir, method = method, 
-        text_col = text_col, option = option, iconv = iconv, col_lang = col_lang) %>%
+        text_col = text_col, option = option, iconv = iconv, col_lang = col_lang) |>
       dplyr::bind_rows()
   }
   tbl <-
-    tbl %>%
-    add_text_id(method = method) %>%
-    remove_brk(method = method) %>%
-    dplyr::left_join(others, by = text_id) %>%
+    tbl |>
+    add_text_id(method = method) |>
+    remove_brk(method = method) |>
+    dplyr::left_join(others, by = text_id) |>
     dplyr::relocate(.data[[text_id]], colnames(others))
   return(dplyr::slice(tbl, -nrow(tbl)))
 }
@@ -110,8 +110,8 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", co
     "sudachi_c" = out_cols_sudachi(col_lang)
   )
   tbl <-
-    output %>%
-    tibble::tibble() %>%
+    output |>
+    tibble::tibble() |>
     tidyr::separate(1, into = out_cols, 
       sep = "\t|,", fill = "right", extra = "drop")
   if(method == "ginza"){
@@ -134,11 +134,11 @@ remove_linebreaks <- function(tbl, text_col){
       stringr::str_c(tbl[[text_col]], collapse = NULL), '&|\\||<|>|"'))){
     message('Removed &, |, <. > or " !')
   }
-  tbl %>%
+  tbl |>
     dplyr::mutate(`:=`({{text_col}},
-      stringr::str_remove_all(.data[[text_col]], "\\r\\n"))) %>%
+      stringr::str_replace_all(.data[[text_col]], "\\r\\n", ""))) |>
     dplyr::mutate(`:=`({{text_col}},
-      stringr::str_remove_all(.data[[text_col]], "\\n"))) %>%
+      stringr::str_replace_all(.data[[text_col]], "\\n", ""))) |>
     dplyr::mutate(`:=`({{text_col}},
       stringr::str_remove_all(.data[[text_col]], '&|\\||<|>|"')))
 }
@@ -147,32 +147,32 @@ remove_linebreaks <- function(tbl, text_col){
 separate_cols_ginza <- function(tbl, col_lang){
   into <- 
     c("\\u54c1\\u8a5e", 
-      paste0(rep("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 2), 1:2)) %>%
+      paste0(rep("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 2), 1:2)) |>
     unescape_utf()
   if(col_lang == "en"){
     into <- 
-      tibble::tibble(jp = into) %>%
-      dplyr::left_join(out_cols()) %>%
-      `[[`("en")
+      tibble::tibble(jp = into) |>
+      dplyr::left_join(out_cols()) |>
+      `[[`(_, "en")
   }
   xpos <- out_cols_ginza(col_lang)[5]
   tbl <- 
-    tbl %>%
+    tbl |>
     tidyr::separate(.data[[xpos]], into = into, 
       sep = "-", fill = "right", extra = "drop", remove = TRUE)
   return(tbl)
 }
 
-  # review_mecab %>%
-  #   unescape_utf() %>%
+  # review_mecab |>
+  #   unescape_utf() |>
   #   dplyr::filter(stringr::str_detect(.$表層形, "-"))
   # 
-  # review_sudachi_a %>%
-  #   unescape_utf() %>%
+  # review_sudachi_a |>
+  #   unescape_utf() |>
   #   dplyr::filter(stringr::str_detect(.$表層形, "-"))
   # 
-  # review_ginza %>%
-  #   unescape_utf() %>%
+  # review_ginza |>
+  #   unescape_utf() |>
   #   dplyr::filter(stringr::str_detect(lemma, "-"))
 
 #' @rdname moranajp_all
@@ -182,11 +182,11 @@ separate_cols_ginza <- function(tbl, col_lang){
 make_input <- function(tbl, text_col, iconv, 
   brk = "BPOMORANAJP "){ # Break Point Of MORANAJP: need space to split with English words
   input <- 
-    tbl %>%
-    dplyr::select(.data[[text_col]]) %>%
-    unlist() %>%
-    stringr::str_c(collapse = brk) %>%
-    stringr::str_c(brk) %>%  # NEED brk at the end of input
+    tbl |>
+    dplyr::select(.data[[text_col]]) |>
+    unlist() |>
+    stringr::str_c(collapse = brk) |>
+    stringr::str_c(brk) |>  # NEED brk at the end of input
     iconv_x(iconv, reverse = TRUE)
   return(input)
 }
@@ -218,14 +218,14 @@ out_cols_mecab <- function(col_lang = "jp"){
     c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
       paste0(rep("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 3), 1:3),
       "\\u6d3b\\u7528\\u578b", "\\u6d3b\\u7528\\u5f62",
-      "\\u539f\\u5f62", "\\u8aad\\u307f", "\\u767a\\u97f3") %>%
+      "\\u539f\\u5f62", "\\u8aad\\u307f", "\\u767a\\u97f3") |>
     unescape_utf()
   if(col_lang == "jp"){
     return(jp)
   }else{
-    tibble::tibble(jp = jp) %>%
-      dplyr::left_join(out_cols()) %>%
-      `[[`("en")
+    tibble::tibble(jp = jp) |>
+      dplyr::left_join(out_cols()) |>
+      `[[`(_, "en")
   }
 }
 
@@ -247,14 +247,14 @@ out_cols_ginza <- function(col_lang = "jp"){
     c("id"                                  , "\\u8868\\u5c64\\u5f62"               , "\\u539f\\u5f62"                      , # ginza
        "UD\\u54c1\\u8a5e\\u30bf\\u30b0"     , "\\u54c1\\u8a5e\\u30bf\\u30b0"        , "\\u5c5e\\u6027"                      ,
        "\\u4fc2\\u53d7\\u5143"              , "\\u4fc2\\u53d7\\u30bf\\u30b0"        , "\\u4fc2\\u53d7\\u30da\\u30a2"        ,
-       "\\u305d\\u306e\\u4ed6")  %>%
+       "\\u305d\\u306e\\u4ed6")  |>
     unescape_utf()
   if(col_lang == "jp"){
     return(jp)
   }else{
-    tibble::tibble(jp = jp) %>%
-      dplyr::left_join(out_cols()) %>%
-      `[[`("en")
+    tibble::tibble(jp = jp) |>
+      dplyr::left_join(out_cols()) |>
+      `[[`(_, "en")
   }
 }
 
@@ -264,14 +264,14 @@ out_cols_sudachi <- function(col_lang = "jp"){
   jp <- 
     c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e",
       paste0("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 1:5),
-      "\\u539f\\u5f62") %>%
+      "\\u539f\\u5f62") |>
     unescape_utf()
   if(col_lang == "jp"){
     return(jp)
   }else{
-    tibble::tibble(jp = jp) %>%
-      dplyr::left_join(out_cols()) %>%
-      `[[`("en")
+    tibble::tibble(jp = jp) |>
+      dplyr::left_join(out_cols()) |>
+      `[[`(_, "en")
   }
 }
 
@@ -281,14 +281,14 @@ out_cols_chamame <- function(col_lang = "jp"){
   jp <- 
     c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e",
       paste0("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 1:3),
-      "\\u539f\\u5f62") %>%
+      "\\u539f\\u5f62") |>
     unescape_utf()
   if(col_lang == "jp"){
     return(jp)
   }else{
-    tibble::tibble(jp = jp) %>%
-      dplyr::left_join(out_cols()) %>%
-      `[[`("en")
+    tibble::tibble(jp = jp) |>
+      dplyr::left_join(out_cols()) |>
+      `[[`(_, "en")
   }
 }
 
@@ -314,10 +314,10 @@ out_cols_en <- function(){
 #' @return A data.frame
 out_cols <- function(){
   order <- c(10, 99, 99, 99, 99, 12, 13, 11, 2, 99, 99, 99, 1, 3, 9, 4, 5, 6, 7, 8)
-  tibble::tibble("jp" := out_cols_jp(), "en" := out_cols_en()) %>%
-  dplyr::distinct() %>%
-  dplyr::arrange(.data[["jp"]]) %>%
-  dplyr::bind_cols(order = order) %>%
+  tibble::tibble("jp" := out_cols_jp(), "en" := out_cols_en()) |>
+  dplyr::distinct() |>
+  dplyr::arrange(.data[["jp"]]) |>
+  dplyr::bind_cols(order = order) |>
   dplyr::arrange(order, .data[["jp"]])
 }
 
@@ -345,11 +345,11 @@ add_text_id <- function(tbl, method, brk = "BPOMORANAJP"){
   #   add_group() work on its own.
   #   tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
   tbl <- 
-    tbl %>%
+    tbl |>
     dplyr::mutate(`:=`({{text_id}}, 
-      (.data[[col]] == brk) + 0 )) %>%  # "+ 0": boolean to numeric
+      (.data[[col]] == brk) + 0 )) |>  # "+ 0": boolean to numeric
     dplyr::mutate(`:=`({{text_id}}, 
-      purrr::accumulate(.data[[text_id]], `+`))) %>%
+      purrr::accumulate(.data[[text_id]], `+`))) |>
     dplyr::mutate(`:=`({{text_id}}, .data[[text_id]] + 1))
   return(tbl)
 }
@@ -367,8 +367,8 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
   col_no <- ifelse(method == "ginza", 2, 1)
   col <- cnames[col_no]
   tbl <-
-    tbl %>%
-    dplyr::filter(.data[[col]] != brk) %>%
+    tbl |>
+    dplyr::filter(.data[[col]] != brk) |>
     dplyr::filter(.data[[col]] != " ")
   if(method == "ginza"){
     input_col <- "^# text = "
@@ -388,7 +388,7 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
 #' text <- 
 #'   paste0("\\u3059", 
 #'          paste0(rep("\\u3082",8),collapse=""), 
-#'          "\\u306e\\u3046\\u3061") %>%
+#'          "\\u306e\\u3046\\u3061") |>
 #'   unescape_utf()
 #' web_chamame(text)
 #' 
@@ -396,24 +396,30 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
 web_chamame <- function(text, col_lang = "jp"){
   html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
   form <- 
-    rvest::html_form(html)[[1]] %>%
-    rvest::html_form_set(st = text) %>%
+    rvest::html_form(html)[[1]] |>
+    rvest::html_form_set(st = text) |>
     html_radio_set("out-e" = "html")
-  index <-  sort(decreasing = TRUE, 
-                 c( 3:8,    # "file[]: "            - "suuji: 1"
-                   10:21,   # "dic2: unidic-spoken" - "dic10: ipadic"
-                   22:24,   # "f1: 1"               - "f3: 1"
-                   29:33,   # "f4: 1"               - "f11: 1"
-                   35:46))   # "f13: 1"              - "f24: 1"
-  for(i in index){
-    form$fields[[i]] <- NULL
+  need_index <- 
+    c(1,  # button
+      2,  # textarea
+      5,  # hankaku-zenkaku
+      11, # unidic-spoken
+      25:53, # f1:f28
+      58, # out-e: html
+      62  # submit
+      )
+  del_index <- sort(
+    setdiff(1:62, need_index), 
+    decreasing = TRUE)
+  for (i in del_index) {
+      form$fields[[i]] <- NULL
   }
   resp <- rvest::html_form_submit(form)
   chamame <- 
-    rvest::read_html(resp) %>%
-    rvest::html_table() %>%
-    `[[`(1) %>%
-    dplyr::select(3:8)
+    rvest::read_html(resp) |>
+    rvest::html_table() |>
+    `[[`(_, 1) |>
+    dplyr::select(3,9:12,4)
   colnames(chamame) <- out_cols_chamame(col_lang = col_lang)
   return(chamame)
 }
@@ -427,16 +433,16 @@ web_chamame <- function(text, col_lang = "jp"){
 #' text <- 
 #'   paste0("\\u3059", 
 #'          paste0(rep("\\u3082",8),collapse=""), 
-#'          "\\u306e\\u3046\\u3061") %>%
+#'          "\\u306e\\u3046\\u3061") |>
 #'   unescape_utf()
 #' html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
 #' form <- 
-#'   rvest::html_form(html)[[1]] %>%
-#'   rvest::html_form_set(st = text) %>%
+#'   rvest::html_form(html)[[1]] |>
+#'   rvest::html_form_set(st = text) |>
 #'   html_radio_set("out-e" = "html")
 #' resp <- rvest::html_form_submit(form)
-#' rvest::read_html(resp) %>%
-#'   rvest::html_table() %>%
+#' rvest::read_html(resp) |>
+#'   rvest::html_table() |>
 #'   `[[`(1)
 #' 
 #' @rdname web_chamame
@@ -453,10 +459,10 @@ html_radio_set <- function(form, ...){
   dup_rad <- unique(f_name[duplicated(f_name) & is_radio(field)])
 
   i_radio <- 
-    dup_rad %>%
-    purrr::map(`==`, f_name) %>%
-    purrr::map(which) %>%
-    `[`(dup_rad %in% v_name)
+    dup_rad |>
+    purrr::map(`==`, f_name) |>
+    purrr::map(which) |>
+    `[`(_, dup_rad %in% v_name)
 
   for(i in seq_along(i_radio)){
     for(j in i_radio[[i]]){
@@ -473,8 +479,8 @@ html_radio_set <- function(form, ...){
 #' @rdname web_chamame
 #' @export
 is_radio <- function(fields){
-  fields %>%
-    purrr::map_chr(`$`, "type") %>%
+  fields |>
+    purrr::map_chr(`$`, "type") |>
     purrr::map_lgl(`==`, "radio")
 }
 

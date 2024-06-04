@@ -30,7 +30,7 @@ GiNZA: https://megagonlabs.github.io/ginza/
 }
 \examples{
 data(neko_ginza)
-neko_ginza \%>\%
+neko_ginza |>
   unescape_utf()
 }
 \keyword{datasets}

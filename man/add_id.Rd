@@ -20,7 +20,7 @@ Add id in each group
 \examples{
 brk <- "EOS"
 tbl <- tibble::tibble(col=c(rep("a", 2), brk, rep("b", 3), brk, rep("c", 4), brk))
-add_group(tbl, col = "col") \%>\%
+add_group(tbl, col = "col") |>
   add_id(id = "id_in_group")
 
 }

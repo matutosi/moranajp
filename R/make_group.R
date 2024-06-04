@@ -29,15 +29,15 @@ make_groups <- function(tbl, text_col = "text", length = 8000,
 make_groups_sub <- function(tbl, text_col, n_group, tmp_group, str_length) {
   nr <- nrow(tbl)
   res <- 
-    tbl %>%
-    dplyr::mutate({{tmp_group}} := dplyr::ntile(1:nr, n_group)) %>%
+    tbl |>
+    dplyr::mutate({{tmp_group}} := dplyr::ntile(1:nr, n_group)) |>
     dplyr::mutate({{str_length}} := stringr::str_length(.data[[text_col]]))
 }
 
 #' @rdname make_groups
 max_sum_str_length <- function(tbl, tmp_group, str_length) {
-  tbl %>%
-    dplyr::group_by(.data[[tmp_group]]) %>%
-    dplyr::summarise(sum = sum(.data[[str_length]])) %>%
+  tbl |>
+    dplyr::group_by(.data[[tmp_group]]) |>
+    dplyr::summarise(sum = sum(.data[[str_length]])) |>
     dplyr::summarise(max(sum))
 }

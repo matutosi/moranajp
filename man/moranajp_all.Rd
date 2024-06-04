@@ -115,27 +115,27 @@ Keep other colnames in dataframe.
   library(magrittr)
   data(neko)
   neko <-
-      neko \%>\%
+      neko |>
       unescape_utf()
 
   # mecab
   bin_dir <- "d:/pf/mecab/bin"
   iconv <- "CP932_UTF-8"
-  neko \%>\%
-    moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) \%>\%
+  neko |>
+    moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) |>
         print(n=100)
 
   # ginza
-  neko \%>\%
-    moranajp_all(text_col = "text", method = "ginza") \%>\%
+  neko |>
+    moranajp_all(text_col = "text", method = "ginza") |>
       print(n=100)
 
   # sudachi
   bin_dir <- "d:/pf/sudachi"
   iconv <- "CP932_UTF-8"
-  neko \%>\%
+  neko |>
     moranajp_all(text_col = "text", bin_dir = bin_dir, 
-                 method = "sudachi_a", iconv = iconv) \%>\%
+                 method = "sudachi_a", iconv = iconv) |>
         print(n=100)
 
 }
