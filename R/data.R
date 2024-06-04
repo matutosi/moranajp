@@ -6,7 +6,7 @@
 #' }
 #' @examples
 #' data(neko)
-#' neko %>%
+#' neko |>
 #'   unescape_utf()
 "neko"
 
@@ -32,7 +32,7 @@
 #' }
 #' @examples
 #' data(neko_mecab)
-#' neko_mecab %>%
+#' neko_mecab |>
 #'   unescape_utf()
 "neko_mecab"
 
@@ -58,7 +58,7 @@
 #' }
 #' @examples
 #' data(neko_ginza)
-#' neko_ginza %>%
+#' neko_ginza |>
 #'   unescape_utf()
 "neko_ginza"
 
@@ -80,7 +80,7 @@
 #' }
 #' @examples
 #' data(neko_sudachi_a)
-#' neko_sudachi_a %>%
+#' neko_sudachi_a |>
 #'   unescape_utf()
 "neko_sudachi_a"
 
@@ -110,7 +110,7 @@
 #' }
 #' @examples
 #' data(neko_chamame)
-#' neko_chamame %>%
+#' neko_chamame |>
 #'   unescape_utf()
 "neko_chamame"
 
@@ -134,7 +134,7 @@
 #' }
 #' @examples
 #' data(review)
-#' review %>%
+#' review |>
 #'   unescape_utf()
 "review"
 
@@ -163,7 +163,7 @@
 #' }
 #' @examples
 #' data(review_mecab)
-#' review_mecab %>%
+#' review_mecab |>
 #'   unescape_utf()
 "review_mecab"
 
@@ -192,7 +192,7 @@
 #' }
 #' @examples
 #' data(review_ginza)
-#' review_ginza %>%
+#' review_ginza |>
 #'   unescape_utf()
 "review_ginza"
 
@@ -217,7 +217,7 @@
 #' }
 #' @examples
 #' data(review_sudachi_a)
-#' review_sudachi_a %>%
+#' review_sudachi_a |>
 #'   unescape_utf()
 "review_sudachi_a"
 
@@ -250,7 +250,7 @@
 #' }
 #' @examples
 #' data(review_chamame)
-#' review_chamame %>%
+#' review_chamame |>
 #'   unescape_utf()
 "review_chamame"
 
@@ -267,7 +267,7 @@
 #' }
 #' @examples
 #' data(stop_words)
-#' stop_words %>%
+#' stop_words |>
 #'   unescape_utf()
 "stop_words"
 
@@ -285,6 +285,6 @@
 #' }
 #' @examples
 #' data(synonym)
-#' synonym %>%
+#' synonym |>
 #'   unescape_utf()
 "synonym"

@@ -30,7 +30,7 @@ MeCab: https://taku910.github.io/mecab/
 }
 \examples{
 data(neko_mecab)
-neko_mecab \%>\%
+neko_mecab |>
   unescape_utf()
 }
 \keyword{datasets}

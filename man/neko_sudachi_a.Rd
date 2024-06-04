@@ -36,7 +36,7 @@ Sudachi: https://github.com/WorksApplications/Sudachi
 }
 \examples{
 data(neko_sudachi_a)
-neko_sudachi_a \%>\%
+neko_sudachi_a |>
   unescape_utf()
 }
 \keyword{datasets}

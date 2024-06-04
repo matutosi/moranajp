@@ -18,7 +18,7 @@ The first part of 'I Am a Cat' by Soseki Natsume
 }
 \examples{
 data(neko)
-neko \%>\%
+neko |>
   unescape_utf()
 }
 \keyword{datasets}

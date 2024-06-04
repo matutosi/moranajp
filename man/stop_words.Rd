@@ -23,7 +23,7 @@ Stop words for morphological analysis
 }
 \examples{
 data(stop_words)
-stop_words \%>\%
+stop_words |>
   unescape_utf()
 }
 \keyword{datasets}

@@ -33,7 +33,7 @@ GiNZA: https://megagonlabs.github.io/ginza/
 }
 \examples{
 data(review_ginza)
-review_ginza \%>\%
+review_ginza |>
   unescape_utf()
 }
 \keyword{datasets}

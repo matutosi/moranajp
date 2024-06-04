@@ -39,7 +39,7 @@ Sudachi: https://github.com/WorksApplications/Sudachi
 }
 \examples{
 data(review_sudachi_a)
-review_sudachi_a \%>\%
+review_sudachi_a |>
   unescape_utf()
 }
 \keyword{datasets}

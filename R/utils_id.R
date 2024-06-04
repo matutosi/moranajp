@@ -54,17 +54,17 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
     cond <- paste0(".$", col, " == '", brk, "'")  # cond: .$col == 'brk'
   }
   tbl <- 
-    tbl %>%
+    tbl |>
     dplyr::mutate(`:=`({{grp}}, 
-      (eval(str2expression(cond))) + 0 )) %>%  # "+ 0": boolean to numeric
-    dplyr::mutate(`:=`({{grp}}, purrr::accumulate(.data[[grp]], `+`))) %>%
+      (eval(str2expression(cond))) + 0 )) |>  # "+ 0": boolean to numeric
+    dplyr::mutate(`:=`({{grp}}, purrr::accumulate(.data[[grp]], `+`))) |>
     dplyr::mutate(`:=`({{grp}}, .data[[grp]] + 1))
 
   if(end_with_brk){
     tbl <- 
-      tbl %>%
-      dplyr::mutate(`:=`({{adj}}, -(.data[[col]] == brk) + 0 )) %>%
-      dplyr::mutate(`:=`({{grp}}, .data[[grp]] + .data[[adj]])) %>%
+      tbl |>
+      dplyr::mutate(`:=`({{adj}}, -(.data[[col]] == brk) + 0 )) |>
+      dplyr::mutate(`:=`({{grp}}, .data[[grp]] + .data[[adj]])) |>
       dplyr::select(-dplyr::all_of(adj))
   }
   return(tbl)
@@ -76,9 +76,9 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
 #' @param   s_id  A string for sentence colame
 #' @return  A dataframe
 #' @examples
-#' review_mecab %>%
-#'   unescape_utf() %>%
-#'   add_sentence_no() %>%
+#' review_mecab |>
+#'   unescape_utf() |>
+#'   add_sentence_no() |>
 #'   print(n=200)
 #' 
 #' @export
@@ -95,20 +95,20 @@ add_sentence_no <- function(df, s_id = "sentence"){
     cond_1 <- ".data[['\\u8868\\u5c64\\u5f62']] %in% c(\\'\\u3002\\', \\'\\uff0e\\')"
     cond_2 <- ".data[['\\u54c1\\u8a5e\\u7d30\\u5206\\u985e1']] == \\'\\u53e5\\u70b9\\'"
   }
-  cond <- paste0(cond_1, " & ", cond_2) %>% unescape_utf()
+  cond <- paste0(cond_1, " & ", cond_2) |> unescape_utf()
   df <- 
-    df %>%
+    df |>
     dplyr::mutate(`:=`({{s_id}}, 
-      (eval(str2expression(cond))) + 0 )) %>%  # "+ 0": boolean to numeric
-    dplyr::mutate(`:=`({{s_id}}, purrr::accumulate(.data[[s_id]], `+`))) %>%
+      (eval(str2expression(cond))) + 0 )) |>  # "+ 0": boolean to numeric
+    dplyr::mutate(`:=`({{s_id}}, purrr::accumulate(.data[[s_id]], `+`))) |>
     dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + 1))
 
   adj <- "adjust"  # temporary use
   df <- 
-    df %>%
+    df |>
     dplyr::mutate(`:=`({{adj}}, 
-      -(eval(str2expression(cond))) + 0 )) %>%  # "+ 0": boolean to numeric
-    dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + .data[[adj]])) %>%
+      -(eval(str2expression(cond))) + 0 )) |>  # "+ 0": boolean to numeric
+    dplyr::mutate(`:=`({{s_id}}, .data[[s_id]] + .data[[adj]])) |>
     dplyr::select(-dplyr::all_of(adj))
 
   return(df)
@@ -122,13 +122,13 @@ add_sentence_no <- function(df, s_id = "sentence"){
 #' @examples
 #' brk <- "EOS"
 #' tbl <- tibble::tibble(col=c(rep("a", 2), brk, rep("b", 3), brk, rep("c", 4), brk))
-#' add_group(tbl, col = "col") %>%
+#' add_group(tbl, col = "col") |>
 #'   add_id(id = "id_in_group")
 #' 
 #' @export
 add_id <- function(tbl, grp = "group", id = "id"){
-  tbl %>%
-    dplyr::group_by(.data[[grp]]) %>%
-    dplyr::mutate(`:=`({{id}}, dplyr::row_number())) %>%
+  tbl |>
+    dplyr::group_by(.data[[grp]]) |>
+    dplyr::mutate(`:=`({{id}}, dplyr::row_number())) |>
     dplyr::ungroup()
 }

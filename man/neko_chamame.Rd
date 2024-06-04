@@ -26,7 +26,7 @@ chamame: https://chamame.ninjal.ac.jp/index.html
 }
 \examples{
 data(neko_chamame)
-neko_chamame \%>\%
+neko_chamame |>
   unescape_utf()
 }
 \keyword{datasets}

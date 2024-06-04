@@ -29,7 +29,7 @@ chamame: https://chamame.ninjal.ac.jp/index.html
 }
 \examples{
 data(review_chamame)
-review_chamame \%>\%
+review_chamame |>
   unescape_utf()
 }
 \keyword{datasets}

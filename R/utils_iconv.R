@@ -25,8 +25,8 @@ iconv_x <- function(x, iconv = "", reverse = FALSE){
 #' @param x        A string or vector of Japanese
 #' @return         A string or vector 
 #' @examples
-#' stringi::stri_unescape_unicode("\\u8868\\u5c64\\u5f62") %>%
-#'   print() %>%
+#' stringi::stri_unescape_unicode("\\u8868\\u5c64\\u5f62") |>
+#'   print() |>
 #'   escape_japanese()
 #' 
 #' @export
@@ -44,10 +44,10 @@ escape_japanese <- function(x){
 #' @return     A dataframe or character vector
 #' @examples
 #' data(review_mecab)
-#' review_mecab %>%
-#'   print() %>%
-#'   unescape_utf() %>%
-#'   print() %>%
+#' review_mecab |>
+#'   print() |>
+#'   unescape_utf() |>
+#'   print() |>
 #'   escape_utf()
 #' 
 #' @export
