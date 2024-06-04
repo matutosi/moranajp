@@ -155,6 +155,11 @@ align_sentence <- function(df,
       dplyr::filter(.data[[s_id]] != ids[j]) |>
       dplyr::bind_rows(df_aligned)
   }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6615d85521ad2be06bff98f956ba3843f34d1a5e
   if( length(need_adjust) ){
     df <- adjust_sentence(df, s_id, term, x_pos, need_adjust, str_width)
   }
