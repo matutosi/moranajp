@@ -38,10 +38,9 @@ https://github.com/matutosi/moranajp/tree/main/zip
 
 ## Example
 
-``` r
+```{r}
 options(encoding="UTF-8")
 library(moranajp)
-library(tidyverse)
 library(magrittr)
 
 data(neko)

@@ -1,12 +1,12 @@
 #' Morphological analysis for a specific column in dataframe
-#' 
+#'
 #' Using 'MeCab' for morphological analysis.
 #' Keep other colnames in dataframe.
-#' 
+#'
 #' @param tbl          A tibble or data.frame.
 #' @param text_col     A text. Colnames for morphological analysis.
 #' @param bin_dir      A text. Directory of mecab.
-#' @param method       A text. Method to use: "mecab", "ginza", 
+#' @param method       A text. Method to use: "mecab", "ginza",
 #'                     "sudachi_a", "sudachi_b", "sudachi_c", or "chamame".
 #'                     "a", "b" and "c" specify the mode of splitting.
 #'                     "a" split shortest, "b" middle and "c" longest.
@@ -15,8 +15,8 @@
 #' @param option       A text. Options for mecab.
 #'                     "-b" option is already set by moranajp.
 #'                     To see option, use "mecab -h" in command (win) or terminal (Mac).
-#' @param iconv        A text. Convert encoding of MeCab output. 
-#'                     Default (""): don't convert. 
+#' @param iconv        A text. Convert encoding of MeCab output.
+#'                     Default (""): don't convert.
 #'                     "CP932_UTF-8": iconv(output, from = "Shift-JIS" to = "UTF-8")
 #'                     "EUC_UTF-8"  : iconv(output, from = "eucjp", to = "UTF-8")
 #'                     iconv is also used to convert input text before running MeCab.
@@ -30,30 +30,30 @@
 #'   neko <-
 #'       neko |>
 #'       unescape_utf()
-#' 
+#'
 #'   # mecab
 #'   bin_dir <- "d:/pf/mecab/bin"
 #'   iconv <- "CP932_UTF-8"
 #'   neko |>
 #'     moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) |>
 #'         print(n=100)
-#' 
+#'
 #'   # ginza
 #'   neko |>
 #'     moranajp_all(text_col = "text", method = "ginza") |>
 #'       print(n=100)
-#' 
+#'
 #'   # sudachi
 #'   bin_dir <- "d:/pf/sudachi"
 #'   iconv <- "CP932_UTF-8"
 #'   neko |>
-#'     moranajp_all(text_col = "text", bin_dir = bin_dir, 
+#'     moranajp_all(text_col = "text", bin_dir = bin_dir,
 #'                  method = "sudachi_a", iconv = iconv) |>
 #'         print(n=100)
-#' 
+#'
 #' }
 #' @export
-moranajp_all <- function(tbl, bin_dir = "", method = "mecab", 
+moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
              text_col = "text", option = "", iconv = "",
              col_lang = "jp"){
   # text_col = "text"; option = ""; bin_dir = "d:/pf/mecab/bin/"; iconv = "CP932_UTF-8"; method = "mecab"; tbl = review |> unescape_utf(); col_lang = "jp"
@@ -61,11 +61,11 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
   text_id    <- "text_id"
   tmp_group  <- "tmp_group"  # Use temporary
   str_length <- "str_length" # Use temporary
-  tbl    <- dplyr::mutate(tbl, `:=`({{text_id}}, dplyr::row_number()))
+  tbl    <- dplyr::mutate(tbl, `:=`({{ text_id }}, dplyr::row_number()))
   others <- dplyr::select(tbl, !dplyr::all_of(text_col))
   tbl    <- remove_linebreaks(tbl, text_col)
   if(method == "chamame"){
-    tbl <- 
+    tbl <-
       tbl |>
         make_input(text_col = text_col, iconv = iconv) |>
         web_chamame(col_lang = col_lang)
@@ -74,10 +74,10 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
       tbl |>
       make_groups(text_col = text_col, length = 8000,   # if error decrease length
         tmp_group = tmp_group, str_length = str_length) |>
-      dplyr::group_split(.data[[tmp_group]]) |>
+      dplyr::group_split(dplyr::all_of(tmp_group)) |>
       purrr::map(dplyr::select, dplyr::all_of(text_col)) |>
-      purrr::map(moranajp, 
-        bin_dir = bin_dir, method = method, 
+      purrr::map(moranajp,
+        bin_dir = bin_dir, method = method,
         text_col = text_col, option = option, iconv = iconv, col_lang = col_lang) |>
       dplyr::bind_rows()
   }
@@ -86,7 +86,7 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
     add_text_id(method = method) |>
     remove_brk(method = method) |>
     dplyr::left_join(others, by = text_id) |>
-    dplyr::relocate(.data[[text_id]], colnames(others))
+    dplyr::relocate(dplyr::all_of(text_id), colnames(others))
   return(dplyr::slice(tbl, -nrow(tbl)))
 }
 
@@ -102,7 +102,7 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", co
   command <- make_cmd(method, option = "")
   output <- system(command, intern=TRUE, input = input)
   output <- iconv_x(output, iconv) # Convert Encoding
-  out_cols <- switch(method, 
+  out_cols <- switch(method,
     "mecab"     = out_cols_mecab(col_lang),
     "ginza"     = out_cols_ginza(col_lang),
     "sudachi_a" = out_cols_sudachi(col_lang),
@@ -112,7 +112,7 @@ moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", co
   tbl <-
     output |>
     tibble::tibble() |>
-    tidyr::separate(1, into = out_cols, 
+    tidyr::separate(1, into = out_cols,
       sep = "\t|,", fill = "right", extra = "drop")
   if(method == "ginza"){
     tbl <- separate_cols_ginza(tbl, col_lang)
@@ -145,20 +145,20 @@ remove_linebreaks <- function(tbl, text_col){
 
 #' @rdname moranajp_all
 separate_cols_ginza <- function(tbl, col_lang){
-  into <- 
-    c("\\u54c1\\u8a5e", 
+  into <-
+    c("\\u54c1\\u8a5e",
       paste0(rep("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 2), 1:2)) |>
     unescape_utf()
   if(col_lang == "en"){
-    into <- 
+    into <-
       tibble::tibble(jp = into) |>
       dplyr::left_join(out_cols()) |>
       `[[`(_, "en")
   }
   xpos <- out_cols_ginza(col_lang)[5]
-  tbl <- 
+  tbl <-
     tbl |>
-    tidyr::separate(.data[[xpos]], into = into, 
+    tidyr::separate(.data[[xpos]], into = into,
       sep = "-", fill = "right", extra = "drop", remove = TRUE)
   return(tbl)
 }
@@ -166,11 +166,11 @@ separate_cols_ginza <- function(tbl, col_lang){
   # review_mecab |>
   #   unescape_utf() |>
   #   dplyr::filter(stringr::str_detect(.$表層形, "-"))
-  # 
+  #
   # review_sudachi_a |>
   #   unescape_utf() |>
   #   dplyr::filter(stringr::str_detect(.$表層形, "-"))
-  # 
+  #
   # review_ginza |>
   #   unescape_utf() |>
   #   dplyr::filter(stringr::str_detect(lemma, "-"))
@@ -179,9 +179,9 @@ separate_cols_ginza <- function(tbl, col_lang){
 #' @param  brk A string of break point
 #' @return A string
 #' @export
-make_input <- function(tbl, text_col, iconv, 
+make_input <- function(tbl, text_col, iconv,
   brk = "BPOMORANAJP "){ # Break Point Of MORANAJP: need space to split with English words
-  input <- 
+  input <-
     tbl |>
     dplyr::select(.data[[text_col]]) |>
     unlist() |>
@@ -194,7 +194,7 @@ make_input <- function(tbl, text_col, iconv,
 #' @rdname moranajp_all
 #' @return A string
 make_cmd <- function(method, option = ""){
-  cmd <- switch(method, 
+  cmd <- switch(method,
     "mecab"   = make_cmd_mecab(option = ""),
     "ginza"   = "ginza",
     "sudachi_a" = "java -jar sudachi.jar -m A",
@@ -214,8 +214,8 @@ make_cmd_mecab <- function(option = ""){
 #' @rdname moranajp_all
 #' @return A character vector
 out_cols_mecab <- function(col_lang = "jp"){
-  jp <- 
-    c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e", 
+  jp <-
+    c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e",
       paste0(rep("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 3), 1:3),
       "\\u6d3b\\u7528\\u578b", "\\u6d3b\\u7528\\u5f62",
       "\\u539f\\u5f62", "\\u8aad\\u307f", "\\u767a\\u97f3") |>
@@ -232,7 +232,7 @@ out_cols_mecab <- function(col_lang = "jp"){
 #' @rdname moranajp_all
 #' @return A character vector
 out_cols_ginza <- function(col_lang = "jp"){
-  # ID: 
+  # ID:
   # FORM:   Word form or punctuation symbol.
   # LEMMA:  Lemma or stem of word form.
   # UPOS:   Universal part-of-speech tag.
@@ -243,7 +243,7 @@ out_cols_ginza <- function(col_lang = "jp"){
   # DEPS:   Enhanced dependency graph in the form of a list of head-deprel pairs.
   # MISC:   Any other annotation.
   #   c("id", "form", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc")
-  jp <- 
+  jp <-
     c("id"                                  , "\\u8868\\u5c64\\u5f62"               , "\\u539f\\u5f62"                      , # ginza
        "UD\\u54c1\\u8a5e\\u30bf\\u30b0"     , "\\u54c1\\u8a5e\\u30bf\\u30b0"        , "\\u5c5e\\u6027"                      ,
        "\\u4fc2\\u53d7\\u5143"              , "\\u4fc2\\u53d7\\u30bf\\u30b0"        , "\\u4fc2\\u53d7\\u30da\\u30a2"        ,
@@ -261,7 +261,7 @@ out_cols_ginza <- function(col_lang = "jp"){
 #' @rdname moranajp_all
 #' @return A character vector
 out_cols_sudachi <- function(col_lang = "jp"){
-  jp <- 
+  jp <-
     c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e",
       paste0("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 1:5),
       "\\u539f\\u5f62") |>
@@ -278,7 +278,7 @@ out_cols_sudachi <- function(col_lang = "jp"){
 #' @rdname web_chamame
 #' @return A character vector
 out_cols_chamame <- function(col_lang = "jp"){
-  jp <- 
+  jp <-
     c("\\u8868\\u5c64\\u5f62", "\\u54c1\\u8a5e",
       paste0("\\u54c1\\u8a5e\\u7d30\\u5206\\u985e", 1:3),
       "\\u539f\\u5f62") |>
@@ -344,17 +344,17 @@ add_text_id <- function(tbl, method, brk = "BPOMORANAJP"){
   # add_group() do not work inside this function
   #   add_group() work on its own.
   #   tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
-  tbl <- 
+  tbl <-
     tbl |>
-    dplyr::mutate(`:=`({{text_id}}, 
+    dplyr::mutate(`:=`({{ text_id }},
       (.data[[col]] == brk) + 0 )) |>  # "+ 0": boolean to numeric
-    dplyr::mutate(`:=`({{text_id}}, 
+    dplyr::mutate(`:=`({{ text_id }},
       purrr::accumulate(.data[[text_id]], `+`))) |>
-    dplyr::mutate(`:=`({{text_id}}, .data[[text_id]] + 1))
+    dplyr::mutate(`:=`({{ text_id }}, .data[[text_id]] + 1))
   return(tbl)
 }
 
-#' Remove break point and other unused rows from the result of 
+#' Remove break point and other unused rows from the result of
 #' morphological analysis
 #'
 #' Internal function for moranajp_all().
@@ -378,28 +378,28 @@ remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
 }
 
 #' Morphological analysis for Japanese text by web chamame
-#' 
+#'
 #' Using https://chamame.ninjal.ac.jp/ and rvest.
-#' 
-#' @param text        A text. 
+#'
+#' @param text        A text.
 #' @param col_lang    A text. "jp" or "en"
 #' @return A dataframe
 #' @examples
-#' text <- 
-#'   paste0("\\u3059", 
-#'          paste0(rep("\\u3082",8),collapse=""), 
+#' text <-
+#'   paste0("\\u3059",
+#'          paste0(rep("\\u3082",8),collapse=""),
 #'          "\\u306e\\u3046\\u3061") |>
 #'   unescape_utf()
 #' web_chamame(text)
-#' 
+#'
 #' @export
 web_chamame <- function(text, col_lang = "jp"){
   html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
-  form <- 
+  form <-
     rvest::html_form(html)[[1]] |>
     rvest::html_form_set(st = text) |>
     html_radio_set("out-e" = "html")
-  need_index <- 
+  need_index <-
     c(1,  # button
       2,  # textarea
       5,  # hankaku-zenkaku
@@ -409,13 +409,13 @@ web_chamame <- function(text, col_lang = "jp"){
       62  # submit
       )
   del_index <- sort(
-    setdiff(1:62, need_index), 
+    setdiff(1:62, need_index),
     decreasing = TRUE)
   for (i in del_index) {
       form$fields[[i]] <- NULL
   }
   resp <- rvest::html_form_submit(form)
-  chamame <- 
+  chamame <-
     rvest::read_html(resp) |>
     rvest::html_table() |>
     `[[`(_, 1) |>
@@ -425,26 +425,26 @@ web_chamame <- function(text, col_lang = "jp"){
 }
 
 #' Helper function for web_chamame
-#' 
+#'
 #' @param form vest_form object
 #' @param ... dynamic-dots Name-value pairs giving radio button to modify.
 #' @return vest_form object
 #' @examples
-#' text <- 
-#'   paste0("\\u3059", 
-#'          paste0(rep("\\u3082",8),collapse=""), 
+#' text <-
+#'   paste0("\\u3059",
+#'          paste0(rep("\\u3082",8),collapse=""),
 #'          "\\u306e\\u3046\\u3061") |>
 #'   unescape_utf()
 #' html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
-#' form <- 
+#' form <-
 #'   rvest::html_form(html)[[1]] |>
 #'   rvest::html_form_set(st = text) |>
 #'   html_radio_set("out-e" = "html")
 #' resp <- rvest::html_form_submit(form)
 #' rvest::read_html(resp) |>
 #'   rvest::html_table() |>
-#'   `[[`(1)
-#' 
+#'   `[[`(_, 1)
+#'
 #' @rdname web_chamame
 #' @export
 html_radio_set <- function(form, ...){
@@ -458,7 +458,7 @@ html_radio_set <- function(form, ...){
   f_name  <- names(field)
   dup_rad <- unique(f_name[duplicated(f_name) & is_radio(field)])
 
-  i_radio <- 
+  i_radio <-
     dup_rad |>
     purrr::map(`==`, f_name) |>
     purrr::map(which) |>

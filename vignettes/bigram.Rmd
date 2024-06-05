@@ -1,10 +1,10 @@
 ---
-title: "moranajp"
+title: "bigram"
 author: "Toshikazu, Matsumura"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{moranajp}
+  %\VignetteIndexEntry{bigram}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -20,7 +20,7 @@ library(moranajp)
 library(magrittr)
 ```
 
-```{r,  fig.width=6, fig.height=6}
+```{r, eval = FALSE, fig.width=6, fig.height=6}
 data(synonym)
 synonym <- unescape_utf(synonym)
 

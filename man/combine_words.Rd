@@ -15,12 +15,13 @@ combi_words(x, combi, sep = "-")
 \item{combi}{A string (combi_words()) or string vector (combine_words()) to combine words.}
 
 \item{sep}{A string of separator of words}
+
+\item{x}{A pair of string joining with "-"}
 }
 \description{
 Combine words after morphological analysis
 }
 \examples{
-library(tidyverse)
 x <- letters[1:10]
 combi <- c("b-c")
 combi_words(x, combi)

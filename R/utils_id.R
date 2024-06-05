@@ -51,7 +51,7 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
   # col = "col"; brk = "EOS"; grp = "group"; cond = NULL; end_with_brk = TRUE; tbl <- tibble::tibble(col=c(rep("a", 2), brk, rep("b", 3), brk, rep("c", 4), brk))
   adj <- "adjust"
   if(is.null(cond)){
-    cond <- paste0(".$", col, " == '", brk, "'")  # cond: .$col == 'brk'
+    cond <- paste0("tbl$", col, " == '", brk, "'")  # cond: .$col == 'brk'
   }
   tbl <- 
     tbl |>

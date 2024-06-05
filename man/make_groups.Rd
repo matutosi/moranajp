@@ -78,7 +78,7 @@ Keep other colnames in dataframe.
   bin_dir <- "d:/pf/sudachi"
   iconv <- "CP932_UTF-8"
   neko |>
-    moranajp_all(text_col = "text", bin_dir = bin_dir, 
+    moranajp_all(text_col = "text", bin_dir = bin_dir,
                  method = "sudachi_a", iconv = iconv) |>
         print(n=100)
 

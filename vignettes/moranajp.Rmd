@@ -20,7 +20,7 @@ library(moranajp)
 library(magrittr)
 ```
 
-```{r}
+```{r, eval = FALSE}
 data(neko)
 neko <- unescape_utf(neko)
 head(neko)

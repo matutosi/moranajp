@@ -188,9 +188,9 @@ term_pos_1 <- function(df){
 #' @param df     A dataframe including result of morphological analysis.
 #' @param combi  A string (combi_words()) or string vector (combine_words()) to combine words.
 #' @param sep    A string of separator of words
+#' @param x      A pair of string joining with "-"
 #' 
 #' @examples
-#' library(tidyverse)
 #' x <- letters[1:10]
 #' combi <- c("b-c")
 #' combi_words(x, combi)
