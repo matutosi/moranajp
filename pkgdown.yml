@@ -1,0 +1,12 @@
+pandoc: 3.1.11
+pkgdown: 2.0.9
+pkgdown_sha: ~
+articles:
+  bigram: bigram.html
+  moranajp: moranajp.html
+  structure: structure.html
+last_built: 2024-06-05T13:02Z
+urls:
+  reference: https://matutosi.github.io/moranajp/reference
+  article: https://matutosi.github.io/moranajp/articles
+
