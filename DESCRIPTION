@@ -10,8 +10,7 @@ Description: Supports morphological analysis for Japanese
 License: MIT + file LICENSE
 Depends: 
     R (>= 3.5.0)
-URL: https://github.com/matutosi/moranajp
-     https://github.com/matutosi/moranajp/tree/develop (devel)
+URL: https://github.com/matutosi/moranajp, https://matutosi.github.io/moranajp/
 BugReports: https://github.com/matutosi/moranajp/issues
 Imports: 
     dplyr,
