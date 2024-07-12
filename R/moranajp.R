@@ -180,7 +180,7 @@ separate_cols_ginza <- function(tbl, col_lang){
 #' @return A string
 #' @export
 make_input <- function(tbl, text_col, iconv,
-  brk = "BPOMORANAJP "){ # Break Point Of MORANAJP: need space to split with English words
+  brk = "BPMJP "){ # Break Point Of MoranaJP: need space to split with English words
   input <-
     tbl |>
     dplyr::select(.data[[text_col]]) |>
@@ -324,13 +324,13 @@ out_cols <- function(){
 #' Add id column into result of morphological analysis
 #'
 #' Internal function for moranajp_all().
-#' Add `text_id` column when there is brk ("BPOMORANAJP").
-#'    "BPOMORANAJP": Break Point Of MORANAJP
+#' Add `text_id` column when there is brk ("BPMJP").
+#'    "BPMJP": Break Point Of MoranaJP
 #'
 #' @inheritParams moranajp_all
 #' @inheritParams make_input
 #' @export
-add_text_id <- function(tbl, method, brk = "BPOMORANAJP"){
+add_text_id <- function(tbl, method, brk = "BPMJP"){
   text_id <- "text_id"
   cnames  <- colnames(tbl)
   if (any(text_id %in% cnames)){
@@ -362,7 +362,7 @@ add_text_id <- function(tbl, method, brk = "BPOMORANAJP"){
 #' @inheritParams moranajp_all
 #' @inheritParams make_input
 #' @export
-remove_brk <- function(tbl, method, brk = "BPOMORANAJP"){
+remove_brk <- function(tbl, method, brk = "BPMJP"){
   cnames  <- colnames(tbl)
   col_no <- ifelse(method == "ginza", 2, 1)
   col <- cnames[col_no]

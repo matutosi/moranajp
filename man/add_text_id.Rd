@@ -4,7 +4,7 @@
 \alias{add_text_id}
 \title{Add id column into result of morphological analysis}
 \usage{
-add_text_id(tbl, method, brk = "BPOMORANAJP")
+add_text_id(tbl, method, brk = "BPMJP")
 }
 \arguments{
 \item{tbl}{A tibble or data.frame.}
@@ -20,6 +20,6 @@ See https://github.com/WorksApplications/Sudachi for detail.
 }
 \description{
 Internal function for moranajp_all().
-Add \code{text_id} column when there is brk ("BPOMORANAJP").
-"BPOMORANAJP": Break Point Of MORANAJP
+Add \code{text_id} column when there is brk ("BPMJP").
+"BPMJP": Break Point Of MoranaJP
 }
