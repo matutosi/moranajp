@@ -127,7 +127,7 @@ delete_stop_words <- function(df,
       tibble::tibble(add_stop_words) |>
           magrittr::set_colnames(term) |>
           dplyr::bind_rows(stop_words)
-  df <- dplyr::anti_join(df, stop_words)
+  df <- dplyr::anti_join(df, stop_words, by = unescape_utf("\\u539f\\u5f62"))
   return(df)
 }
 
@@ -138,7 +138,6 @@ replace_words <- function(df,
                           synonym_from = "",
                           synonym_to = "",
                           ...){ # `...' will be omitted
-  #   if(is.null(synonym_df) & synonym_from == "" & synonym_to   == "" ){ return(df) }
   if(nrow(synonym_df) == 0 & synonym_from == "" & synonym_to   == "" ){ return(df) }
   term <- term_lemma(df)
   rep_words        <- synonym_to
