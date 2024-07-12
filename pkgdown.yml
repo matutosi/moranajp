@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   bigram: bigram.html
   moranajp: moranajp.html
-last_built: 2024-07-12T05:52Z
+last_built: 2024-07-12T05:54Z
 urls:
   reference: https://matutosi.github.io/moranajp/reference
   article: https://matutosi.github.io/moranajp/articles
