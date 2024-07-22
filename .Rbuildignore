@@ -12,7 +12,7 @@
 ^\.github$
 ^README\.Rmd$
 ^cran-comments\.md$
-^\tools$
+^tools$
 ^CRAN-SUBMISSION$
 ^_pkgdown\.yml$
 ^docs$
