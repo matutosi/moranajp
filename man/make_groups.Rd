@@ -30,7 +30,7 @@ max_sum_str_length(tbl, tmp_group, str_length)
 \item{n_group}{A numeric.}
 }
 \value{
-A tibble.   Output of 'MeCab' and added column "text_id".
+A tibble.   Output of morphological analysis and added column "text_id".
 
 A string
 
@@ -55,8 +55,7 @@ Using 'MeCab' for morphological analysis.
 Keep other colnames in dataframe.
 }
 \examples{
-\dontrun{
-  library(magrittr)
+\donttest{
   data(neko)
   neko <-
       neko |>

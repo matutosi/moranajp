@@ -28,7 +28,6 @@ devtools::install_github("matutosi/moranajp")
 
 ``` r
 library(moranajp)
-library(magrittr)
 
 data(neko)
 neko <- unescape_utf(neko)
@@ -136,7 +135,6 @@ neko |>
 
 ``` r
 library(moranajp)
-library(magrittr)
 
 data(synonym)
 synonym <- unescape_utf(synonym)

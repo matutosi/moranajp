@@ -24,7 +24,6 @@
 #' @return  A list including df (input), bigram, freq (frequency) and 
 #'          gg (ggplot2 object of bigram network plot).
 #' @examples
-#' library(magrittr)
 #' data(synonym)
 #' synonym <- unescape_utf(synonym)
 #' 

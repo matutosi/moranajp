@@ -18,6 +18,9 @@ See https://github.com/WorksApplications/Sudachi for detail.
 
 \item{brk}{A string of break point}
 }
+\value{
+A data.frame with column "text_id".
+}
 \description{
 Internal function for moranajp_all().
 Add \code{text_id} column when there is brk ("BPMJP").

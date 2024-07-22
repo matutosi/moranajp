@@ -38,7 +38,6 @@ remotes::install_github("matutosi/moranajp")
 
 ```{r}
 library(moranajp)
-library(magrittr)
 
 data(neko)
 neko <- 
@@ -68,7 +67,6 @@ neko |>
 
 ```{r,  fig.width=7, fig.height=7}
 library(moranajp)
-library(magrittr)
 
 data(synonym)
 synonym <- unescape_utf(synonym)

@@ -22,10 +22,9 @@
 #'                     iconv is also used to convert input text before running MeCab.
 #'                     "CP932_UTF-8": iconv(input, from =  "UTF-8", to = "Shift-JIS")
 #' @param col_lang     A text. "jp" or "en"
-#' @return A tibble.   Output of 'MeCab' and added column "text_id".
+#' @return A tibble.   Output of morphological analysis and added column "text_id".
 #' @examples
-#' \dontrun{
-#'   library(magrittr)
+#' \donttest{
 #'   data(neko)
 #'   neko <-
 #'       neko |>
@@ -329,6 +328,7 @@ out_cols <- function(){
 #'
 #' @inheritParams moranajp_all
 #' @inheritParams make_input
+#' @return A data.frame with column "text_id".
 #' @export
 add_text_id <- function(tbl, method, brk = "BPMJP"){
   text_id <- "text_id"
@@ -361,6 +361,7 @@ add_text_id <- function(tbl, method, brk = "BPMJP"){
 #'
 #' @inheritParams moranajp_all
 #' @inheritParams make_input
+#' @return A data.frame.
 #' @export
 remove_brk <- function(tbl, method, brk = "BPMJP"){
   cnames  <- colnames(tbl)

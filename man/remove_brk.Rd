@@ -19,6 +19,9 @@ See https://github.com/WorksApplications/Sudachi for detail.
 
 \item{brk}{A string of break point}
 }
+\value{
+A data.frame.
+}
 \description{
 Internal function for moranajp_all().
 }
