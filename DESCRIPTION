@@ -3,8 +3,11 @@ Title: Morphological Analysis for Japanese
 Version: 0.9.7
 Authors@R: 
     person("Toshikazu", "Matsumura", , "matutosi@gmail.com", role = c("aut", "cre"))
-Description: Supports morphological analysis for Japanese 
-    by using 'MeCab', 'Sudachi', 'Chamame', or 'Ginza'.
+Description: Supports morphological analysis for Japanese by using 
+    'MeCab' <https://taku910.github.io/mecab/>, 
+    'Sudachi' <https://github.com/WorksApplications/Sudachi>, 
+    'Chamame' <https://chamame.ninjal.ac.jp/>, 
+    or 'Ginza' <https://github.com/megagonlabs/ginza>.
     Can input data.frame and obtain all results of 'MeCab' and row number of 
     original data.frame as a text id. 
 License: MIT + file LICENSE
@@ -18,7 +21,6 @@ Imports:
     ggraph,
     grid,
     igraph,
-    magrittr,
     purrr,
     rlang,
     rvest,

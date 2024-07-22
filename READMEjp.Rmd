@@ -41,7 +41,6 @@ https://github.com/matutosi/moranajp/tree/main/zip
 ```{r}
 options(encoding="UTF-8")
 library(moranajp)
-library(magrittr)
 
 data(neko)
 neko <- 
