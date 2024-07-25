@@ -19,7 +19,7 @@ combi_words(x, combi, sep = "-")
 \item{x}{A pair of string joining with "-"}
 }
 \value{
-A data.frame with bombined words.
+A data.frame with combined words.
 }
 \description{
 Combine words after morphological analysis

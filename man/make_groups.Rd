@@ -56,10 +56,18 @@ Keep other colnames in dataframe.
 }
 \examples{
 \donttest{
+  # sample data of Japanese sentences
   data(neko)
   neko <-
       neko |>
       unescape_utf()
+  # chamame
+  neko |>
+    moranajp_all(method = "chamame") |>
+        print(n=100)
+}
+\dontrun{
+  # Need to install 'mecab', 'ginza', or 'sudachi' in local PC
 
   # mecab
   bin_dir <- "d:/pf/mecab/bin"
@@ -80,6 +88,6 @@ Keep other colnames in dataframe.
     moranajp_all(text_col = "text", bin_dir = bin_dir,
                  method = "sudachi_a", iconv = iconv) |>
         print(n=100)
-
 }
+
 }

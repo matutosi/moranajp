@@ -25,11 +25,19 @@
 #' @return A tibble.   Output of morphological analysis and added column "text_id".
 #' @examples
 #' \donttest{
+#'   # sample data of Japanese sentences
 #'   data(neko)
 #'   neko <-
 #'       neko |>
 #'       unescape_utf()
-#'
+#'   # chamame
+#'   neko |>
+#'     moranajp_all(method = "chamame") |>
+#'         print(n=100)
+#' }
+#' \dontrun{
+#'   # Need to install 'mecab', 'ginza', or 'sudachi' in local PC
+#' 
 #'   # mecab
 #'   bin_dir <- "d:/pf/mecab/bin"
 #'   iconv <- "CP932_UTF-8"
@@ -49,14 +57,14 @@
 #'     moranajp_all(text_col = "text", bin_dir = bin_dir,
 #'                  method = "sudachi_a", iconv = iconv) |>
 #'         print(n=100)
-#'
 #' }
+#' 
 #' @export
 moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
              text_col = "text", option = "", iconv = "",
              col_lang = "jp"){
   # text_col = "text"; option = ""; bin_dir = "d:/pf/mecab/bin/"; iconv = "CP932_UTF-8"; method = "mecab"; tbl = review |> unescape_utf(); col_lang = "jp"
-  print(paste0("Analaysing by ", method, ". Please wait."))
+  message(paste0("Analaysing by ", method, ". Please wait."))
   text_id    <- "text_id"
   tmp_group  <- "tmp_group"  # Use temporary
   str_length <- "str_length" # Use temporary
@@ -92,14 +100,9 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
 #' @rdname moranajp_all
 #' @export
 moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", col_lang){
-  if(bin_dir != ""){
-    wd <- getwd()
-    on.exit(setwd(wd))
-    setwd(bin_dir)
-  }
   input <- make_input(tbl, text_col, iconv)
   command <- make_cmd(method, option = "")
-  output <- system(command, intern=TRUE, input = input)
+  output <- system(command, intern = TRUE, input = input)
   output <- iconv_x(output, iconv) # Convert Encoding
   out_cols <- switch(method,
     "mecab"     = out_cols_mecab(col_lang),
