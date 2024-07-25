@@ -32,7 +32,7 @@
 #' neko_mecab |>
 #'   clean_up(use_common_data = TRUE, synonym_df = synonym)
 #' 
-#' neko_ginza |>
+#' review_ginza |>
 #'   unescape_utf() |>
 #'   add_sentence_no() |>
 #'   clean_up(add_depend = TRUE, use_common_data = TRUE, synonym_df = synonym)
@@ -102,7 +102,7 @@ add_depend_ginza <- function(df){
     df |>
     dplyr::mutate({{h_id}} := 
         stringr::str_c(.data[[s_id]], "_", .data[[head]])) |>
-    dplyr::left_join(depend)
+    dplyr::left_join(depend, by = unescape_utf("\\u4fc2\\u53d7\\u5143_id"))
   return(df)
 }
 
@@ -126,7 +126,7 @@ delete_stop_words <- function(df,
       tibble::tibble(add_stop_words) |>
           `colnames<-`(term) |>
           dplyr::bind_rows(stop_words)
-  df <- dplyr::anti_join(df, stop_words, by = unescape_utf("\\u539f\\u5f62"))
+  df <- dplyr::anti_join(df, stop_words, by = term)
   return(df)
 }
 
@@ -187,7 +187,7 @@ term_pos_1 <- function(df){
 #' @param combi  A string (combi_words()) or string vector (combine_words()) to combine words.
 #' @param sep    A string of separator of words
 #' @param x      A pair of string joining with "-"
-#' @return A data.frame with bombined words.
+#' @return A data.frame with combined words.
 #' 
 #' @examples
 #' x <- letters[1:10]
