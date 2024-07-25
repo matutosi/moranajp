@@ -65,7 +65,7 @@ neko |>
   print(n=30)
 ```
 
-```{r,  fig.width=7, fig.height=7}
+```{r, fig.width=7, fig.height=7}
 library(moranajp)
 
 data(synonym)
