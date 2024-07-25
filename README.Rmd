@@ -43,7 +43,7 @@ data(neko)
 neko <- 
   neko |>
   dplyr::mutate(text = stringi::stri_unescape_unicode(text)) |>
-  dplyr::mutate(cols = 1:nrow(.))
+  tibble::rownames_to_column("cols")
 neko  # First part of 'I Am a Cat' by Soseki Natsume
 
   # MeCab (Need install MeCab) 
@@ -96,6 +96,14 @@ bigram_review <-
   add_sentence_no() |>
   clean_up(add_stop_words = add_stop_words) |>
   draw_bigram_network()
+
+data(review_ginza)
+bigram_review_ginza <- 
+  review_ginza |>
+  unescape_utf() |>
+  add_sentence_no() |>
+  clean_up(add_depend = TRUE) |>
+  draw_bigram_network(depend = TRUE)
 ```
 
 
