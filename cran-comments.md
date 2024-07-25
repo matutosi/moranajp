@@ -1,3 +1,19 @@
+## Resubmission
+
+  This is a resubmission. In this version I have: 
+      * Solved issues for archived version by updating codes and examples in 'bigram.R'. 
+      * Described references in the DESCRIPTION file.
+      * Added \value to .Rd files. 
+          'add_text_id.Rd', 'combine_words.Rd', 'remove_brk.Rd'
+      * Replaced dontrun{} with \donttest{} in examples that can be execute in < 5 secs.
+      * Replaced \dontrun with \donttest.
+        However, some example codes cannot be excuted, because installations are needed. 
+        I have descrived in examples as a comment. 
+          "Need to install 'mecab', 'ginza', or 'sudachi' in local PC" in 'moranajp_all.Rd'
+      * Replaced `print()` with `message()`.
+          'R/moranajp.R'
+      * Removed tools directory by .Rbuildignore to remove global environment and 'structure.R'.
+
 ## Test environments
 
 * local
