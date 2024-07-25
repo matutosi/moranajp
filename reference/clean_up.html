@@ -34,7 +34,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Clean up result of morphological analyzed data frame</h1>
-      <small class="dont-index">Source: <a href="https://github.com/matutosi/moranajp/blob/main/R/clean_up.R" class="external-link"><code>R/clean_up.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/matutosi/moranajp/blob/develop/R/clean_up.R" class="external-link"><code>R/clean_up.R</code></a></small>
       <div class="d-none name"><code>clean_up.Rd</code></div>
     </div>
 
@@ -157,28 +157,27 @@ are given, both of them will be used as synonym.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 862 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: 読み &lt;chr&gt;, 発音 &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">neko_ginza</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="va">review_ginza</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="unescape_utf.html">unescape_utf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="add_sentence_no.html">add_sentence_no</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">clean_up</span><span class="op">(</span>add_depend <span class="op">=</span> <span class="cn">TRUE</span>, use_common_data <span class="op">=</span> <span class="cn">TRUE</span>, synonym_df <span class="op">=</span> <span class="va">synonym</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(係受元_id)`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 725 × 17</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    text_id id    表層形 原形   UD品詞タグ 品詞   品詞細分類1 品詞細分類2 属性 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1 1_3   猫     猫     NOUN       名詞   普通名詞    一般        _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       2 3_3   生れ   生れる VERB       動詞   一般        <span style="color: #BB0000;">NA</span>          _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       2 3_8   見当   見当   NOUN       名詞   普通名詞    一般        _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       2 4_4   薄暗い 薄暗い ADJ        形容詞 一般        <span style="color: #BB0000;">NA</span>          _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       2 4_11  泣い   泣く   VERB       動詞   一般        <span style="color: #BB0000;">NA</span>          _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       2 4_18  記憶   記憶   VERB       名詞   普通名詞    サ変可能    _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       2 5_7   人間   人間   NOUN       名詞   普通名詞    一般        _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       2 5_9   いう   いう   VERB       動詞   一般        <span style="color: #BB0000;">NA</span>          _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       2 6_4   聞く   聞く   VERB       動詞   一般        <span style="color: #BB0000;">NA</span>          _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       2 6_8   書生   書生   NOUN       名詞   普通名詞    一般        _    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 715 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: 係受元 &lt;chr&gt;, 係受タグ &lt;chr&gt;, 係受ペア &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   その他 &lt;chr&gt;, sentence &lt;dbl&gt;, word_no &lt;chr&gt;, 係受元_id &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   原形_dep &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7,164 × 20</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    text_id  chap  sect  para id    表層形 原形   UD品詞タグ 品詞  品詞細分類1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1     1     1     1 1_1   農地   農地   NOUN       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1     1     1     1 1_3   農産物 農産物 NOUN       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       1     1     1     1 1_5   生産   生産   VERB       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       1     1     1     1 1_7   機能   機能   NOUN       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       1     1     1     1 1_12  生物   生物   NOUN       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       1     1     1     1 1_13  多様性 多様性 NOUN       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       1     1     1     1 1_15  維持   維持   VERB       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       1     1     1     1 1_17  機能   機能   NOUN       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       1     1     1     1 1_19  有し   有する VERB       動詞  一般       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       2     1     1     1 2_2   農地   農地   NOUN       名詞  普通名詞   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7,154 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 10 more variables: 品詞細分類2 &lt;chr&gt;, 属性 &lt;chr&gt;, 係受元 &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   係受タグ &lt;chr&gt;, 係受ペア &lt;chr&gt;, その他 &lt;chr&gt;, sentence &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   word_no &lt;chr&gt;, 係受元_id &lt;chr&gt;, 原形_dep &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">review_sudachi_c</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="unescape_utf.html">unescape_utf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
