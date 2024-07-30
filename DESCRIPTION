@@ -8,8 +8,8 @@ Description: Supports morphological analysis for Japanese by using
     'Sudachi' <https://github.com/WorksApplications/Sudachi>, 
     'Chamame' <https://chamame.ninjal.ac.jp/>, 
     or 'Ginza' <https://github.com/megagonlabs/ginza>.
-    Can input data.frame and obtain all results of 'MeCab' and row number of 
-    original data.frame as a text id. 
+    Can input a data.frame and obtain all results of 'MeCab' and the row
+    number of the original data.frame as a text id.
 License: MIT + file LICENSE
 Depends: 
     R (>= 3.5.0)

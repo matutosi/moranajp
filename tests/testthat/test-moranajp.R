@@ -8,8 +8,7 @@ test_that("add_text_id() work", {
 })
 
 test_that("text_id of moranajp matches text number", {
-    bin_dir <- c("d:/pf/mecab/bin", "/opt/local/mecab/bin")
-    bin_dir <- bin_dir[file.exists(bin_dir)]
+    bin_dir <- "d:/pf/mecab/bin"
     if(length(bin_dir) == 1){
       res <-
           neko |>
@@ -20,5 +19,3 @@ test_that("text_id of moranajp matches text number", {
     skip_if(length(bin_dir) != 1)
         expect_equal(res$cols, res$text_id)
 })
-
-  

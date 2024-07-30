@@ -81,7 +81,7 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
       tbl |>
       make_groups(text_col = text_col, length = 8000,   # if error decrease length
         tmp_group = tmp_group, str_length = str_length) |>
-      dplyr::group_split(dplyr::all_of(tmp_group)) |>
+      dplyr::group_split(.data[[tmp_group]]) |>
       purrr::map(dplyr::select, dplyr::all_of(text_col)) |>
       purrr::map(moranajp,
         bin_dir = bin_dir, method = method,
@@ -101,7 +101,7 @@ moranajp_all <- function(tbl, bin_dir = "", method = "mecab",
 #' @export
 moranajp <- function(tbl, bin_dir, method, text_col, option = "", iconv = "", col_lang){
   input <- make_input(tbl, text_col, iconv)
-  command <- make_cmd(method, option = "")
+  command <- make_cmd(method, bin_dir, option = "")
   output <- system(command, intern = TRUE, input = input)
   output <- iconv_x(output, iconv) # Convert Encoding
   out_cols <- switch(method,
@@ -195,7 +195,7 @@ make_input <- function(tbl, text_col, iconv,
 
 #' @rdname moranajp_all
 #' @return A string
-make_cmd <- function(method, option = ""){
+make_cmd <- function(method, bin_dir, option = ""){
   cmd <- switch(method,
     "mecab"   = make_cmd_mecab(option = ""),
     "ginza"   = "ginza",
@@ -203,6 +203,9 @@ make_cmd <- function(method, option = ""){
     "sudachi_b" = "java -jar sudachi.jar -m B",
     "sudachi_c" = "java -jar sudachi.jar -m C",
   )
+  cmd <- 
+    paste0(bin_dir, "/", cmd) |>
+    stringr::str_replace_all("//", "/")
   return(cmd)
 }
 
