@@ -436,30 +436,11 @@ web_chamame <- function(text, col_lang = "jp"){
 #' @param form vest_form object
 #' @param ... dynamic-dots Name-value pairs giving radio button to modify.
 #' @return vest_form object
-#' @examples
-#' text <-
-#'   paste0("\\u3059",
-#'          paste0(rep("\\u3082",8),collapse=""),
-#'          "\\u306e\\u3046\\u3061") |>
-#'   unescape_utf()
-#' html <- rvest::read_html("https://chamame.ninjal.ac.jp/index.html")
-#' form <-
-#'   rvest::html_form(html)[[1]] |>
-#'   rvest::html_form_set(st = text) |>
-#'   html_radio_set("out-e" = "html")
-#' resp <- rvest::html_form_submit(form)
-#' rvest::read_html(resp) |>
-#'   rvest::html_table() |>
-#'   `[[`(_, 1)
 #'
 #' @rdname web_chamame
 #' @export
 html_radio_set <- function(form, ...){
-  # https://github.com/tidyverse/rvest/blob/main/R/form.R
-  #   rvest:::check_form(form)
   new_values <- rlang::list2(...)
-  #   rvest:::check_fields(form, new_values)
-
   v_name <- names(new_values)
   field   <- form$fields
   f_name  <- names(field)
