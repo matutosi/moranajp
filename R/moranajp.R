@@ -182,7 +182,7 @@ separate_cols_ginza <- function(tbl, col_lang){
 #' @return A string
 #' @export
 make_input <- function(tbl, text_col, iconv,
-  brk = "BPMJP "){ # Break Point Of MoranaJP: need space to split with English words
+  brk = "BP"){ # Break Point of moranajp: need space to split with English words
   input <-
     tbl |>
     dplyr::select(.data[[text_col]]) |>
@@ -329,14 +329,14 @@ out_cols <- function(){
 #' Add id column into result of morphological analysis
 #'
 #' Internal function for moranajp_all().
-#' Add `text_id` column when there is brk ("BPMJP").
-#'    "BPMJP": Break Point Of MoranaJP
+#' Add `text_id` column when there is brk ("BP").
+#'    "BP": Break Point of moranajp
 #'
 #' @inheritParams moranajp_all
 #' @inheritParams make_input
 #' @return A data.frame with column "text_id".
 #' @export
-add_text_id <- function(tbl, method, brk = "BPMJP"){
+add_text_id <- function(tbl, method){
   text_id <- "text_id"
   cnames  <- colnames(tbl)
   if (any(text_id %in% cnames)){
@@ -349,14 +349,13 @@ add_text_id <- function(tbl, method, brk = "BPMJP"){
   col <- cnames[col_no]
   # add_group() do not work inside this function
   #   add_group() work on its own.
-  #   tbl <- add_group(tbl, col = col, brk = brk, grp = text_id)
   tbl <-
     tbl |>
     dplyr::mutate(`:=`({{ text_id }},
-      (.data[[col]] == brk) + 0 )) |>  # "+ 0": boolean to numeric
-    dplyr::mutate(`:=`({{ text_id }},
-      purrr::accumulate(.data[[text_id]], `+`))) |>
-    dplyr::mutate(`:=`({{ text_id }}, .data[[text_id]] + 1))
+                       (.data[[col]] == "BP") |>
+                       cumsum() |>
+                       `+`(e1 = _, e2 = 1) |>
+                       dplyr::lag(n = 1, default = 1) ))
   return(tbl)
 }
 
@@ -369,7 +368,7 @@ add_text_id <- function(tbl, method, brk = "BPMJP"){
 #' @inheritParams make_input
 #' @return A data.frame.
 #' @export
-remove_brk <- function(tbl, method, brk = "BPMJP"){
+remove_brk <- function(tbl, method, brk = "BP"){
   cnames  <- colnames(tbl)
   col_no <- ifelse(method == "ginza", 2, 1)
   col <- cnames[col_no]
@@ -428,6 +427,11 @@ web_chamame <- function(text, col_lang = "jp"){
     `[[`(_, 1) |>
     dplyr::select(3,9:12,4)
   colnames(chamame) <- out_cols_chamame(col_lang = col_lang)
+
+  zen_bp <- stringi::stri_trans_general("BP", "halfwidth-fullwidth")
+  chamame[["\u8868\u5c64\u5f62"]] <- 
+    stringr::str_replace(chamame[["\u8868\u5c64\u5f62"]], zen_bp, "BP")
+
   return(chamame)
 }
 
