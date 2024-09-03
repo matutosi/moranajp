@@ -5,12 +5,13 @@ library(rvest)
 devtools::load_all(".")
 
 review <-
-  readr::read_tsv("data-raw/review.txt") |>
+  readr::read_tsv("data-raw/review.txt", col_types = "c") |>
   escape_utf() |>
   add_group(col = "text", brk = "EOCHAP", grp = "chap") |>
   add_group(col = "text", brk = "EOSECT", grp = "sect") |>
   add_group(col = "text", brk = "EOPARA", grp = "para") |>
   dplyr::filter(!(text %in% c("EOCHAP", "EOSECT", "EOPARA")))
+
 usethis::use_data(review, overwrite = TRUE)
 
 gen_morana_data <- function(df, bin_dir, iconv, method, head = FALSE){
