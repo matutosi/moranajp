@@ -161,44 +161,17 @@ are given, both of them will be used as synonym.</p></dd>
 <span class="r-in"><span>  <span class="fu"><a href="unescape_utf.html">unescape_utf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="add_sentence_no.html">add_sentence_no</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">clean_up</span><span class="op">(</span>add_depend <span class="op">=</span> <span class="cn">TRUE</span>, use_common_data <span class="op">=</span> <span class="cn">TRUE</span>, synonym_df <span class="op">=</span> <span class="va">synonym</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7,164 × 20</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    text_id  chap  sect  para id    表層形 原形   UD品詞タグ 品詞  品詞細分類1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1     1     1     1 1_1   農地   農地   NOUN       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1     1     1     1 1_3   農産物 農産物 NOUN       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       1     1     1     1 1_5   生産   生産   VERB       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       1     1     1     1 1_7   機能   機能   NOUN       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       1     1     1     1 1_12  生物   生物   NOUN       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       1     1     1     1 1_13  多様性 多様性 NOUN       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       1     1     1     1 1_15  維持   維持   VERB       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       1     1     1     1 1_17  機能   機能   NOUN       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       1     1     1     1 1_19  有し   有する VERB       動詞  一般       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       2     1     1     1 2_2   農地   農地   NOUN       名詞  普通名詞   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7,154 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 10 more variables: 品詞細分類2 &lt;chr&gt;, 属性 &lt;chr&gt;, 係受元 &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   係受タグ &lt;chr&gt;, 係受ペア &lt;chr&gt;, その他 &lt;chr&gt;, sentence &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   word_no &lt;chr&gt;, 係受元_id &lt;chr&gt;, 原形_dep &lt;chr&gt;</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dplyr::mutate(tbl, `:=`({    {        grp    }}, cumsum(eval_str(cond)) + 1)):</span> <span style="color: #00BBBB;">ℹ</span> In argument: `sentence = cumsum(eval_str(cond)) + 1`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `df$表層形`:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> object of type 'closure' is not subsettable</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">review_sudachi_c</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="unescape_utf.html">unescape_utf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="add_sentence_no.html">add_sentence_no</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">clean_up</span><span class="op">(</span>use_common_data <span class="op">=</span> <span class="cn">TRUE</span>, synonym_df <span class="op">=</span> <span class="va">synonym</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7,251 × 13</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    text_id  chap  sect  para 表層形 品詞  品詞細分類1 品詞細分類2 品詞細分類3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       1     1     1     1 農地   名詞  普通名詞    一般        *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1     1     1     1 農産物 名詞  普通名詞    一般        *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       1     1     1     1 生産   名詞  普通名詞    サ変可能    *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       1     1     1     1 機能   名詞  普通名詞    サ変可能    *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       1     1     1     1 生物   名詞  普通名詞    一般        *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       1     1     1     1 多様性 名詞  普通名詞    一般        *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       1     1     1     1 維持   名詞  普通名詞    サ変可能    *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       1     1     1     1 機能   名詞  普通名詞    サ変可能    *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       1     1     1     1 有し   動詞  一般        *           *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       2     1     1     1 農地   名詞  普通名詞    一般        *          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7,241 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: 品詞細分類4 &lt;chr&gt;, 品詞細分類5 &lt;chr&gt;, 原形 &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   sentence &lt;dbl&gt;</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dplyr::mutate(tbl, `:=`({    {        grp    }}, cumsum(eval_str(cond)) + 1)):</span> <span style="color: #00BBBB;">ℹ</span> In argument: `sentence = cumsum(eval_str(cond)) + 1`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `df$表層形`:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> object of type 'closure' is not subsettable</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
