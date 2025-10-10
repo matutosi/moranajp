@@ -16,7 +16,6 @@
 <url><loc>https://matutosi.github.io/moranajp/reference/combine_words.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/draw_bigram_network.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/escape_japanese.html</loc></url>
-<url><loc>https://matutosi.github.io/moranajp/reference/eval_str.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/iconv_x.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/index.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/make_groups.html</loc></url>
@@ -34,6 +33,7 @@
 <url><loc>https://matutosi.github.io/moranajp/reference/review_sudachi_a.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/stop_words.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/synonym.html</loc></url>
+<url><loc>https://matutosi.github.io/moranajp/reference/text_id_with_break.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/unescape_utf.html</loc></url>
 <url><loc>https://matutosi.github.io/moranajp/reference/web_chamame.html</loc></url>
 </urlset>
