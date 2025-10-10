@@ -468,7 +468,7 @@ html_radio_set <- function(form, ...){
 #' @export
 is_radio <- function(fields){
   fields |>
-    purrr::map_chr(`$`, "type") |>
+    purrr::map_chr("type") |>
     purrr::map_lgl(`==`, "radio")
 }
 
