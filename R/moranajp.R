@@ -391,12 +391,14 @@ remove_brk <- function(tbl, method, brk = "BP"){
 #' @param col_lang    A text. "jp" or "en"
 #' @return A dataframe
 #' @examples
+#' \donttest{
 #' text <-
 #'   paste0("\\u3059",
 #'          paste0(rep("\\u3082",8),collapse=""),
 #'          "\\u306e\\u3046\\u3061") |>
 #'   unescape_utf()
 #' web_chamame(text)
+#' }
 #'
 #' @export
 web_chamame <- function(text, col_lang = "jp"){
