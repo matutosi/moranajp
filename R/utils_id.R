@@ -19,10 +19,14 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
   if(is.null(cond)){ # cond: tbl$col == 'brk'
     cond <- paste0("tbl$", col, " == '", brk, "'")
   }
+  # Evaluate cond where both `tbl` and the caller's objects are visible.
+  #   Without the caller's environment, a cond such as "df$term == 'EOS'"
+  #   cannot find `df` (e.g. add_sentence_no()).
+  envir <- rlang::new_environment(list(tbl = tbl), parent = parent.frame())
+  is_brk <- eval_str(cond, envir = envir)
   tbl <-
     dplyr::mutate(tbl, `:=`({{ grp }},
-                            cond |>
-                              eval_str() |>
+                            is_brk |>
                               cumsum()   |>
                               `+`(e1 = _, e2 = 1) ))
   if(end_with_brk){
@@ -34,8 +38,13 @@ add_group <- function(tbl, col, brk = "EOS", grp = "group",
 }
 
 #' Helper function for add_group()
-eval_str <- function(str){
-  str |> str2expression() |> eval()
+#'
+#' @param str    A string of R code to evaluate.
+#' @param envir  An environment to evaluate `str` in.
+#' @return  Result of evaluating `str`
+#' @keywords internal
+eval_str <- function(str, envir = parent.frame()){
+  str |> str2expression() |> eval(envir = envir)
 }
 
 #' Wrapper function for add_group() to add sentence id
@@ -57,7 +66,7 @@ add_sentence_no <- function(df){
   #   form is usually full size period, thus it works.
   if(sum(cnames %in% "form") + sum(cnames %in% "pos_1") == 2){
     cond_1 <- "stringr::str_detect(df$form, '\u3002|\uff0e')"
-    cond_2 <- ".$pos_1 == '\u53e5\u70b9\\'"
+    cond_2 <- "stringr::str_detect(df$pos_1, '\u53e5\u70b9')"
   }else{
     cond_1 <- "stringr::str_detect(df$\u8868\u5c64\u5f62, '\u3002|\uff0e')"
     cond_2 <- "stringr::str_detect(df$\u54c1\u8a5e\u7d30\u5206\u985e1, '\u53e5\u70b9')"

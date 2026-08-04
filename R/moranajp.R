@@ -160,7 +160,7 @@ separate_cols_ginza <- function(tbl, col_lang){
   xpos <- out_cols_ginza(col_lang)[5]
   tbl <-
     tbl |>
-    tidyr::separate(.data[[xpos]], into = into,
+    tidyr::separate(dplyr::all_of(xpos), into = into,
       sep = "-", fill = "right", extra = "drop", remove = TRUE)
   return(tbl)
 }
@@ -185,7 +185,7 @@ make_input <- function(tbl, text_col, iconv,
   brk = "BP"){ # Break Point of moranajp: need space to split with English words
   input <-
     tbl |>
-    dplyr::select(.data[[text_col]]) |>
+    dplyr::select(dplyr::all_of(text_col)) |>
     unlist() |>
     stringr::str_c(collapse = brk) |>
     stringr::str_c(brk) |>  # NEED brk at the end of input
@@ -336,7 +336,7 @@ out_cols <- function(){
 #' @inheritParams make_input
 #' @return A data.frame with column "text_id".
 #' @export
-add_text_id <- function(tbl, method){
+add_text_id <- function(tbl, method, brk = "BP"){
   text_id <- "text_id"
   cnames  <- colnames(tbl)
   if (any(text_id %in% cnames)){
@@ -349,13 +349,13 @@ add_text_id <- function(tbl, method){
   col <- cnames[col_no]
   # add_group() do not work inside this function
   #   add_group() work on its own.
+  # Do NOT lag: brk belongs to the next text, as in add_group(end_with_brk = FALSE).
   tbl <-
     tbl |>
     dplyr::mutate(`:=`({{ text_id }},
-                       (.data[[col]] == "BP") |>
+                       (.data[[col]] == brk) |>
                        cumsum() |>
-                       `+`(e1 = _, e2 = 1) |>
-                       dplyr::lag(n = 1, default = 1) ))
+                       `+`(e1 = _, e2 = 1) ))
   return(tbl)
 }
 

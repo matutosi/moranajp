@@ -4,8 +4,17 @@
 \alias{eval_str}
 \title{Helper function for add_group()}
 \usage{
-eval_str(str)
+eval_str(str, envir = parent.frame())
+}
+\arguments{
+\item{str}{A string of R code to evaluate.}
+
+\item{envir}{An environment to evaluate \code{str} in.}
+}
+\value{
+Result of evaluating \code{str}
 }
 \description{
 Helper function for add_group()
 }
+\keyword{internal}
