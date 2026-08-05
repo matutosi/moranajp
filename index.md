@@ -1,0 +1,7 @@
+Supports morphological analysis for Japanese by using 'MeCab'
+\<<https://taku910.github.io/mecab/>\>, 'Sudachi'
+\<<https://github.com/WorksApplications/Sudachi>\>, 'Chamame'
+\<<https://chamame.ninjal.ac.jp/>\>, or 'Ginza'
+\<<https://github.com/megagonlabs/ginza>\>. Can input a data.frame and
+obtain all results of 'MeCab' and the row number of the original
+data.frame as a text id.

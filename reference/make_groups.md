@@ -1,0 +1,105 @@
+# Make groups by splitting string length
+
+Using 'MeCab' for morphological analysis. Keep other colnames in
+dataframe.
+
+## Usage
+
+``` r
+make_groups(
+  tbl,
+  text_col = "text",
+  length = 8000,
+  tmp_group = "tmp_group",
+  str_length = "str_length"
+)
+
+make_groups_sub(tbl, text_col, n_group, tmp_group, str_length)
+
+max_sum_str_length(tbl, tmp_group, str_length)
+```
+
+## Arguments
+
+- tbl:
+
+  A tibble or data.frame.
+
+- text_col:
+
+  A text. Colnames for morphological analysis.
+
+- length:
+
+  A numeric.
+
+- tmp_group, str_length:
+
+  A string to use temporary.
+
+- n_group:
+
+  A numeric.
+
+## Value
+
+A tibble. Output of morphological analysis and added column "text_id".
+`NULL` when `method = "chamame"` and web chamame is not available.
+
+A string
+
+A string
+
+A string
+
+A character vector
+
+A character vector
+
+A character vector
+
+A character vector
+
+A character vector
+
+A data.frame
+
+## Examples
+
+``` r
+# sample data of Japanese sentences
+data(neko)
+neko <-
+    neko |>
+    unescape_utf()
+
+if (FALSE) { # \dontrun{
+  # chamame: need to connect https://chamame.ninjal.ac.jp/ .
+  neko |>
+    moranajp_all(method = "chamame") |>
+        print(n=100)
+} # }
+if (FALSE) { # \dontrun{
+  # Need to install 'mecab', 'ginza', or 'sudachi' in local PC
+
+  # mecab
+  bin_dir <- "d:/pf/mecab/bin"
+  iconv <- "CP932_UTF-8"
+  neko |>
+    moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) |>
+        print(n=100)
+
+  # ginza
+  neko |>
+    moranajp_all(text_col = "text", method = "ginza") |>
+      print(n=100)
+
+  # sudachi
+  bin_dir <- "d:/pf/sudachi"
+  iconv <- "CP932_UTF-8"
+  neko |>
+    moranajp_all(text_col = "text", bin_dir = bin_dir,
+                 method = "sudachi_a", iconv = iconv) |>
+        print(n=100)
+} # }
+```
