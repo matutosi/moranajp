@@ -2,6 +2,8 @@
 
 ## moranajp 0.9.8
 
+CRAN release: 2026-08-05
+
 - 2026-08-05
 - [`web_chamame()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
   fails gracefully when web chamame is not available
