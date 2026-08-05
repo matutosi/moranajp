@@ -1,6 +1,6 @@
 Package: moranajp
 Title: Morphological Analysis for Japanese
-Version: 0.9.7
+Version: 0.9.8
 Authors@R: 
     person("Toshikazu", "Matsumura", , "matutosi@gmail.com", role = c("aut", "cre"))
 Description: Supports morphological analysis for Japanese by using 
@@ -12,7 +12,7 @@ Description: Supports morphological analysis for Japanese by using
     number of the original data.frame as a text id.
 License: MIT + file LICENSE
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.2.0)
 URL: https://github.com/matutosi/moranajp, https://matutosi.github.io/moranajp/
 BugReports: https://github.com/matutosi/moranajp/issues
 Imports: 
@@ -42,5 +42,5 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Language: en-US
