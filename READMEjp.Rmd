@@ -18,8 +18,8 @@ moranajpは，日本語形態素解析をするためのものです．
 ## Installation
 
 
-最新バージョンは，[GitHub] ( https://github.com/matutosi/moranajp ) でダウンロードできます．
-日本語話者のみを対象としていますので，cranでの公開は予定していません．
+cranで公開しています．
+開発版は [GitHub] ( https://github.com/matutosi/moranajp ) から導入できます．
 MeCab ( https://taku910.github.io/mecab/ ) を別途インストールする必要があります．
 
 ``` r
@@ -30,10 +30,6 @@ install.packages("moranajp")
   # install.packages("devtools")
 devtools::install_github("matutosi/moranajp")
 ```
-
-Windows版のzipファイルは，以下からダウンロード可能です．
-
-https://github.com/matutosi/moranajp/tree/main/zip
 
 
 ## Example

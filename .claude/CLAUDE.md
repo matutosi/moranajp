@@ -6,13 +6,28 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
 
 ### 現在の状態
 
-- 更新日: 2026-08-05
+- 更新日: 2026-08-06
 - 作業内容: CRAN アーカイブ(2025-10-25, インターネット資源の扱いがポリシー違反)への対応が完了し，
   **0.9.8 が CRAN に受理された**(2026-08-05，Uwe Ligges 氏より
   "Thanks, on its way to CRAN.")．アーカイブから復帰した．
   `R CMD check --as-cran` は 0 errors / 0 warnings / 1 NOTE
   (NOTE は「New submission / Package was archived on CRAN」のみ)．
   あわせて Web茶まめの 2025年の仕様変更に追随し，茶まめの解析が動く状態に戻した．
+  その後，**0.9.0 の zip 配布をやめ**，`READMEjp.Rmd` の導入案内を CRAN に統一した．
+
+### zip 配布をやめた経緯
+
+- `zip/moranajp_0.9.0.zip`(2021年，git 追跡下)を削除した．
+  `READMEjp.Rmd` が `https://github.com/matutosi/moranajp/tree/main/zip` を
+  Windows 版の配布場所として案内していたが，5年前の版であり，
+  いまは `install.packages("moranajp")` で入るため役目を終えた．
+- あわせて `READMEjp.Rmd` の
+  「日本語話者のみを対象としていますので，cranでの公開は予定していません．」を
+  「cranで公開しています．」に直した(直下のコードブロックが
+  `install.packages("moranajp")` を案内しており矛盾していた)．
+- `.Rbuildignore` の `^zip$` は，対象が無くなっても害がないので残してある．
+- `READMEjp.Rmd` / `README.Rmd` から生成した `.md` はこのリポジトリに無いので，
+  再生成は不要(textmining とは違う点)．
 
 ### リリースの記録
 
