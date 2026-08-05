@@ -17,8 +17,13 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
 ### リリースの記録
 
 - 投稿: 2026-08-05 02:33 UTC / 受理: 2026-08-05．
-- 投稿した版: 0.9.8 / SHA `7b0ddad`(`CRAN-SUBMISSION` に記録)．
-  `v0.9.8` タグは，コードが同一で `CRAN-SUBMISSION` と記録を加えた次のコミットに打った．
+- 投稿した版: 0.9.8 / SHA `7b0ddad`．
+  **`v0.9.8` タグはこの `7b0ddad` を指す**(CRAN の tarball と同一のツリー)．
+- `usethis::use_github_release()` は `CRAN-SUBMISSION` を読んで
+  **そこに記録された SHA にタグを打ち，そのファイルを削除する**．
+  tip に打たれるわけではないので，投稿記録のコミットを別に作っても
+  タグはそちらへは付かない．
+  投稿の追跡は，このタグと `CRAN-SUBMISSION` を含むコミット(`cffca98`)で辿れる．
 - `main` と `develop` は同じコミットに揃えてある(develop → main のマージが
   そのまま develop へ早送りされた)．
 - 検証した環境
