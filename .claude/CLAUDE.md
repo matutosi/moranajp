@@ -6,11 +6,31 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
 
 ### 現在の状態
 
-- 更新日: 2026-08-04
-- 作業内容: CRAN アーカイブ(2025-10-25, インターネット資源の扱いがポリシー違反)への対応．
-  `R CMD check --as-cran` は **0 errors / 0 warnings / 1 NOTE**
+- 更新日: 2026-08-05
+- 作業内容: CRAN アーカイブ(2025-10-25, インターネット資源の扱いがポリシー違反)への対応が完了し，
+  **0.9.8 が CRAN に受理された**(2026-08-05，Uwe Ligges 氏より
+  "Thanks, on its way to CRAN.")．アーカイブから復帰した．
+  `R CMD check --as-cran` は 0 errors / 0 warnings / 1 NOTE
   (NOTE は「New submission / Package was archived on CRAN」のみ)．
-  あわせて Web茶まめの 2025年の仕様変更に追随した．
+  あわせて Web茶まめの 2025年の仕様変更に追随し，茶まめの解析が動く状態に戻した．
+
+### リリースの記録
+
+- 投稿: 2026-08-05 02:33 UTC / 受理: 2026-08-05．
+- 投稿した版: 0.9.8 / SHA `7b0ddad`(`CRAN-SUBMISSION` に記録)．
+  `v0.9.8` タグは，コードが同一で `CRAN-SUBMISSION` と記録を加えた次のコミットに打った．
+- `main` と `develop` は同じコミットに揃えてある(develop → main のマージが
+  そのまま develop へ早送りされた)．
+- 検証した環境
+  - local: Windows 11, R 4.5.1 → 0 errors / 0 warnings / 1 NOTE
+  - win-builder: Windows Server 2022, R-devel (2026-08-04 r90350) → 1 NOTE
+  - R-hub: ubuntu-latest / windows-latest / macos-15-intel の R-devel → すべて `Status: OK`
+- **`develop` に purrr 1.2.0 対応が入っていなかった**ことが main へのマージで判明した．
+  `is_radio()` の `purrr::map_chr(`$`, "type")` は purrr 1.2.0 で壊れる
+  (main 側に hadley 氏の PR #1 として入っていた修正)．
+  `is_radio()` は `web_chamame()` がフォームのラジオボタンを設定するのに使うので，
+  壊れると茶まめの解析が動かない．ローカルの purrr は 1.0.4 なので check では出ない．
+  main へマージしたことで修正が入った状態で投稿できている．
 
 ### 今回やったこと
 
@@ -72,7 +92,10 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
 
 ## TODO / 今後の候補
 
-- [ ] **CRAN へ再投稿**(未実施)．`devtools::check_win_devel()` と rhub も回してから．
+- [x] **CRAN へ再投稿し，受理された**(2026-08-05)．
+  - [x] `v0.9.8` タグ / GitHub Release を作成
+  - [x] develop を 0.9.8.9000 に戻す
+  - [x] textmining の `.claude/CLAUDE.md` の TODO を done.md へ移す
 - [ ] `dic = "ipadic"` は列構成が別(12列)なので，そのままでは正しく取れない．
   IPAdic を使えるようにするなら `cols_chamame()` を辞書ごとに分ける必要がある．
   UniDic 系(`gendai` / `unidic-spoken`)は同じ列構成なので動く．
