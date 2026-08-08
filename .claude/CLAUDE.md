@@ -6,11 +6,12 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
 
 ### 現在の状態
 
-- 更新日: 2026-08-08
+- 更新日時(JST): 2026-08-08 18:45
 - 作業内容: 単語のつながりから文章の構造・論理を解析するライブラリを調査し，
   `.claude/SURVEY-structure-analysis-libraries.md` にまとめた
   (係り受け / 談話構造 / 共起ネットワークの3層に整理．
   moranajp の後段の候補調べで，実装の予定を決めたものではない)．
+  あわせて，作業中に git が異常に遅くなる問題を切り分けた(下記)．
 - これまでの経緯: CRAN アーカイブ(2025-10-25, インターネット資源の扱いがポリシー違反)への対応が完了し，
   **0.9.8 が CRAN に受理された**(2026-08-05，Uwe Ligges 氏より
   "Thanks, on its way to CRAN.")．アーカイブから復帰した．
@@ -18,6 +19,30 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
   (NOTE は「New submission / Package was archived on CRAN」のみ)．
   あわせて Web茶まめの 2025年の仕様変更に追随し，茶まめの解析が動く状態に戻した．
   その後，**0.9.0 の zip 配布をやめ**，`READMEjp.Rmd` の導入案内を CRAN に統一した．
+
+### 開発環境のはまりどころ(2026-08-08 に切り分け)
+
+このリポジトリは `d:\Dropbox\todo\moranajp` にあり，Dropbox 同期下にある．
+
+- **Dropbox が劣化すると全部が遅くなる**．ファイルを開くたびに約4秒の待ちが入り，
+  `git rev-parse HEAD` が 10.2秒，`git status` が 28.5秒になった
+  (ファイルの大きさは無関係で，35バイトも652KBも一律4秒．帯域ではなくオープン処理の問題)．
+  - **対処は Dropbox の再起動**．10.2秒 → 0.09秒 に戻った．
+    劣化時は Dropbox の累積CPUが 5,655秒 / 6プロセスまで膨らんでいた．
+    遅いと感じたら `Get-Process Dropbox | Measure-Object CPU -Sum` を見る．
+  - **効かなかったもの**: `com.dropbox.ignored` による同期除外
+    (`.git` 単体でもフォルダ全体でも変化なし)．リポジトリを Dropbox の外に移すのは
+    効くが，再起動で足りるので元の場所に戻した．
+  - 新規作成したファイルの読み書きは劣化時でも速い(10ms程度)ので，
+    新規ファイルでベンチを取ると「Dropbox は遅くない」と誤診する．
+- **`git push` が無出力のまま固まることがある**．GitHub が 401 を返すと
+  `credential.helper = manager` (Git Credential Manager) が対話認証を待ち続けるため．
+  `GCM_INTERACTIVE=never` や `-c credential.interactive=false` では止まらない．
+  - 回避: gh CLI が認証済みなので，その場かぎりのヘルパで押す．
+
+    ```powershell
+    git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin develop
+    ```
 
 ### zip 配布をやめた経緯
 
