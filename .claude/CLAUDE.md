@@ -2,12 +2,27 @@
 
 R パッケージ moranajp (日本語の形態素解析) の開発リポジトリ．
 
+## check の生成物の後始末
+
+- **`R CMD check` などで作られる `*.tar.gz` は，役割が終わったら削除する**．
+  結果を確認し終えたら (CRAN へ出す場合は提出が済んだら) 消してよい．
+  DESCRIPTION とソースから何度でも作り直せるため，残しておく理由がない．
+- 同じ理由で，`*.Rcheck/` (check の作業ディレクトリ) も確認が済んだら消す．
+- 補足: `*.tar.gz` を作るのは `R CMD build` / `devtools::build()` で，
+  `devtools::check()` は既定で一時ディレクトリに作るためプロジェクト直下には残らない．
+  プロジェクト直下に残るのは `R CMD build` を直接実行したときが多い．
+  どちらの経路でできたものでも，見つけたら消す．
+
 ## 進捗状況
 
 ### 現在の状態
 
-- 更新日時(JST): 2026-08-08 18:45
-- 作業内容: 単語のつながりから文章の構造・論理を解析するライブラリを調査し，
+- 更新日時(JST): 2026-08-19 06:58
+- 作業内容: TODO に残っていた2件を実装した(下記「IPAdic 対応」「make_groups() の例」)．
+  Web茶まめの IPAdic を使えるようにし，`make_group.R` の `@example` の typo を直した．
+  検証中に見つかった `col_lang = "en"` のバグも直した．
+  `devtools::check()` は **0 errors / 0 warnings / 0 notes (Status: OK)**．
+- 前回の作業: 単語のつながりから文章の構造・論理を解析するライブラリを調査し，
   `.claude/SURVEY-structure-analysis-libraries.md` にまとめた
   (係り受け / 談話構造 / 共起ネットワークの3層に整理．
   moranajp の後段の候補調べで，実装の予定を決めたものではない)．
@@ -19,6 +34,37 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
   (NOTE は「New submission / Package was archived on CRAN」のみ)．
   あわせて Web茶まめの 2025年の仕様変更に追随し，茶まめの解析が動く状態に戻した．
   その後，**0.9.0 の zip 配布をやめ**，`READMEjp.Rmd` の導入案内を CRAN に統一した．
+
+### IPAdic 対応(2026-08-19)
+
+- Web茶まめは**辞書によって結果の列が違う**．実際に投げて確かめた．
+  - UniDic 系(`gendai` / `unidic-spoken` / 各時代の辞書): **9列**．
+    `キー(＝表層形)` / `大分類` / `中分類` / `小分類` / `細分類` / `書字形(基本形)` を使う．
+  - IPAdic: **12列**．`キー(＝表層形)` / `品詞` / `品詞-大分類` / `品詞-中分類` /
+    `品詞-小分類` / `原型` を使う(ほかに `読み` `発音` `活用型` `活用形`)．
+  - **IPAdic は品詞そのものが `品詞`，その下位が `品詞-大分類`…** という命名で，
+    UniDic の `大分類` が品詞にあたるのとずれている．
+    基本形の漢字も `原型`(UniDic は `書字形(基本形)` の `形`)で違う．
+- そこで `cols_chamame(dic)` を辞書別にし，`is_ipadic()` を足した．
+  `check_chamame_table()` と `extract_chamame_cols()` も `dic` を受け取る．
+  **出力は従来どおり `out_cols_chamame()` の6列**に揃うので，後段は変わらない．
+  文の区切り(`add_sentence_no()`)は `品詞細分類1` に `句点` を探すが，
+  IPAdic も `記号 / 句点` になるのでそのまま動く．
+- **`col_lang = "en"` が壊れていた**(IPAdic とは無関係の既存バグ)．
+  改行 `BP` を戻す処理が日本語の列名 `表層形` を決め打ちしていたが，
+  その時点では `extract_chamame_cols()` が `form` に改名済みで，
+  0行を代入しようとして落ちていた．`out_cols_chamame(col_lang)[1]` を使うように直した．
+- 検証: `neko` の先頭2件を実際に茶まめへ投げ，unidic-spoken が 294行，
+  ipadic が 274行(分かち書きが違うので行数は一致しない)，`col_lang = "en"` も可．
+  **追加したテストはネットワークを使わない**(列名の対応だけを見る)．
+
+### make_groups() の例(2026-08-19)
+
+- `@example` は**ファイルパスを取るタグ**なので，roxygen が警告を出して
+  スニペットを捨てており，Rd には `@inherit moranajp_all` が継承した例が入っていた．
+- `@examples` に直すと継承した例を上書きするため，**単体で動く例に書き直した**．
+  `make_groups()` は未 export なので `moranajp:::make_groups()` として呼ぶ．
+  この書き方で `R CMD check` は NOTE を出さない(実際に確認した)．
 
 ### 開発環境のはまりどころ(2026-08-08 に切り分け)
 
@@ -145,9 +191,8 @@ R パッケージ moranajp (日本語の形態素解析) の開発リポジト�
   - [x] `v0.9.8` タグ / GitHub Release を作成
   - [x] develop を 0.9.8.9000 に戻す
   - [x] textmining の `.claude/CLAUDE.md` の TODO を done.md へ移す
-- [ ] `dic = "ipadic"` は列構成が別(12列)なので，そのままでは正しく取れない．
-  IPAdic を使えるようにするなら `cols_chamame()` を辞書ごとに分ける必要がある．
-  UniDic 系(`gendai` / `unidic-spoken`)は同じ列構成なので動く．
-- [ ] `R/make_group.R:7` の `@example` は `@examples` の typo(roxygen が警告)．
-  直すと継承していた例が上書きされ，未 export の `make_groups()` を呼ぶ例が
-  check で実行されてしまうため，直す場合は例の書き方も一緒に考える．
+- [x] **`dic = "ipadic"` に対応した**(2026-08-19)．`cols_chamame()` を辞書別にした．
+- [x] **`R/make_group.R` の `@example` の typo を直した**(2026-08-19)．
+- [ ] IPAdic は `読み` `発音` `活用型` `活用形` も返すが，いまは捨てている．
+  MeCab の出力(`out_cols_mecab()` の10列)に寄せるなら，
+  `out_cols_chamame()` を辞書別にする必要がある(後段の列名も変わる)．
