@@ -34,7 +34,9 @@ export(trigram)
 export(unescape_utf)
 export(web_chamame)
 export(word_freq)
-importFrom(rlang,":=")
-importFrom(rlang,.data)
+importFrom(rlang,
+  ":=",
+  .data
+)
 importFrom(stats,na.omit)
 importFrom(utils,data)
