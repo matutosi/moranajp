@@ -39,7 +39,14 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="moranajp-development-version">moranajp (development version)<a class="anchor" aria-label="anchor" href="#moranajp-development-version"></a></h2>
-</div>
+<ul><li>Support IPAdic in <code><a href="../reference/web_chamame.html">web_chamame()</a></code> and <code>moranajp_all(method = "chamame")</code>
+<ul><li>The result of IPAdic has 12 columns with names of its own, so <code><a href="../reference/web_chamame.html">cols_chamame()</a></code> selects the column names by the dictionary</li>
+<li>The other dictionaries of web chamame are UniDic and are unchanged</li>
+</ul></li>
+<li>Fix <code>web_chamame(col_lang = "en")</code>: replacing the break “BP” used the Japanese column name, which no longer exists after the columns are renamed</li>
+<li>Fix the typo <code>@example</code> in the documentation of <code><a href="../reference/make_groups.html">make_groups()</a></code>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.8" id="moranajp-098">moranajp 0.9.8<a class="anchor" aria-label="anchor" href="#moranajp-098"></a></h2><p class="text-muted">CRAN release: 2026-08-05</p>
 <ul><li>2026-08-05</li>

@@ -12,6 +12,8 @@ The names of the output items of web chamame,
 in the same order as out_cols_chamame().
 Only a few items are requested, so the header row of the result
 corresponds to the cells and the columns can be selected by their names.
+IPAdic is the only dictionary of web chamame that is not UniDic,
+and the columns of its result are different.
 Web chamame returns a table even when the analysis failed,
 e.g. a table with an error page of the server.
 The positions of the columns are also checked,
@@ -31,6 +33,8 @@ The names of the output items of web chamame,
 in the same order as out_cols_chamame().
 Only a few items are requested, so the header row of the result
 corresponds to the cells and the columns can be selected by their names.
+IPAdic is the only dictionary of web chamame that is not UniDic,
+and the columns of its result are different.
 Web chamame returns a table even when the analysis failed,
 e.g. a table with an error page of the server.
 The positions of the columns are also checked,
@@ -90,6 +94,8 @@ Errors are handled by web_chamame().</p>
 in the same order as <code>out_cols_chamame()</code>.
 Only a few items are requested, so the header row of the result
 corresponds to the cells and the columns can be selected by their names.</p>
+<p>IPAdic is the only dictionary of web chamame that is not UniDic,
+and the columns of its result are different.</p>
 <p>Web chamame returns a table even when the analysis failed,
 e.g. a table with an error page of the server.
 The positions of the columns are also checked,
@@ -116,11 +122,13 @@ not available, as required by the CRAN repository policy.</p>
 <span></span>
 <span><span class="fu">chamame_field</span><span class="op">(</span><span class="va">field</span>, <span class="va">item</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">cols_chamame</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">cols_chamame</span><span class="op">(</span>dic <span class="op">=</span> <span class="st">"unidic-spoken"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">extract_chamame_cols</span><span class="op">(</span><span class="va">tbl</span>, col_lang <span class="op">=</span> <span class="st">"jp"</span><span class="op">)</span></span>
+<span><span class="fu">is_ipadic</span><span class="op">(</span><span class="va">dic</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">check_chamame_table</span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span></span>
+<span><span class="fu">extract_chamame_cols</span><span class="op">(</span><span class="va">tbl</span>, col_lang <span class="op">=</span> <span class="st">"jp"</span>, dic <span class="op">=</span> <span class="st">"unidic-spoken"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">check_chamame_table</span><span class="op">(</span><span class="va">tbl</span>, dic <span class="op">=</span> <span class="st">"unidic-spoken"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">read_html_safely</span><span class="op">(</span><span class="va">url</span><span class="op">)</span></span>
 <span></span>
@@ -193,12 +201,20 @@ Use the value of the dictionary checkbox in the form.</p></dd>
 <p>A rvest_form object</p>
 <p>A string</p>
 <p>A character vector</p>
+<p>A boolean</p>
 <p>A dataframe</p>
 <p>A dataframe</p>
 <p>A xml_document, or <code>NULL</code> when the resource is not available.</p>
 <p>A string</p>
 <p>vest_form object</p>
 <p>A boolean or vector</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The names of the columns differ between the dictionaries,
+so they are selected by <code>dic</code>.
+UniDic (<code>"gendai"</code>, <code>"unidic-spoken"</code> and the dictionaries of the older
+periods) returns 9 columns, and IPAdic returns 12 columns of its own.</p>
     </div>
 
     <div class="section level2">

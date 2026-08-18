@@ -94,6 +94,7 @@
   [`select_chamame_fields()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
   [`chamame_field()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
   [`cols_chamame()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
+  [`is_ipadic()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
   [`extract_chamame_cols()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
   [`check_chamame_table()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
   [`read_html_safely()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)

@@ -2,6 +2,19 @@
 
 ## moranajp (development version)
 
+- Support IPAdic in
+  [`web_chamame()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
+  and `moranajp_all(method = "chamame")`
+  - The result of IPAdic has 12 columns with names of its own, so
+    [`cols_chamame()`](https://matutosi.github.io/moranajp/reference/web_chamame.md)
+    selects the column names by the dictionary
+  - The other dictionaries of web chamame are UniDic and are unchanged
+- Fix `web_chamame(col_lang = "en")`: replacing the break “BP” used the
+  Japanese column name, which no longer exists after the columns are
+  renamed
+- Fix the typo `@example` in the documentation of
+  [`make_groups()`](https://matutosi.github.io/moranajp/reference/make_groups.md)
+
 ## moranajp 0.9.8
 
 CRAN release: 2026-08-05

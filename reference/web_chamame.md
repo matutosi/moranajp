@@ -17,6 +17,9 @@ The names of the output items of web chamame, in the same order as
 of the result corresponds to the cells and the columns can be selected
 by their names.
 
+IPAdic is the only dictionary of web chamame that is not UniDic, and the
+columns of its result are different.
+
 Web chamame returns a table even when the analysis failed, e.g. a table
 with an error page of the server. The positions of the columns are also
 checked, because they change when web chamame changes its output items.
@@ -43,11 +46,13 @@ select_chamame_fields(form, dic = "unidic-spoken")
 
 chamame_field(field, item)
 
-cols_chamame()
+cols_chamame(dic = "unidic-spoken")
 
-extract_chamame_cols(tbl, col_lang = "jp")
+is_ipadic(dic)
 
-check_chamame_table(tbl)
+extract_chamame_cols(tbl, col_lang = "jp", dic = "unidic-spoken")
+
+check_chamame_table(tbl, dic = "unidic-spoken")
 
 read_html_safely(url)
 
@@ -123,6 +128,8 @@ A string
 
 A character vector
 
+A boolean
+
 A dataframe
 
 A dataframe
@@ -134,6 +141,13 @@ A string
 vest_form object
 
 A boolean or vector
+
+## Details
+
+The names of the columns differ between the dictionaries, so they are
+selected by `dic`. UniDic (`"gendai"`, `"unidic-spoken"` and the
+dictionaries of the older periods) returns 9 columns, and IPAdic returns
+12 columns of its own.
 
 ## Examples
 
