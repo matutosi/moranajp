@@ -4,9 +4,12 @@
 #' @param  length                A numeric.
 #' @param  n_group               A numeric.
 #' @param  tmp_group,str_length  A string to use temporary.
-#' @example
-#' unescape_utf(review) |>
-#'   make_groups(length = 1000)
+#' @examples
+#' # make_groups() is an internal function, called by moranajp_all().
+#' data(review)
+#' review |>
+#'   unescape_utf() |>
+#'   moranajp:::make_groups(length = 1000)
 make_groups <- function(tbl, text_col = "text", length = 8000, 
                         tmp_group = "tmp_group", str_length = "str_length") {
   len_total <- sum(stringr::str_length(tbl[[text_col]]))

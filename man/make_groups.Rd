@@ -57,40 +57,9 @@ Using 'MeCab' for morphological analysis.
 Keep other colnames in dataframe.
 }
 \examples{
-# sample data of Japanese sentences
-data(neko)
-neko <-
-    neko |>
-    unescape_utf()
-
-\dontrun{
-  # chamame: need to connect https://chamame.ninjal.ac.jp/ .
-  neko |>
-    moranajp_all(method = "chamame") |>
-        print(n=100)
-}
-\dontrun{
-  # Need to install 'mecab', 'ginza', or 'sudachi' in local PC
-
-  # mecab
-  bin_dir <- "d:/pf/mecab/bin"
-  iconv <- "CP932_UTF-8"
-  neko |>
-    moranajp_all(text_col = "text", bin_dir = bin_dir, iconv = iconv) |>
-        print(n=100)
-
-  # ginza
-  neko |>
-    moranajp_all(text_col = "text", method = "ginza") |>
-      print(n=100)
-
-  # sudachi
-  bin_dir <- "d:/pf/sudachi"
-  iconv <- "CP932_UTF-8"
-  neko |>
-    moranajp_all(text_col = "text", bin_dir = bin_dir,
-                 method = "sudachi_a", iconv = iconv) |>
-        print(n=100)
-}
-
+# make_groups() is an internal function, called by moranajp_all().
+data(review)
+review |>
+  unescape_utf() |>
+  moranajp:::make_groups(length = 1000)
 }

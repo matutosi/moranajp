@@ -8,6 +8,7 @@
     * The other dictionaries of web chamame are UniDic and are unchanged
 * Fix `web_chamame(col_lang = "en")`: replacing the break "BP" used the
   Japanese column name, which no longer exists after the columns are renamed
+* Fix the typo `@example` in the documentation of `make_groups()`
 
 # moranajp 0.9.8
 
