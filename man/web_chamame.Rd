@@ -7,6 +7,7 @@
 \alias{select_chamame_fields}
 \alias{chamame_field}
 \alias{cols_chamame}
+\alias{is_ipadic}
 \alias{extract_chamame_cols}
 \alias{check_chamame_table}
 \alias{read_html_safely}
@@ -30,11 +31,13 @@ select_chamame_fields(form, dic = "unidic-spoken")
 
 chamame_field(field, item)
 
-cols_chamame()
+cols_chamame(dic = "unidic-spoken")
 
-extract_chamame_cols(tbl, col_lang = "jp")
+is_ipadic(dic)
 
-check_chamame_table(tbl)
+extract_chamame_cols(tbl, col_lang = "jp", dic = "unidic-spoken")
+
+check_chamame_table(tbl, dic = "unidic-spoken")
 
 read_html_safely(url)
 
@@ -84,6 +87,8 @@ A string
 
 A character vector
 
+A boolean
+
 A dataframe
 
 A dataframe
@@ -114,6 +119,9 @@ in the same order as \code{out_cols_chamame()}.
 Only a few items are requested, so the header row of the result
 corresponds to the cells and the columns can be selected by their names.
 
+IPAdic is the only dictionary of web chamame that is not UniDic,
+and the columns of its result are different.
+
 Web chamame returns a table even when the analysis failed,
 e.g. a table with an error page of the server.
 The positions of the columns are also checked,
@@ -122,6 +130,12 @@ Errors are handled by web_chamame().
 
 Helper function to fail gracefully when an internet resource is
 not available, as required by the CRAN repository policy.
+}
+\details{
+The names of the columns differ between the dictionaries,
+so they are selected by \code{dic}.
+UniDic (\code{"gendai"}, \code{"unidic-spoken"} and the dictionaries of the older
+periods) returns 9 columns, and IPAdic returns 12 columns of its own.
 }
 \examples{
 \dontrun{

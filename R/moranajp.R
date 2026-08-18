@@ -454,12 +454,14 @@ submit_chamame <- function(html, text, col_lang = "jp", dic = "unidic-spoken"){
     rvest::read_html(resp) |>
     rvest::html_table() |>
     `[[`(_, 1) |>
-    check_chamame_table() |>
-    extract_chamame_cols(col_lang = col_lang)
+    check_chamame_table(dic = dic) |>
+    extract_chamame_cols(col_lang = col_lang, dic = dic)
 
-  zen_bp <- stringi::stri_trans_general("BP", "halfwidth-fullwidth")
-  chamame[["\u8868\u5c64\u5f62"]] <-
-    stringr::str_replace(chamame[["\u8868\u5c64\u5f62"]], zen_bp, "BP")
+  # The columns are already renamed, so use the name of `col_lang`
+  zen_bp   <- stringi::stri_trans_general("BP", "halfwidth-fullwidth")
+  form_col <- out_cols_chamame(col_lang = col_lang)[1]
+  chamame[[form_col]] <-
+    stringr::str_replace(chamame[[form_col]], zen_bp, "BP")
 
   return(chamame)
 }
@@ -522,24 +524,55 @@ chamame_field <- function(field, item){
 #' Only a few items are requested, so the header row of the result
 #' corresponds to the cells and the columns can be selected by their names.
 #'
+#' The names of the columns differ between the dictionaries,
+#' so they are selected by `dic`.
+#' UniDic (`"gendai"`, `"unidic-spoken"` and the dictionaries of the older
+#' periods) returns 9 columns, and IPAdic returns 12 columns of its own.
+#'
 #' @return A character vector
 #' @rdname web_chamame
-cols_chamame <- function(){
-  unescape_utf(
-    c("\\u30ad\\u30fc\\uff08\\uff1d\\u8868\\u5c64\\u5f62\\uff09", # key (= form)
-      "\\u5927\\u5206\\u985e",                                    # major class
-      "\\u4e2d\\u5206\\u985e",                                    # middle class
-      "\\u5c0f\\u5206\\u985e",                                    # minor class
-      "\\u7d30\\u5206\\u985e",                                    # fine class
-      "\\u66f8\\u5b57\\u5f62(\\u57fa\\u672c\\u5f62)"))            # base form
+cols_chamame <- function(dic = "unidic-spoken"){
+  key <- "\u30ad\u30fc\uff08\uff1d\u8868\u5c64\u5f62\uff09"  # key (= form)
+  if(is_ipadic(dic)){
+    # IPAdic names the part of speech itself "hinshi",
+    #   and prefixes its sub classes with "hinshi-".
+    #   Its base form is "genkei" written with a different kanji from UniDic.
+    cols <-
+      c(key,
+        "\u54c1\u8a5e",                            # part of speech
+        "\u54c1\u8a5e-\u5927\u5206\u985e",      # major class
+        "\u54c1\u8a5e-\u4e2d\u5206\u985e",      # middle class
+        "\u54c1\u8a5e-\u5c0f\u5206\u985e",      # minor class
+        "\u539f\u578b")                            # base form
+  }else{
+    cols <-
+      c(key,
+        "\u5927\u5206\u985e",                     # major class
+        "\u4e2d\u5206\u985e",                     # middle class
+        "\u5c0f\u5206\u985e",                     # minor class
+        "\u7d30\u5206\u985e",                     # fine class
+        "\u66f8\u5b57\u5f62(\u57fa\u672c\u5f62)")  # base form
+  }
+  unescape_utf(cols)
+}
+
+#' Is the dictionary of web chamame IPAdic?
+#'
+#' IPAdic is the only dictionary of web chamame that is not UniDic,
+#' and the columns of its result are different.
+#'
+#' @return A boolean
+#' @rdname web_chamame
+is_ipadic <- function(dic){
+  identical(as.character(dic), "ipadic")
 }
 
 #' Extract the columns to use from the result of web chamame
 #'
 #' @return A dataframe
 #' @rdname web_chamame
-extract_chamame_cols <- function(tbl, col_lang = "jp"){
-  chamame <- dplyr::select(tbl, dplyr::all_of(cols_chamame()))
+extract_chamame_cols <- function(tbl, col_lang = "jp", dic = "unidic-spoken"){
+  chamame <- dplyr::select(tbl, dplyr::all_of(cols_chamame(dic)))
   colnames(chamame) <- out_cols_chamame(col_lang = col_lang)
   return(chamame)
 }
@@ -555,8 +588,8 @@ extract_chamame_cols <- function(tbl, col_lang = "jp"){
 #' @param tbl  A dataframe parsed from the response of web chamame.
 #' @return A dataframe
 #' @rdname web_chamame
-check_chamame_table <- function(tbl){
-  cols <- cols_chamame()
+check_chamame_table <- function(tbl, dic = "unidic-spoken"){
+  cols <- cols_chamame(dic)
   key  <- cols[1]  # key (= surface form)
   # Do NOT return a wrong result silently when the output items changed
   lack <- setdiff(cols, colnames(tbl))

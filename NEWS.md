@@ -2,6 +2,13 @@
 
 # moranajp (development version)
 
+* Support IPAdic in `web_chamame()` and `moranajp_all(method = "chamame")`
+    * The result of IPAdic has 12 columns with names of its own,
+      so `cols_chamame()` selects the column names by the dictionary
+    * The other dictionaries of web chamame are UniDic and are unchanged
+* Fix `web_chamame(col_lang = "en")`: replacing the break "BP" used the
+  Japanese column name, which no longer exists after the columns are renamed
+
 # moranajp 0.9.8
 
 * 2026-08-05
